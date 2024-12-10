@@ -1,0 +1,3 @@
+web: bin/rails server -p 3000
+css: bin/rails dartsass:watch
+keycloak: docker run --rm --name cloakman_keycloak --publish 8080:8080 --env KEYCLOAK_ADMIN=keycloak --env KEYCLOAK_ADMIN_PASSWORD=keycloak --volume cloakman_keycloak:/opt/keycloak/data keycloak/keycloak:25.0 start-dev
