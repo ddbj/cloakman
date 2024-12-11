@@ -8,6 +8,7 @@ gem "bootstrap_form"
 gem "dartsass-rails"
 gem "importmap-rails"
 gem "kamal", require: false
+gem "oauth2"
 gem "propshaft"
 gem "puma"
 gem "solid_cache"

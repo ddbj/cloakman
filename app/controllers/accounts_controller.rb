@@ -17,7 +17,7 @@ class AccountsController < ApplicationController
 
   def account_params
     params.expect(account: [
-      :login,
+      :account_id,
       :password,
       :password_confirmation,
       :email,
