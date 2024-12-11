@@ -1,13 +1,11 @@
-<h1>New Account</h1>
+<h1>Edit Account</h1>
 
 <%= bootstrap_form_for @account, url: account_path do |f| %>
-  <%= f.text_field :account_id, required: true %>
-  <%= f.password_field :password, required: true %>
-  <%= f.password_field :password_confirmation, required: true %>
+  <%= f.text_field :account_id, required: true, disabled: true %>
   <%= f.email_field :email, required: true %>
   <%= f.text_field :first_name, required: true %>
   <%= f.text_field :middle_name %>
   <%= f.text_field :last_name, required: true %>
 
-  <%= f.primary "Create Account" %>
+  <%= f.primary "Update Account" %>
 <% end %>

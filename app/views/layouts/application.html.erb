@@ -24,7 +24,39 @@
   </head>
 
   <body>
-    <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <%= link_to "Cloakman", root_path, class: "navbar-brand" %>
+
+        <% if signed_in? %>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= current_account.account_id %>
+                </a>
+
+                <ul class="dropdown-menu">
+                  <li>
+                    <%= button_to "Logout", session_path, method: :delete, class: "dropdown-item" %>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+
+    <div class="container py-3">
+      <% { notice: "success", alert: "danger" }.each do |key, style| %>
+        <% if message = flash[key] %>
+          <div class="alert alert-<%= style %>">
+            <%= message %>
+          </div>
+        <% end %>
+      <% end %>
+
       <%= yield %>
     </div>
   </body>

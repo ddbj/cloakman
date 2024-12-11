@@ -1,2 +1,7 @@
-<%= link_to "Sign in", "#" %>
-<%= link_to "Create Account", new_account_path %>
+<% if signed_in? %>
+  <%= link_to "Edit Account", edit_account_path %>
+<% else %>
+  <%= button_to "Sign in", "/auth/keycloak", method: :post, class: "btn btn-link", data: { turbo: false } %>
+
+  <%= link_to "Create Account", new_account_path %>
+<% end %>
