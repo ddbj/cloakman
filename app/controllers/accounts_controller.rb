@@ -13,6 +13,8 @@ class AccountsController < ApplicationController
 
       redirect_to root_path, notice: "Account created successfully."
     else
+      flash.now[:alert] = @account.errors.full_messages_for(:base).join(", ")
+
       render :new, status: :unprocessable_content
     end
   end
@@ -27,6 +29,8 @@ class AccountsController < ApplicationController
     if @account.update(account_update_params)
       redirect_to root_path, notice: "Account updated successfully."
     else
+      flash.now[:alert] = @account.errors.full_messages_for(:base).join(", ")
+
       render :edit, status: :unprocessable_content
     end
   end

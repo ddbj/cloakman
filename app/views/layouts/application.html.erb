@@ -50,7 +50,7 @@
 
     <div class="container py-3">
       <% { notice: "success", alert: "danger" }.each do |key, style| %>
-        <% if message = flash[key] %>
+        <% if message = flash[key].presence %>
           <div class="alert alert-<%= style %>">
             <%= message %>
           </div>

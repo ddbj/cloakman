@@ -37,6 +37,34 @@ class Account
     persisted? ? update : create
   end
 
+  def update(attrs = {})
+    assign_attributes attrs
+
+    return false unless valid?(:update)
+
+    Keycloak.instance.put("users/#{id}", **{
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: {
+        firstName: first_name,
+        lastName:  last_name,
+        email:     email
+      }.to_json
+    })
+
+    true
+  rescue OAuth2::Error => e
+    parsed = e.response.parsed
+
+    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
+
+    false
+  end
+
+  private
+
   def create(attrs = {})
     assign_attributes attrs
 
@@ -63,25 +91,13 @@ class Account
     })
 
     self.id = res.response["Location"].split("/").last
-  end
-
-  def update(attrs = {})
-    assign_attributes attrs
-
-    return false unless valid?(:update)
-
-    Keycloak.instance.put("users/#{id}", **{
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: {
-        firstName: first_name,
-        lastName:  last_name,
-        email:     email
-      }.to_json
-    })
 
     true
+  rescue OAuth2::Error => e
+    parsed = e.response.parsed
+
+    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
+
+    false
   end
 end
