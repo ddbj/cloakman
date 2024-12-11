@@ -9,6 +9,8 @@ gem "dartsass-rails"
 gem "importmap-rails"
 gem "kamal", require: false
 gem "oauth2"
+gem "omniauth-rails_csrf_protection"
+gem "omniauth_openid_connect"
 gem "propshaft"
 gem "puma"
 gem "solid_cache"
