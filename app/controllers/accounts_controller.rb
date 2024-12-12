@@ -1,4 +1,8 @@
 class AccountsController < ApplicationController
+  layout -> {
+    action_name.in?(%w[new create]) ? "application" : "main"
+  }
+
   before_action :authenticate!, only: %i[edit update]
 
   def new
@@ -11,7 +15,7 @@ class AccountsController < ApplicationController
     if @account.save
       session[:uid] = @account.id
 
-      redirect_to root_path, notice: "Account created successfully."
+      redirect_to edit_account_path, notice: "Account created successfully."
     else
       flash.now[:alert] = @account.errors.full_messages_for(:base).join(", ")
 
@@ -27,7 +31,7 @@ class AccountsController < ApplicationController
     @account = current_account
 
     if @account.update(account_update_params)
-      redirect_to root_path, notice: "Account updated successfully."
+      redirect_to edit_account_path, notice: "Account updated successfully."
     else
       flash.now[:alert] = @account.errors.full_messages_for(:base).join(", ")
 

@@ -1,7 +1,13 @@
-<% if signed_in? %>
-  <%= link_to "Edit Account", edit_account_path %>
-<% else %>
-  <%= button_to "Sign in", "/auth/keycloak", method: :post, class: "btn btn-link", data: { turbo: false } %>
+<style>
+  .d-grid > form {
+    display: contents;
+  }
+</style>
 
-  <%= link_to "Create Account", new_account_path %>
-<% end %>
+<div class="d-flex justify-content-center align-items-center" style="height: calc(100vh - 2rem - 56px)">
+  <div class="d-grid gap-2 w-25">
+    <%= button_to "Sign in", "/auth/keycloak", class: "btn btn-primary btn-lg", method: :post, data: { turbo: false } %>
+    <hr>
+    <%= link_to "Create an account", new_account_path, class: "btn btn-outline-primary btn-lg" %>
+  </div>
+</div>

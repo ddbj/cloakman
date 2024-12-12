@@ -2,5 +2,5 @@
 
 label.required:after {
   content: ' *';
-  color: red;
+  color: var(--bs-red);
 }
