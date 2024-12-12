@@ -4,8 +4,27 @@
   <%= f.text_field :account_id, required: true, disabled: true %>
   <%= f.email_field :email, required: true %>
   <%= f.text_field :first_name, required: true %>
+  <%= f.text_field :first_name_japanese, label: "First name in Japanese" %>
   <%= f.text_field :middle_name %>
   <%= f.text_field :last_name, required: true %>
+  <%= f.text_field :last_name_japanese, label: "Last name in Japanese" %>
+  <%= f.text_field :institution, label: "Organization" %>
+  <%= f.text_field :institution_japanese, label: "Organization in Japanese" %>
+  <%= f.text_field :lab_fac_dep, label: "Laboratory, Faculty, Department" %>
+  <%= f.text_field :lab_fac_dep_japanese, label: "Laboratory, Faculty, Department in Japanese" %>
+  <%= f.text_field :url, label: "Organization URL" %>
+  <%= f.text_field :country %>
+  <%= f.text_field :postal_code, label: "Postal code/Zip code" %>
+  <%= f.text_field :prefecture, label: "State/Prefecture" %>
+  <%= f.text_field :city %>
+  <%= f.text_field :street %>
+  <%= f.text_field :phone %>
+  <%= f.text_field :fax %>
+  <%= f.text_field :lang, label: "Language" %>
+  <%= f.text_field :job_title %>
+  <%= f.text_field :job_title_japanese, label: "Job Title in Japanese" %>
+  <%= f.text_field :orcid, label: "ORCID" %>
+  <%= f.text_field :erad_id, label: "e-Rad ID" %>
 
   <%= f.primary "Update Account" %>
 <% end %>
