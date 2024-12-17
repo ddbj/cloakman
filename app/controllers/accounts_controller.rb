@@ -1,7 +1,7 @@
 class AccountsController < ApplicationController
   layout -> { action_name.in?(%w[new create]) ? "application" : "main" }
 
-  before_action :authenticate!, only: %i[edit update]
+  skip_before_action :authenticate!, only: %i[new create]
 
   def new
     @form = CreateAccountForm.new

@@ -21,7 +21,7 @@ class CreateAccountForm
   def save
     return false unless valid?
 
-    res = Keycloak.instance.post("users", **{
+    res = Keycloak.instance.admin.post("users", **{
       headers: {
         "Content-Type": "application/json"
       },

@@ -31,7 +31,7 @@ class Account
   attribute :erad_id,               :string
 
   def self.find(uid)
-    res   = Keycloak.instance.get("users/#{uid}").parsed
+    res   = Keycloak.instance.admin.get("users/#{uid}").parsed
     attrs = res[:attributes] || {}
 
     new(

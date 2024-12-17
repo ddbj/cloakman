@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_action :authenticate!, only: %i[create]
+
   def create
     user_info = request.env["omniauth.auth"]
 

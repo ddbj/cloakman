@@ -42,7 +42,7 @@ class UpdateAccountForm
 
     return false unless valid?(:update)
 
-    Keycloak.instance.put("users/#{account.id}", **{
+    Keycloak.instance.admin.put("users/#{account.id}", **{
       headers: {
         "Content-Type": "application/json"
       },

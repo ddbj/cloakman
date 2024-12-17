@@ -1,0 +1,9 @@
+<h1 class="mb-3">Password</h1>
+
+<%= bootstrap_form_for @form, url: password_path do |f| %>
+  <%= f.password_field :current_password, required: true %>
+  <%= f.password_field :new_password, required: true %>
+  <%= f.password_field :new_password_confirmation, required: true %>
+
+  <%= f.primary "Update password" %>
+<% end %>

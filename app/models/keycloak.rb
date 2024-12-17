@@ -1,4 +1,23 @@
 class Keycloak
+  class Admin
+    def initialize(client, realm)
+      @client = client
+      @realm  = realm
+    end
+
+    %i[get post put patch delete].each do |method|
+      define_method method do |path, *args, **kwargs, &block|
+        access_token.public_send(method, "/admin/realms/#{@realm}/#{path}", *args, snaky: false, **kwargs, &block)
+      end
+    end
+
+    private
+
+    def access_token
+      @client.client_credentials.get_token
+    end
+  end
+
   include Singleton
 
   def initialize
@@ -14,17 +33,10 @@ class Keycloak
       authorization_url: "protocol/openid-connect/auth",
       token_url:         "protocol/openid-connect/token"
     })
+
+    @admin = Admin.new(@client, @realm)
   end
 
-  %i[get post put patch delete].each do |method|
-    define_method method do |path, *args, **kwargs, &block|
-      access_token.public_send(method, "/admin/realms/#{@realm}/#{path}", *args, snaky: false, **kwargs, &block)
-    end
-  end
-
-  private
-
-  def access_token
-    @client.client_credentials.get_token
-  end
+  attr_reader :admin
+  attr_reader :client
 end
