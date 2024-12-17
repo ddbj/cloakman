@@ -22,16 +22,16 @@ class AccountsController < ApplicationController
   end
 
   def edit
-    @account = current_account
+    @form = UpdateAccountForm.from(current_account)
   end
 
   def update
-    @account = current_account
+    @form = UpdateAccountForm.from(current_account)
 
-    if @account.update(account_update_params)
+    if @form.update(update_account_form_params)
       redirect_to edit_account_path, notice: "Account updated successfully."
     else
-      flash.now[:alert] = @account.errors.full_messages_for(:base).join(", ")
+      flash.now[:alert] = @form.errors.full_messages_for(:base).join(", ")
 
       render :edit, status: :unprocessable_content
     end
@@ -51,12 +51,31 @@ class AccountsController < ApplicationController
     ])
   end
 
-  def account_update_params
-    params.expect(account: [
+  def update_account_form_params
+    params.expect(update_account_form: [
       :email,
       :first_name,
       :middle_name,
-      :last_name
+      :last_name,
+      :first_name_japanese,
+      :last_name_japanese,
+      :institution,
+      :institution_japanese,
+      :lab_fac_dep,
+      :lab_fac_dep_japanese,
+      :url,
+      :country,
+      :postal_code,
+      :prefecture,
+      :city,
+      :street,
+      :phone,
+      :fax,
+      :lang,
+      :job_title,
+      :job_title_japanese,
+      :orcid,
+      :erad_id
     ])
   end
 end
