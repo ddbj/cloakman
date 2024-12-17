@@ -4,13 +4,11 @@ class AccountsController < ApplicationController
   before_action :authenticate!, only: %i[edit update]
 
   def new
-    account = Account.new
-    @form   = CreateAccountForm.from(account)
+    @form = CreateAccountForm.new
   end
 
   def create
-    account = Account.new
-    @form   = CreateAccountForm.from(account, create_account_form_params)
+    @form = CreateAccountForm.new(create_account_form_params)
 
     if @form.save
       session[:uid] = @form.account.id

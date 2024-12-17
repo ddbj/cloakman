@@ -2,7 +2,7 @@ class CreateAccountForm
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  attribute :account
+  attribute :account, default: -> { Account.new }
 
   attribute :account_id,            :string
   attribute :password,              :string
@@ -17,10 +17,6 @@ class CreateAccountForm
   validates :first_name, presence: true
   validates :last_name,  presence: true
   validates :email,      presence: true
-
-  def self.from(account, attrs = {})
-    new(account:, **account.attributes.slice(*attribute_names), **attrs)
-  end
 
   def save
     return false unless valid?
@@ -49,7 +45,10 @@ class CreateAccountForm
       }.to_json
     })
 
-    account.id = res.response["Location"].split("/").last
+    account.assign_attributes(
+      id: res.response["Location"].split("/").last,
+      **attributes.except("account")
+    )
 
     true
   rescue OAuth2::Error => e
