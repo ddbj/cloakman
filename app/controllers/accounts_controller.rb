@@ -1,23 +1,23 @@
 class AccountsController < ApplicationController
-  layout -> {
-    action_name.in?(%w[new create]) ? "application" : "main"
-  }
+  layout -> { action_name.in?(%w[new create]) ? "application" : "main" }
 
   before_action :authenticate!, only: %i[edit update]
 
   def new
-    @account = Account.new
+    account = Account.new
+    @form   = CreateAccountForm.from(account)
   end
 
   def create
-    @account = Account.new(account_create_params)
+    account = Account.new
+    @form   = CreateAccountForm.from(account, create_account_form_params)
 
-    if @account.save
-      session[:uid] = @account.id
+    if @form.save
+      session[:uid] = @form.account.id
 
       redirect_to edit_account_path, notice: "Account created successfully."
     else
-      flash.now[:alert] = @account.errors.full_messages_for(:base).join(", ")
+      flash.now[:alert] = @form.errors.full_messages_for(:base).join(", ")
 
       render :new, status: :unprocessable_content
     end
@@ -41,8 +41,8 @@ class AccountsController < ApplicationController
 
   private
 
-  def account_create_params
-    params.expect(account: [
+  def create_account_form_params
+    params.expect(create_account_form: [
       :account_id,
       :password,
       :password_confirmation,

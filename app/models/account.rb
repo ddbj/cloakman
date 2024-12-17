@@ -30,12 +30,6 @@ class Account
   attribute :orcid,                 :string
   attribute :erad_id,               :string
 
-  validates :account_id, presence: true
-  validates :password,   presence: true, confirmation: true, on: :create
-  validates :first_name, presence: true
-  validates :last_name,  presence: true
-  validates :email,      presence: true
-
   def self.find(uid)
     res   = Keycloak.instance.get("users/#{uid}").parsed
     attrs = res[:attributes] || {}
