@@ -141,32 +141,12 @@ class Account
       body: {
         username:   account_id,
         firstName:  first_name,
-        middleName: middle_name,
         lastName:   last_name,
         email:,
         enabled:    true,
 
         attributes: {
-          middleName:          [ middle_name ],
-          firstNameJapanese:   [ first_name_japanese ],
-          lastNameJapanese:    [ last_name_japanese ],
-          institution:         [ institution ],
-          institutionJapanese: [ institution_japanese ],
-          labFacDep:           [ lab_fac_dep ],
-          labFacDepJapanese:   [ lab_fac_dep_japanese ],
-          url:                 [ url ],
-          country:             [ country ],
-          postalCode:          [ postal_code ],
-          prefecture:          [ prefecture ],
-          city:                [ city ],
-          street:              [ street ],
-          phone:               [ phone ],
-          fax:                 [ fax ],
-          lang:                [ lang ],
-          jobTitle:            [ job_title ],
-          jobTitleJapanese:    [ job_title_japanese ],
-          orcid:               [ orcid ],
-          eradId:              [ erad_id ]
+          middleName: [ middle_name ]
         },
 
         credentials: [
