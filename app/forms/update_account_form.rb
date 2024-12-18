@@ -39,43 +39,17 @@ class UpdateAccountForm
 
   def update(attrs = {})
     assign_attributes attrs
-    account.assign_attributes attributes.except("account")
 
     return false unless valid?
+
+    account.assign_attributes attributes.except("account")
 
     Keycloak.admin.put("users/#{account.id}", **{
       headers: {
         "Content-Type": "application/json"
       },
 
-      body: {
-        firstName:  first_name,
-        lastName:   last_name,
-        email:      email,
-
-        attributes: {
-          middleName:          [ middle_name ],
-          firstNameJapanese:   [ first_name_japanese ],
-          lastNameJapanese:    [ last_name_japanese ],
-          institution:         [ institution ],
-          institutionJapanese: [ institution_japanese ],
-          labFacDep:           [ lab_fac_dep ],
-          labFacDepJapanese:   [ lab_fac_dep_japanese ],
-          url:                 [ url ],
-          country:             [ country ],
-          postalCode:          [ postal_code ],
-          prefecture:          [ prefecture ],
-          city:                [ city ],
-          street:              [ street ],
-          phone:               [ phone ],
-          fax:                 [ fax ],
-          lang:                [ lang ],
-          jobTitle:            [ job_title ],
-          jobTitleJapanese:    [ job_title_japanese ],
-          orcid:               [ orcid ],
-          eradId:              [ erad_id ]
-        }
-      }.to_json
+      body: account.to_payload.to_json
     })
 
     true

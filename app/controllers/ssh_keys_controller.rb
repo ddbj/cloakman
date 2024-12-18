@@ -1,4 +1,4 @@
-class KeysController < ApplicationController
+class SSHKeysController < ApplicationController
   layout "main"
 
   def index
@@ -13,8 +13,10 @@ class KeysController < ApplicationController
     @form.assign_attributes create_ssh_key_form_params
 
     if @form.save
-      redirect_to keys_path, notice: "SSH key added successfully."
+      redirect_to ssh_keys_path, notice: "SSH key added successfully."
     else
+      flash[:alert] = @form.errors.full_messages_for(:base).join(" ")
+
       render :new, status: :unprocessable_content
     end
   end

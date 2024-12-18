@@ -33,6 +33,8 @@ class Account
     res   = Keycloak.admin.get("users/#{uid}").parsed
     attrs = res[:attributes] || {}
 
+    pp attrs
+
     new(
       id:                   res[:id],
       account_id:           res[:username],
@@ -61,5 +63,37 @@ class Account
       erad_id:              attrs[:eradId]&.first,
       ssh_keys:             attrs[:sshKeys]
     )
+  end
+
+  def to_payload
+    {
+      firstName:  first_name,
+      lastName:   last_name,
+      email:      email,
+
+      attributes: {
+        middleName:          [ middle_name ],
+        firstNameJapanese:   [ first_name_japanese ],
+        lastNameJapanese:    [ last_name_japanese ],
+        institution:         [ institution ],
+        institutionJapanese: [ institution_japanese ],
+        labFacDep:           [ lab_fac_dep ],
+        labFacDepJapanese:   [ lab_fac_dep_japanese ],
+        url:                 [ url ],
+        country:             [ country ],
+        postalCode:          [ postal_code ],
+        prefecture:          [ prefecture ],
+        city:                [ city ],
+        street:              [ street ],
+        phone:               [ phone ],
+        fax:                 [ fax ],
+        lang:                [ lang ],
+        jobTitle:            [ job_title ],
+        jobTitleJapanese:    [ job_title_japanese ],
+        orcid:               [ orcid ],
+        eradId:              [ erad_id ],
+        sshKeys:             ssh_keys
+      }
+    }
   end
 end

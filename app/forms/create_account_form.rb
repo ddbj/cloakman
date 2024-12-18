@@ -19,32 +19,24 @@ class CreateAccountForm
   validates :email,      presence: true
 
   def save
-    account.assign_attributes attributes.except("account", "password", "password_confirmation")
-
     return false unless valid?
+
+    account.assign_attributes attributes.except("account", "password", "password_confirmation")
 
     res = Keycloak.admin.post("users", **{
       headers: {
         "Content-Type": "application/json"
       },
 
-      body: {
-        username:  account_id,
-        firstName: first_name,
-        lastName:  last_name,
-        email:,
-        enabled:   true,
-
-        attributes: {
-          middleName: [ middle_name ]
-        },
+      body: account.to_payload.merge(
+        username: account_id,
 
         credentials: [
           type:      "password",
           temporary: false,
           value:     password
         ]
-      }.to_json
+      ).to_json
     })
 
     account.id = res.response["Location"].split("/").last

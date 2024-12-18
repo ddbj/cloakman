@@ -15,7 +15,7 @@ class AccountsController < ApplicationController
 
       redirect_to edit_account_path, notice: "Account created successfully."
     else
-      flash.now[:alert] = @form.errors.full_messages_for(:base).join(", ")
+      flash.now[:alert] = @form.errors.full_messages_for(:base).join(" ")
 
       render :new, status: :unprocessable_content
     end
@@ -31,7 +31,7 @@ class AccountsController < ApplicationController
     if @form.update(update_account_form_params)
       redirect_to edit_account_path, notice: "Account updated successfully."
     else
-      flash.now[:alert] = @form.errors.full_messages_for(:base).join(", ")
+      flash.now[:alert] = @form.errors.full_messages_for(:base).join(" ")
 
       render :edit, status: :unprocessable_content
     end
