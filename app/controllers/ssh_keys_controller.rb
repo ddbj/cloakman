@@ -21,6 +21,18 @@ class SSHKeysController < ApplicationController
     end
   end
 
+  def destroy
+    current_account.ssh_keys.delete_at params.expect(:id).to_i
+
+    if current_account.save
+      redirect_to ssh_keys_path, notice: "SSH key deleted successfully."
+    else
+      flash[:alert] = current_account.errors.full_messages_for(:base).join(" ")
+
+      render :index, status: :unprocessable_content
+    end
+  end
+
   private
 
   def create_ssh_key_form_params

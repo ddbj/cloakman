@@ -17,20 +17,6 @@ class CreateSSHKeyForm
 
     (account.ssh_keys ||= []) << ssh_key
 
-    Keycloak.admin.put "users/#{account.id}", **{
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: account.to_payload.to_json
-    }
-
-    true
-  rescue OAuth2::Error => e
-    parsed = e.response.parsed
-
-    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:errpr] || e.message
-
-    false
+    account.save
   end
 end

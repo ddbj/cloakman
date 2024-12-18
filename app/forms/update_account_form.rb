@@ -42,23 +42,11 @@ class UpdateAccountForm
 
     return false unless valid?
 
-    account.assign_attributes attributes.except("account")
+    account.update attributes.except("account")
 
-    Keycloak.admin.put("users/#{account.id}", **{
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: account.to_payload.to_json
-    })
-
-    true
-  rescue OAuth2::Error => e
-    parsed = e.response.parsed
-
-    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
-
-    false
+    account.errors.full_messages_for(:base).each do |message|
+      errors.add :base, message
+    end
   end
 
   def persisted? = true

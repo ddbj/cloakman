@@ -21,32 +21,10 @@ class CreateAccountForm
   def save
     return false unless valid?
 
-    account.assign_attributes attributes.except("account", "password", "password_confirmation")
+    account.update attributes.except("account", "password", "password_confirmation")
 
-    res = Keycloak.admin.post("users", **{
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: account.to_payload.merge(
-        username: account_id,
-
-        credentials: [
-          type:      "password",
-          temporary: false,
-          value:     password
-        ]
-      ).to_json
-    })
-
-    account.id = res.response["Location"].split("/").last
-
-    true
-  rescue OAuth2::Error => e
-    parsed = e.response.parsed
-
-    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
-
-    false
+    account.errors.full_messages_for(:base).each do |message|
+      errors.add :base, message
+    end
   end
 end

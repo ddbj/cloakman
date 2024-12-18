@@ -1,11 +1,28 @@
 <h1 class="mb-3">SSH keys</h1>
 
-<%= link_to "New SSH key", new_ssh_key_path %>
+<div class="card">
+  <div class="card-header text-end">
+    <%= link_to "New SSH key", new_ssh_key_path, class: "btn btn-primary btn-sm" %>
+  </div>
 
-<ul>
-  <% current_account.ssh_keys&.each do |key| %>
-    <li>
-      <%= key %>
-    </li>
-  <% end %>
-</ul>
+  <ul class="list-group list-group-flush">
+    <% if ssh_keys = current_account.ssh_keys.presence %>
+      <% ssh_keys.each_with_index do |key, i| %>
+        <li class="list-group-item d-flex">
+          <div class="me-auto"><%= key %></div>
+
+          <%= button_to "", ssh_key_path(i), **{
+            method: :delete,
+            class:  "btn-close",
+
+            aria: {
+              label: "Delete"
+            }
+          } %>
+        </li>
+      <% end %>
+    <% else %>
+      <li class="list-group-item text-secondary">No SSH keys</li>
+    <% end %>
+  </ul>
+</div>

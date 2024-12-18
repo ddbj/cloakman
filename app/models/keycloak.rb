@@ -31,7 +31,8 @@ class Keycloak
     @client = OAuth2::Client.new(client_id, client_secret, **{
       site:              "#{url}/realms/#{@realm}",
       authorization_url: "protocol/openid-connect/auth",
-      token_url:         "protocol/openid-connect/token"
+      token_url:         "protocol/openid-connect/token",
+      logger:            Rails.logger
     })
 
     @admin = Admin.new(@client, @realm)

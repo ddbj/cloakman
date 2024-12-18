@@ -4,6 +4,7 @@ class Account
 
   attribute :id,                   :string
   attribute :account_id,           :string
+  attribute :password,             :string
   attribute :email,                :string
   attribute :first_name,           :string
   attribute :middle_name,          :string
@@ -32,8 +33,6 @@ class Account
   def self.find(uid)
     res   = Keycloak.admin.get("users/#{uid}").parsed
     attrs = res[:attributes] || {}
-
-    pp attrs
 
     new(
       id:                   res[:id],
@@ -65,7 +64,63 @@ class Account
     )
   end
 
-  def to_payload
+  def persisted? = !!id
+
+  def save
+    update
+  end
+
+  def update(attrs = {})
+    assign_attributes attrs
+
+    return create unless persisted?
+
+    Keycloak.admin.put("users/#{id}", **{
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: to_payload(include_username: false).to_json
+    })
+
+    true
+  rescue OAuth2::Error => e
+    parsed = e.response.parsed
+
+    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
+
+    false
+  end
+
+  private
+
+  def create
+    res = Keycloak.admin.post("users", **{
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: to_payload(include_username: true).merge(
+        credentials: [
+          type:      "password",
+          temporary: false,
+          value:     password
+        ]
+      ).to_json
+    })
+
+    self.id = res.response["Location"].split("/").last
+
+    true
+  rescue OAuth2::Error => e
+    parsed = e.response.parsed
+
+    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
+
+    false
+  end
+
+  def to_payload(include_username:)
     {
       firstName:  first_name,
       lastName:   last_name,
@@ -94,6 +149,8 @@ class Account
         eradId:              [ erad_id ],
         sshKeys:             ssh_keys
       }
+    }.tap { |payload|
+      payload[:username] = account_id if include_username
     }
   end
 end
