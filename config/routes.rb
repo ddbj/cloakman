@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resource :session, only: %i[destroy]
   resource :account, only: %i[new edit create update]
   resource :password, only: %i[edit update]
-  resources :keys, only: %i[index]
+  resources :keys, only: %i[index new create destroy]
 
   get "up" => "rails/health#show", as: :rails_health_check
 end

@@ -1,0 +1,11 @@
+<h1 class="mb-3">SSH keys</h1>
+
+<%= link_to "New SSH key", new_key_path %>
+
+<ul>
+  <% current_account.ssh_keys&.each do |key| %>
+    <li>
+      <%= key %>
+    </li>
+  <% end %>
+</ul>

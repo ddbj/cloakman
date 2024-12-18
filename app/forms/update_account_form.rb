@@ -41,7 +41,7 @@ class UpdateAccountForm
     assign_attributes attrs
     account.assign_attributes attributes.except("account")
 
-    return false unless valid?(:update)
+    return false unless valid?
 
     Keycloak.admin.put("users/#{account.id}", **{
       headers: {

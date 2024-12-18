@@ -27,6 +27,7 @@ class Account
   attribute :job_title_japanese,   :string
   attribute :orcid,                :string
   attribute :erad_id,              :string
+  attribute :ssh_keys
 
   def self.find(uid)
     res   = Keycloak.admin.get("users/#{uid}").parsed
@@ -57,7 +58,8 @@ class Account
       job_title:            attrs[:jobTitle]&.first,
       job_title_japanese:   attrs[:jobTitleJapanese]&.first,
       orcid:                attrs[:orcid]&.first,
-      erad_id:              attrs[:eradId]&.first
+      erad_id:              attrs[:eradId]&.first,
+      ssh_keys:             attrs[:sshKeys]
     )
   end
 end
