@@ -37,6 +37,9 @@ class Keycloak
     @admin = Admin.new(@client, @realm)
   end
 
-  attr_reader :admin
-  attr_reader :client
+  attr_reader :client, :admin
+
+  class << self
+    delegate :client, :admin, to: :instance
+  end
 end

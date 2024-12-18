@@ -14,15 +14,17 @@ class UpdatePasswordForm
   def persisted? = true
 
   def save
+    return false unless valid?
+
     begin
-      Keycloak.instance.client.password.get_token(account.account_id, current_password)
+      Keycloak.client.password.get_token(account.account_id, current_password)
     rescue OAuth2::Error
       errors.add :current_password, "is invalid"
 
       return false
     end
 
-    Keycloak.instance.admin.put "users/#{account.id}/reset-password", **{
+    Keycloak.admin.put "users/#{account.id}/reset-password", **{
       headers: {
         "Content-Type": "application/json"
       },

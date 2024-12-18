@@ -2,36 +2,34 @@ class Account
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  attribute :id,                    :string
-  attribute :account_id,            :string
-  attribute :password,              :string
-  attribute :password_confirmation, :string
-  attribute :email,                 :string
-  attribute :first_name,            :string
-  attribute :middle_name,           :string
-  attribute :last_name,             :string
-  attribute :first_name_japanese,   :string
-  attribute :last_name_japanese,    :string
-  attribute :institution,           :string
-  attribute :institution_japanese,  :string
-  attribute :lab_fac_dep,           :string
-  attribute :lab_fac_dep_japanese,  :string
-  attribute :url,                   :string
-  attribute :country,               :string
-  attribute :postal_code,           :string
-  attribute :prefecture,            :string
-  attribute :city,                  :string
-  attribute :street,                :string
-  attribute :phone,                 :string
-  attribute :fax,                   :string
-  attribute :lang,                  :string
-  attribute :job_title,             :string
-  attribute :job_title_japanese,    :string
-  attribute :orcid,                 :string
-  attribute :erad_id,               :string
+  attribute :id,                   :string
+  attribute :account_id,           :string
+  attribute :email,                :string
+  attribute :first_name,           :string
+  attribute :middle_name,          :string
+  attribute :last_name,            :string
+  attribute :first_name_japanese,  :string
+  attribute :last_name_japanese,   :string
+  attribute :institution,          :string
+  attribute :institution_japanese, :string
+  attribute :lab_fac_dep,          :string
+  attribute :lab_fac_dep_japanese, :string
+  attribute :url,                  :string
+  attribute :country,              :string
+  attribute :postal_code,          :string
+  attribute :prefecture,           :string
+  attribute :city,                 :string
+  attribute :street,               :string
+  attribute :phone,                :string
+  attribute :fax,                  :string
+  attribute :lang,                 :string
+  attribute :job_title,            :string
+  attribute :job_title_japanese,   :string
+  attribute :orcid,                :string
+  attribute :erad_id,              :string
 
   def self.find(uid)
-    res   = Keycloak.instance.admin.get("users/#{uid}").parsed
+    res   = Keycloak.admin.get("users/#{uid}").parsed
     attrs = res[:attributes] || {}
 
     new(

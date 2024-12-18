@@ -19,19 +19,21 @@ class CreateAccountForm
   validates :email,      presence: true
 
   def save
+    account.assign_attributes attributes.except("account", "password", "password_confirmation")
+
     return false unless valid?
 
-    res = Keycloak.instance.admin.post("users", **{
+    res = Keycloak.admin.post("users", **{
       headers: {
         "Content-Type": "application/json"
       },
 
       body: {
-        username:   account_id,
-        firstName:  first_name,
-        lastName:   last_name,
+        username:  account_id,
+        firstName: first_name,
+        lastName:  last_name,
         email:,
-        enabled:    true,
+        enabled:   true,
 
         attributes: {
           middleName: [ middle_name ]
@@ -45,10 +47,7 @@ class CreateAccountForm
       }.to_json
     })
 
-    account.assign_attributes(
-      id: res.response["Location"].split("/").last,
-      **attributes.except("account")
-    )
+    account.id = res.response["Location"].split("/").last
 
     true
   rescue OAuth2::Error => e

@@ -39,10 +39,11 @@ class UpdateAccountForm
 
   def update(attrs = {})
     assign_attributes attrs
+    account.assign_attributes attributes.except("account")
 
     return false unless valid?(:update)
 
-    Keycloak.instance.admin.put("users/#{account.id}", **{
+    Keycloak.admin.put("users/#{account.id}", **{
       headers: {
         "Content-Type": "application/json"
       },
@@ -76,8 +77,6 @@ class UpdateAccountForm
         }
       }.to_json
     })
-
-    account.assign_attributes attributes.except("account")
 
     true
   rescue OAuth2::Error => e
