@@ -35,5 +35,7 @@ module Cloakman
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.x.keycloak_url = URI.parse(ENV.fetch("KEYCLOAK_URL", "http://localhost:8080"))
   end
 end

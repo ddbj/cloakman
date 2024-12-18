@@ -1,4 +1,4 @@
-keycloak_url = URI.parse(ENV["KEYCLOAK_URL"])
+keycloak_url = Rails.application.config.x.keycloak_url
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :openid_connect, **{
