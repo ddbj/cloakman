@@ -29,7 +29,7 @@ class AccountsController < ApplicationController
     @account = current_account
 
     if @account.update(account_update_params)
-      redirect_to edit_account_path, notice: "Account updated successfully."
+      redirect_to edit_account_path, notice: "Profile updated successfully."
     else
       flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
 
