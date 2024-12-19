@@ -9,7 +9,7 @@
     <% if ssh_keys = current_account.ssh_keys.presence %>
       <% ssh_keys.each_with_index do |key, i| %>
         <li class="list-group-item d-flex align-items-center gap-3">
-          <div class="me-auto"><%= key %></div>
+          <div class="text-break me-auto"><%= key %></div>
 
           <%= button_to "", ssh_key_path(i), **{
             method: :delete,
