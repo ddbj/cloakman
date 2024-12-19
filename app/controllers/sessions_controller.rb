@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  skip_before_action :authenticate!, only: %i[create]
+  skip_before_action :authenticate!, only: %i[create failure]
 
   def create
     user_info = request.env["omniauth.auth"]
@@ -13,5 +13,9 @@ class SessionsController < ApplicationController
     session.delete :uid
 
     redirect_to root_path, notice: "You have been logged out."
+  end
+
+  def failure
+    redirect_to root_path, alert: params[:message]
   end
 end

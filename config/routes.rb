@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root to: "top#index"
 
   get "auth/:provider/callback", to: "sessions#create", as: :auth_callback
+  get "auth/failure",            to: "sessions#failure"
 
   resource :session, only: %i[destroy]
   resource :account, only: %i[new edit create update]
