@@ -1,6 +1,6 @@
 <h1 class="mb-3">Profile</h1>
 
-<%= bootstrap_form_for @form, url: account_path do |f| %>
+<%= bootstrap_form_for @account, url: account_path do |f| %>
   <%= f.text_field :account_id, required: true, disabled: true %>
   <%= f.email_field :email, required: true %>
 

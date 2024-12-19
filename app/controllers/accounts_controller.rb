@@ -4,34 +4,34 @@ class AccountsController < ApplicationController
   skip_before_action :authenticate!, only: %i[new create]
 
   def new
-    @form = CreateAccountForm.new
+    @account = Account.new
   end
 
   def create
-    @form = CreateAccountForm.new(create_account_form_params)
+    @account = Account.new(account_create_params)
 
-    if @form.save
-      session[:uid] = @form.account.id
+    if @account.save
+      session[:uid] = @account.id
 
       redirect_to edit_account_path, notice: "Account created successfully."
     else
-      flash.now[:alert] = @form.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
 
       render :new, status: :unprocessable_content
     end
   end
 
   def edit
-    @form = UpdateAccountForm.from(current_account)
+    @account = current_account
   end
 
   def update
-    @form = UpdateAccountForm.from(current_account)
+    @account = current_account
 
-    if @form.update(update_account_form_params)
+    if @account.update(account_update_params)
       redirect_to edit_account_path, notice: "Account updated successfully."
     else
-      flash.now[:alert] = @form.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
 
       render :edit, status: :unprocessable_content
     end
@@ -39,8 +39,8 @@ class AccountsController < ApplicationController
 
   private
 
-  def create_account_form_params
-    params.expect(create_account_form: [
+  def account_create_params
+    params.expect(account: [
       :account_id,
       :password,
       :password_confirmation,
@@ -51,8 +51,8 @@ class AccountsController < ApplicationController
     ])
   end
 
-  def update_account_form_params
-    params.expect(update_account_form: [
+  def account_update_params
+    params.expect(account: [
       :email,
       :first_name,
       :middle_name,

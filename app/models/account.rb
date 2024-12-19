@@ -2,33 +2,40 @@ class Account
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  attribute :id,                   :string
-  attribute :account_id,           :string
-  attribute :password,             :string
-  attribute :email,                :string
-  attribute :first_name,           :string
-  attribute :middle_name,          :string
-  attribute :last_name,            :string
-  attribute :first_name_japanese,  :string
-  attribute :last_name_japanese,   :string
-  attribute :institution,          :string
-  attribute :institution_japanese, :string
-  attribute :lab_fac_dep,          :string
-  attribute :lab_fac_dep_japanese, :string
-  attribute :url,                  :string
-  attribute :country,              :string
-  attribute :postal_code,          :string
-  attribute :prefecture,           :string
-  attribute :city,                 :string
-  attribute :street,               :string
-  attribute :phone,                :string
-  attribute :fax,                  :string
-  attribute :lang,                 :string
-  attribute :job_title,            :string
-  attribute :job_title_japanese,   :string
-  attribute :orcid,                :string
-  attribute :erad_id,              :string
+  attribute :id,                    :string
+  attribute :account_id,            :string
+  attribute :password,              :string
+  attribute :password_confirmation, :string
+  attribute :email,                 :string
+  attribute :first_name,            :string
+  attribute :middle_name,           :string
+  attribute :last_name,             :string
+  attribute :first_name_japanese,   :string
+  attribute :last_name_japanese,    :string
+  attribute :institution,           :string
+  attribute :institution_japanese,  :string
+  attribute :lab_fac_dep,           :string
+  attribute :lab_fac_dep_japanese,  :string
+  attribute :url,                   :string
+  attribute :country,               :string
+  attribute :postal_code,           :string
+  attribute :prefecture,            :string
+  attribute :city,                  :string
+  attribute :street,                :string
+  attribute :phone,                 :string
+  attribute :fax,                   :string
+  attribute :lang,                  :string
+  attribute :job_title,             :string
+  attribute :job_title_japanese,    :string
+  attribute :orcid,                 :string
+  attribute :erad_id,               :string
   attribute :ssh_keys
+
+  validates :account_id, presence: true
+  validates :password,   presence: true, confirmation: true, on: :create
+  validates :first_name, presence: true
+  validates :last_name,  presence: true
+  validates :email,      presence: true
 
   def self.find(uid)
     res   = Keycloak.admin.get("users/#{uid}").parsed
@@ -75,6 +82,8 @@ class Account
 
     return create unless persisted?
 
+    return false unless valid?(:update)
+
     Keycloak.admin.put("users/#{id}", **{
       headers: {
         "Content-Type": "application/json"
@@ -95,6 +104,8 @@ class Account
   private
 
   def create
+    return false unless valid?(:create)
+
     res = Keycloak.admin.post("users", **{
       headers: {
         "Content-Type": "application/json"
