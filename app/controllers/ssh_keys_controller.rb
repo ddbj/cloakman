@@ -5,12 +5,11 @@ class SSHKeysController < ApplicationController
   end
 
   def new
-    @form = CreateSSHKeyForm.from(current_account)
+    @form = CreateSSHKeyForm.new(account: current_account)
   end
 
   def create
-    @form = CreateSSHKeyForm.from(current_account)
-    @form.assign_attributes create_ssh_key_form_params
+    @form = CreateSSHKeyForm.new(account: current_account, **create_ssh_key_form_params)
 
     if @form.save
       redirect_to ssh_keys_path, notice: "SSH key added successfully."

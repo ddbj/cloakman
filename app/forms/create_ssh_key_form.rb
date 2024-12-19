@@ -14,10 +14,6 @@ class CreateSSHKeyForm
     errors.add :ssh_key, "Key is invalid. You must supply a key in OpenSSH public key format."
   end
 
-  def self.from(account)
-    new(account:, **account.attributes.slice(*attribute_names))
-  end
-
   def save
     return false unless valid?
 
