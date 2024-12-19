@@ -16,6 +16,7 @@ gem "puma"
 gem "solid_cache"
 gem "solid_queue"
 gem "sqlite3"
+gem "ssh_data"
 gem "stimulus-rails"
 gem "thruster", require: false
 gem "turbo-rails"
