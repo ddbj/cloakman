@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   get "auth/:provider/callback", to: "sessions#create", as: :auth_callback
   get "auth/failure",            to: "sessions#failure"
 
+  get "verify_email", to: "top#verify_email"
+
   resource :session, only: %i[destroy]
   resource :account, only: %i[new edit create update]
   resource :password, only: %i[edit update]

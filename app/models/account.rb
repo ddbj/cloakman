@@ -7,6 +7,7 @@ class Account
   attribute :password,              :string
   attribute :password_confirmation, :string
   attribute :email,                 :string
+  attribute :email_verified,        :boolean
   attribute :first_name,            :string
   attribute :middle_name,           :string
   attribute :last_name,             :string
@@ -45,6 +46,7 @@ class Account
       id:                   res[:id],
       account_id:           res[:username],
       email:                res[:email],
+      email_verified:       res[:emailVerified],
       first_name:           res[:firstName],
       middle_name:          attrs[:middleName]&.first,
       last_name:            res[:lastName],

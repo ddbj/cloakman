@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :authenticate!
+  before_action :require_email_verification!
 
   def signed_in?
     session.key?(:uid)
@@ -12,6 +13,12 @@ class ApplicationController < ActionController::Base
 
   def authenticate!
     redirect_to root_path, alert: "You must be signed in to access this page." unless signed_in?
+  end
+
+  def require_email_verification!
+    return unless signed_in?
+
+    redirect_to verify_email_path unless current_account.email_verified
   end
 
   def current_account
