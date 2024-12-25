@@ -29,7 +29,7 @@ class Account
   attribute :job_title_japanese,    :string
   attribute :orcid,                 :string
   attribute :erad_id,               :string
-  attribute :ssh_keys
+  attribute :ssh_keys,              default: -> { [] }
 
   validates :account_id, presence: true
   validates :password,   presence: true, confirmation: true, on: :create
@@ -140,26 +140,26 @@ class Account
       email:      email,
 
       attributes: {
-        middleName:          [ middle_name ],
-        firstNameJapanese:   [ first_name_japanese ],
-        lastNameJapanese:    [ last_name_japanese ],
-        institution:         [ institution ],
-        institutionJapanese: [ institution_japanese ],
-        labFacDep:           [ lab_fac_dep ],
-        labFacDepJapanese:   [ lab_fac_dep_japanese ],
-        url:                 [ url ],
-        country:             [ country ],
-        postalCode:          [ postal_code ],
-        prefecture:          [ prefecture ],
-        city:                [ city ],
-        street:              [ street ],
-        phone:               [ phone ],
-        fax:                 [ fax ],
-        lang:                [ lang ],
-        jobTitle:            [ job_title ],
-        jobTitleJapanese:    [ job_title_japanese ],
-        orcid:               [ orcid ],
-        eradId:              [ erad_id ],
+        middleName:          Array(middle_name),
+        firstNameJapanese:   Array(first_name_japanese),
+        lastNameJapanese:    Array(last_name_japanese),
+        institution:         Array(institution),
+        institutionJapanese: Array(institution_japanese),
+        labFacDep:           Array(lab_fac_dep),
+        labFacDepJapanese:   Array(lab_fac_dep_japanese),
+        url:                 Array(url),
+        country:             Array(country),
+        postalCode:          Array(postal_code),
+        prefecture:          Array(prefecture),
+        city:                Array(city),
+        street:              Array(street),
+        phone:               Array(phone),
+        fax:                 Array(fax),
+        lang:                Array(lang),
+        jobTitle:            Array(job_title),
+        jobTitleJapanese:    Array(job_title_japanese),
+        orcid:               Array(orcid),
+        eradId:              Array(erad_id),
         sshKeys:             ssh_keys
       }
     }.tap { |payload|
