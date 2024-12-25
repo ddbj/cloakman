@@ -11,9 +11,7 @@ class AccountsController < ApplicationController
     @account = Account.new(account_create_params)
 
     if @account.save
-      session[:uid] = @account.id
-
-      redirect_to edit_account_path, notice: "Account created successfully."
+      redirect_to root_path, alert: "Your account has been successfully created. Please sign in to continue."
     else
       flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
 
