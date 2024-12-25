@@ -12,7 +12,26 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     )
 
-    stub_request(:post, "http://keycloak.example.com/admin/realms/master/users").with(
+    stub_request(:post, "http://keycloak.example.com/admin/realms/master/users").to_return(
+      headers: {
+        Location: "http://keycloak.example.com/amin/relms/master/users/42"
+      }
+    )
+
+    post account_path, params: {
+      account: {
+        account_id:            "alice",
+        password:              "P@ssw0rd",
+        password_confirmation: "P@ssw0rd",
+        email:                 "alice@example.com",
+        first_name:            "Alice",
+        last_name:             "Liddell"
+      }
+    }
+
+    assert_redirected_to root_path
+
+    assert_requested :post, "http://keycloak.example.com/admin/realms/master/users", **{
       body: {
         username:  "alice",
         firstName: "Alice",
@@ -50,23 +69,6 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           value:     "P@ssw0rd"
         ]
       }
-    ).to_return(
-      headers: {
-        Location: "http://keycloak.example.com/amin/relms/master/users/42"
-      }
-    )
-
-    post account_path, params: {
-      account: {
-        account_id:            "alice",
-        password:              "P@ssw0rd",
-        password_confirmation: "P@ssw0rd",
-        email:                 "alice@example.com",
-        first_name:            "Alice",
-        last_name:             "Liddell"
-      }
     }
-
-    assert_redirected_to root_path
   end
 end
