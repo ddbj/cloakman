@@ -112,6 +112,8 @@ class Account
       },
 
       body: to_payload(include_username: true).merge(
+        enabled: true,
+
         credentials: [
           type:      "password",
           temporary: false,
