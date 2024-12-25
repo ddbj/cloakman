@@ -24,6 +24,7 @@ gem "turbo-rails"
 group :development, :test do
   gem "brakeman", require: false
   gem "debug", require: "debug/prelude"
+  gem "factory_bot_rails"
   gem "rubocop-rails-omakase", require: false
 end
 

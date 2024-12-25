@@ -15,6 +15,11 @@ module ActiveSupport
   end
 end
 
-WebMock.disable_net_connect!
-
 ENV["KEYCLOAK_URL"] = "http://keycloak.example.com"
+
+WebMock.disable_net_connect!
+OmniAuth.config.test_mode = true
+
+FactoryBot::SyntaxRunner.class_eval do
+  include WebMock::API
+end

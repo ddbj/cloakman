@@ -77,6 +77,12 @@ class Account
     update
   end
 
+  def save!
+    unless update
+      raise ActiveRecord::RecordInvalid, self
+    end
+  end
+
   def update(attrs = {})
     assign_attributes attrs
 
@@ -99,6 +105,41 @@ class Account
     errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
 
     false
+  end
+
+  def to_payload(include_id: false, include_username:)
+    {
+      firstName:  first_name,
+      lastName:   last_name,
+      email:      email,
+
+      attributes: {
+        middleName:          Array(middle_name),
+        firstNameJapanese:   Array(first_name_japanese),
+        lastNameJapanese:    Array(last_name_japanese),
+        institution:         Array(institution),
+        institutionJapanese: Array(institution_japanese),
+        labFacDep:           Array(lab_fac_dep),
+        labFacDepJapanese:   Array(lab_fac_dep_japanese),
+        url:                 Array(url),
+        country:             Array(country),
+        postalCode:          Array(postal_code),
+        prefecture:          Array(prefecture),
+        city:                Array(city),
+        street:              Array(street),
+        phone:               Array(phone),
+        fax:                 Array(fax),
+        lang:                Array(lang),
+        jobTitle:            Array(job_title),
+        jobTitleJapanese:    Array(job_title_japanese),
+        orcid:               Array(orcid),
+        eradId:              Array(erad_id),
+        sshKeys:             ssh_keys
+      }
+    }.tap { |payload|
+      payload[:id]       = id         if include_id
+      payload[:username] = account_id if include_username
+    }
   end
 
   private
@@ -131,39 +172,5 @@ class Account
     errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
 
     false
-  end
-
-  def to_payload(include_username:)
-    {
-      firstName:  first_name,
-      lastName:   last_name,
-      email:      email,
-
-      attributes: {
-        middleName:          Array(middle_name),
-        firstNameJapanese:   Array(first_name_japanese),
-        lastNameJapanese:    Array(last_name_japanese),
-        institution:         Array(institution),
-        institutionJapanese: Array(institution_japanese),
-        labFacDep:           Array(lab_fac_dep),
-        labFacDepJapanese:   Array(lab_fac_dep_japanese),
-        url:                 Array(url),
-        country:             Array(country),
-        postalCode:          Array(postal_code),
-        prefecture:          Array(prefecture),
-        city:                Array(city),
-        street:              Array(street),
-        phone:               Array(phone),
-        fax:                 Array(fax),
-        lang:                Array(lang),
-        jobTitle:            Array(job_title),
-        jobTitleJapanese:    Array(job_title_japanese),
-        orcid:               Array(orcid),
-        eradId:              Array(erad_id),
-        sshKeys:             ssh_keys
-      }
-    }.tap { |payload|
-      payload[:username] = account_id if include_username
-    }
   end
 end

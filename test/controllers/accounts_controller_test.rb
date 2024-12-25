@@ -1,7 +1,7 @@
 require "test_helper"
 
 class AccountsControllerTest < ActionDispatch::IntegrationTest
-  test "account created successfully" do
+  def stub_token_request
     stub_request(:post, "http://keycloak.example.com/realms/master/protocol/openid-connect/token").to_return_json(
       body: {
         access_token:  "ACCESS_TOKEN",
@@ -12,6 +12,31 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     )
 
+    get auth_callback_path("keycloak")
+  end
+
+  def sign_in(account)
+    OmniAuth.config.add_mock :keycloak, uid: account.id
+
+    begin
+      get auth_callback_path("keycloak")
+    ensure
+      OmniAuth.config.mock_auth[:keycloak] = nil
+    end
+
+    stub_request(:get, "http://keycloak.example.com/admin/realms/master/users/#{account.id}").to_return_json(
+      body: account.to_payload(
+        include_id:       true,
+        include_username: true
+      )
+    )
+  end
+
+  setup do
+    stub_token_request
+  end
+
+  test "account created successfully" do
     stub_request(:post, "http://keycloak.example.com/admin/realms/master/users").to_return(
       headers: {
         Location: "http://keycloak.example.com/amin/relms/master/users/42"
@@ -68,6 +93,54 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           temporary: false,
           value:     "P@ssw0rd"
         ]
+      }
+    }
+  end
+
+  test "account updated successfully" do
+    sign_in FactoryBot.create(:account, id: 42)
+
+    stub_request :put, "http://keycloak.example.com/admin/realms/master/users/42"
+
+    patch account_path, params: {
+      account: {
+        email:      "bob@example.com",
+        first_name: "Bob",
+        last_name:  "Martin"
+      }
+    }
+
+    assert_redirected_to edit_account_path
+
+    assert_requested :put, "http://keycloak.example.com/admin/realms/master/users/42", **{
+      body: {
+        firstName: "Bob",
+        lastName:  "Martin",
+        email:     "bob@example.com",
+
+        attributes: {
+          middleName:          [],
+          firstNameJapanese:   [],
+          lastNameJapanese:    [],
+          institution:         [],
+          institutionJapanese: [],
+          labFacDep:           [],
+          labFacDepJapanese:   [],
+          url:                 [],
+          country:             [],
+          postalCode:          [],
+          prefecture:          [],
+          city:                [],
+          street:              [],
+          phone:               [],
+          fax:                 [],
+          lang:                [],
+          jobTitle:            [],
+          jobTitleJapanese:    [],
+          orcid:               [],
+          eradId:              [],
+          sshKeys:             []
+        }
       }
     }
   end
