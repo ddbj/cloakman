@@ -9,8 +9,6 @@ module IntegrationTestHelper
         scope:         "openid"
       }
     )
-
-    get auth_callback_path("keycloak")
   end
 
   def sign_in(account)
