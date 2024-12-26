@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
-require "webmock/minitest"
 
 module ActiveSupport
   class TestCase
@@ -15,11 +14,4 @@ module ActiveSupport
   end
 end
 
-ENV["KEYCLOAK_URL"] = "http://keycloak.example.com"
-
-WebMock.disable_net_connect!
-OmniAuth.config.test_mode = true
-
-FactoryBot::SyntaxRunner.class_eval do
-  include WebMock::API
-end
+Rails.root.glob("test/support/*.rb").each do require _1 end
