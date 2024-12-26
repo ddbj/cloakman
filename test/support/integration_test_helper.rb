@@ -21,10 +21,7 @@ module IntegrationTestHelper
     end
 
     stub_request(:get, "http://keycloak.example.com/admin/realms/master/users/#{account.id}").to_return_json(
-      body: account.to_payload(
-        include_id:       true,
-        include_username: true
-      )
+      body: account.to_payload(id: true, username: true)
     )
   end
 end

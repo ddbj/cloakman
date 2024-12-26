@@ -95,7 +95,7 @@ class Account
         "Content-Type": "application/json"
       },
 
-      body: to_payload(include_username: false).to_json
+      body: to_payload(id: false, username: false).to_json
     })
 
     true
@@ -107,7 +107,7 @@ class Account
     false
   end
 
-  def to_payload(include_id: false, include_username:)
+  def to_payload(id:, username:)
     {
       firstName:  first_name,
       lastName:   last_name,
@@ -137,8 +137,8 @@ class Account
         sshKeys:             ssh_keys
       }
     }.tap { |payload|
-      payload[:id]       = id         if include_id
-      payload[:username] = account_id if include_username
+      payload[:id]       = self.id    if id
+      payload[:username] = account_id if username
     }
   end
 
@@ -152,7 +152,7 @@ class Account
         "Content-Type": "application/json"
       },
 
-      body: to_payload(include_username: true).merge(
+      body: to_payload(id: false, username: true).merge(
         enabled: true,
 
         credentials: [
