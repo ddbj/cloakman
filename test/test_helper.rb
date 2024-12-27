@@ -14,4 +14,6 @@ module ActiveSupport
   end
 end
 
-Rails.root.glob("test/support/*.rb").each do require _1 end
+Rails.root.glob("test/support/*.rb").each do
+  require it
+end
