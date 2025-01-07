@@ -29,7 +29,20 @@
   </div>
 
   <%= f.url_field :url, label: "Organization URL" %>
-  <%= f.text_field :country %>
+
+  <%
+    jp     = ISO3166::Country["JP"]
+    others = ISO3166::Country.all.without(jp).sort_by(&:common_name)
+
+    opts = safe_join([
+      options_from_collection_for_select([ jp ], :alpha2, :common_name, @account.country),
+      tag(:hr),
+      options_from_collection_for_select(others, :alpha2, :common_name, @account.country)
+    ])
+  %>
+
+  <%= f.select :country, opts, include_blank: true %>
+
   <%= f.text_field :postal_code, label: "Postal code/Zip code" %>
   <%= f.text_field :prefecture, label: "State/Prefecture" %>
   <%= f.text_field :city %>
