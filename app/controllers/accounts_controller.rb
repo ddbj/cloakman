@@ -11,7 +11,7 @@ class AccountsController < ApplicationController
     @account = Account.new(account_create_params)
 
     if @account.save
-      redirect_to root_path, alert: "Your account has been successfully created. Please sign in to continue."
+      redirect_to root_path, notice: "Your account has been successfully created. Please sign in to continue."
     else
       flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
 

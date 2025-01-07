@@ -1,0 +1,11 @@
+dn: dc=ddbj,dc=nig,dc=ac,dc=jp
+objectClass: dcObject
+objectClass: organization
+dc: ddbj
+o: ddbj
+
+dn: dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp
+objectClass: dcObject
+objectClass: organization
+dc: users
+o: users
