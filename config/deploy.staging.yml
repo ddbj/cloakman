@@ -1,0 +1,22 @@
+servers:
+  web:
+    - bastion
+
+proxy:
+  ssl: false
+  host: cloakman.ursm.jp
+
+env:
+  clear:
+    APP_URL: https://cloakman.ursm.jp
+    KEYCLOAK_URL: https://keycloak.ursm.jp
+
+accessories:
+  keycloak:
+    host: bastion
+
+    proxy:
+      host: keycloak.ursm.jp
+
+  openldap:
+    host: bastion

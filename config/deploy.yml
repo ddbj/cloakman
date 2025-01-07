@@ -1,13 +1,6 @@
 service: cloakman
 image: ursm/cloakman
-
-servers:
-  web:
-    - bastion
-
-proxy:
-  ssl: false
-  host: cloakman.ursm.jp
+require_destination: true
 
 registry:
   username: ursm
@@ -21,10 +14,8 @@ env:
     - RAILS_MASTER_KEY
 
   clear:
-    APP_URL: https://cloakman.ursm.jp
     KEYCLOAK_CLIENT_ID: cloakman
     KEYCLOAK_REALM: master
-    KEYCLOAK_URL: https://keycloak.ursm.jp
     SOLID_QUEUE_IN_PUMA: true
 
 aliases:
@@ -50,10 +41,8 @@ accessories:
   keycloak:
     image: keycloak/keycloak:25.0
     cmd: start-dev
-    host: bastion
 
     proxy:
-      host: keycloak.ursm.jp
       app_port: 8080
 
       healthcheck:
@@ -70,3 +59,23 @@ accessories:
 
     volumes:
       - cloakman_keycloak:/opt/keycloak/data
+
+  openldap:
+    image: bitnami/openldap:2.6
+
+    env:
+      secret:
+        - LDAP_ADMIN_USERNAME
+        - LDAP_ADMIN_PASSWORD
+
+      clear:
+        LDAP_ROOT: dc=ddbj,dc=nig,dc=ac,dc=jp
+        LDAP_SKIP_DEFAULT_TREE: 'yes'
+
+    files:
+      - openldap/ldifs/init.ldif:/ldifs/init.ldif
+      - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif
+      - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
+
+    volumes:
+      - cloakman_openldap:/bitnami/openldap
