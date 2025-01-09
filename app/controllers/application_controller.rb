@@ -4,21 +4,29 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate!
 
-  def signed_in?
-    session.key?(:uid)
-  end
-
-  helper_method :signed_in?
-
   def authenticate!
     redirect_to root_path, alert: "You must be signed in to access this page." unless signed_in?
   end
 
   def current_account
-    return nil unless signed_in?
+    return @current_account if defined?(@current_account)
 
-    @current_account ||= Account.find(session[:uid])
+    if uid = session[:uid]
+      begin
+        @current_account = Account.find(uid)
+      rescue OAuth2::Error
+        session.delete :uid
+
+        @current_account = nil
+      end
+    else
+      @current_account = nil
+    end
   end
 
   helper_method :current_account
+
+  def signed_in? = !!current_account
+
+  helper_method :signed_in?
 end
