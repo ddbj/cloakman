@@ -31,13 +31,20 @@
   <%= f.url_field :url, label: "Organization URL" %>
 
   <%
-    jp     = ISO3166::Country["JP"]
-    others = ISO3166::Country.all.without(jp).sort_by(&:common_name)
-
     opts = safe_join([
-      options_from_collection_for_select([ jp ], :alpha2, :common_name, @account.country),
+      options_from_collection_for_select(
+        [ ISO3166::Country[:JP] ],
+        :alpha2,
+        :common_name,
+        @account.country
+      ),
       tag(:hr),
-      options_from_collection_for_select(others, :alpha2, :common_name, @account.country)
+      options_from_collection_for_select(
+        ISO3166::Country.all.sort_by(&:common_name),
+        :alpha2,
+        :common_name,
+        @account.country
+      )
     ])
   %>
 
