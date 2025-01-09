@@ -5,6 +5,7 @@ gem "rails", "~> 8.0.0"
 gem "bootsnap", require: false
 gem "bootstrap"
 gem "bootstrap_form"
+gem "countries"
 gem "dartsass-rails"
 gem "importmap-rails"
 gem "kamal", require: false
