@@ -55,7 +55,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           jobTitle:            [],
           jobTitleJapanese:    [],
           orcid:               [],
-          eradId:              [],
+          eradID:              [],
           sshKeys:             []
         },
 
@@ -126,7 +126,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           jobTitle:            [],
           jobTitleJapanese:    [],
           orcid:               [],
-          eradId:              [],
+          eradID:              [],
           sshKeys:             []
         }
       }
