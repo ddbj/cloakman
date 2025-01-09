@@ -66,7 +66,7 @@ class Account
       job_title:            attrs[:jobTitle]&.first,
       job_title_japanese:   attrs[:jobTitleJapanese]&.first,
       orcid:                attrs[:orcid]&.first,
-      erad_id:              attrs[:eradId]&.first,
+      erad_id:              attrs[:eradID]&.first,
       ssh_keys:             attrs[:sshKeys]
     )
   end
@@ -133,7 +133,7 @@ class Account
         jobTitle:            Array(job_title),
         jobTitleJapanese:    Array(job_title_japanese),
         orcid:               Array(orcid),
-        eradId:              Array(erad_id),
+        eradID:              Array(erad_id),
         sshKeys:             ssh_keys
       }
     }.tap { |payload|
