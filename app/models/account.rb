@@ -12,11 +12,11 @@ class Account
   attribute :last_name,             :string
   attribute :first_name_japanese,   :string
   attribute :last_name_japanese,    :string
-  attribute :institution,           :string
-  attribute :institution_japanese,  :string
+  attribute :organization,          :string
+  attribute :organization_japanese, :string
   attribute :lab_fac_dep,           :string
   attribute :lab_fac_dep_japanese,  :string
-  attribute :url,                   :string
+  attribute :organization_url,      :string
   attribute :country,               :string
   attribute :postal_code,           :string
   attribute :prefecture,            :string
@@ -42,32 +42,32 @@ class Account
     attrs = res[:attributes] || {}
 
     new(
-      id:                   res[:id],
-      account_id:           res[:username],
-      email:                res[:email],
-      first_name:           res[:firstName],
-      middle_name:          attrs[:middleName]&.first,
-      last_name:            res[:lastName],
-      first_name_japanese:  attrs[:firstNameJapanese]&.first,
-      last_name_japanese:   attrs[:lastNameJapanese]&.first,
-      institution:          attrs[:institution]&.first,
-      institution_japanese: attrs[:institutionJapanese]&.first,
-      lab_fac_dep:          attrs[:labFacDep]&.first,
-      lab_fac_dep_japanese: attrs[:labFacDepJapanese]&.first,
-      url:                  attrs[:url]&.first,
-      country:              attrs[:country]&.first,
-      postal_code:          attrs[:postalCode]&.first,
-      prefecture:           attrs[:prefecture]&.first,
-      city:                 attrs[:city]&.first,
-      street:               attrs[:street]&.first,
-      phone:                attrs[:phone]&.first,
-      fax:                  attrs[:fax]&.first,
-      lang:                 attrs[:lang]&.first,
-      job_title:            attrs[:jobTitle]&.first,
-      job_title_japanese:   attrs[:jobTitleJapanese]&.first,
-      orcid:                attrs[:orcid]&.first,
-      erad_id:              attrs[:eradID]&.first,
-      ssh_keys:             attrs[:sshKeys]
+      id:                    res[:id],
+      account_id:            res[:username],
+      email:                 res[:email],
+      first_name:            res[:firstName],
+      middle_name:           attrs[:middleName]&.first,
+      last_name:             res[:lastName],
+      first_name_japanese:   attrs[:firstNameJapanese]&.first,
+      last_name_japanese:    attrs[:lastNameJapanese]&.first,
+      organization:          attrs[:organization]&.first,
+      organization_japanese: attrs[:organizationJapanese]&.first,
+      lab_fac_dep:           attrs[:labFacDep]&.first,
+      lab_fac_dep_japanese:  attrs[:labFacDepJapanese]&.first,
+      organization_url:      attrs[:organizationURL]&.first,
+      country:               attrs[:country]&.first,
+      postal_code:           attrs[:postalCode]&.first,
+      prefecture:            attrs[:prefecture]&.first,
+      city:                  attrs[:city]&.first,
+      street:                attrs[:street]&.first,
+      phone:                 attrs[:phone]&.first,
+      fax:                   attrs[:fax]&.first,
+      lang:                  attrs[:lang]&.first,
+      job_title:             attrs[:jobTitle]&.first,
+      job_title_japanese:    attrs[:jobTitleJapanese]&.first,
+      orcid:                 attrs[:orcid]&.first,
+      erad_id:               attrs[:eradID]&.first,
+      ssh_keys:              attrs[:sshKeys]
     )
   end
 
@@ -114,27 +114,27 @@ class Account
       email:      email,
 
       attributes: {
-        middleName:          Array(middle_name),
-        firstNameJapanese:   Array(first_name_japanese),
-        lastNameJapanese:    Array(last_name_japanese),
-        institution:         Array(institution),
-        institutionJapanese: Array(institution_japanese),
-        labFacDep:           Array(lab_fac_dep),
-        labFacDepJapanese:   Array(lab_fac_dep_japanese),
-        url:                 Array(url),
-        country:             Array(country),
-        postalCode:          Array(postal_code),
-        prefecture:          Array(prefecture),
-        city:                Array(city),
-        street:              Array(street),
-        phone:               Array(phone),
-        fax:                 Array(fax),
-        lang:                Array(lang),
-        jobTitle:            Array(job_title),
-        jobTitleJapanese:    Array(job_title_japanese),
-        orcid:               Array(orcid),
-        eradID:              Array(erad_id),
-        sshKeys:             ssh_keys
+        middleName:           Array(middle_name),
+        firstNameJapanese:    Array(first_name_japanese),
+        lastNameJapanese:     Array(last_name_japanese),
+        organization:         Array(organization),
+        organizationJapanese: Array(organization_japanese),
+        labFacDep:            Array(lab_fac_dep),
+        labFacDepJapanese:    Array(lab_fac_dep_japanese),
+        organizationURL:      Array(organization_url),
+        country:              Array(country),
+        postalCode:           Array(postal_code),
+        prefecture:           Array(prefecture),
+        city:                 Array(city),
+        street:               Array(street),
+        phone:                Array(phone),
+        fax:                  Array(fax),
+        lang:                 Array(lang),
+        jobTitle:             Array(job_title),
+        jobTitleJapanese:     Array(job_title_japanese),
+        orcid:                Array(orcid),
+        eradID:               Array(erad_id),
+        sshKeys:              ssh_keys
       }
     }.tap { |payload|
       payload[:id]       = self.id    if id

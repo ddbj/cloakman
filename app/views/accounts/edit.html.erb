@@ -19,8 +19,8 @@
   <hr>
 
   <div class="row row-cols-2">
-    <%= f.text_field :institution, label: "Organization" %>
-    <%= f.text_field :institution_japanese, label: "Organization in Japanese" %>
+    <%= f.text_field :organization, label: "Organization" %>
+    <%= f.text_field :organization_japanese, label: "Organization in Japanese" %>
   </div>
 
   <div class="row row-cols-2">
@@ -28,7 +28,7 @@
     <%= f.text_field :lab_fac_dep_japanese, label: "Laboratory, Faculty, Department in Japanese" %>
   </div>
 
-  <%= f.url_field :url, label: "Organization URL" %>
+  <%= f.url_field :organization_url, label: "Organization URL" %>
 
   <%
     opts = safe_join([
