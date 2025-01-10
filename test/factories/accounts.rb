@@ -4,7 +4,7 @@ FactoryBot.define do
       sequence :id
     end
 
-    account_id            { "alice" }
+    username              { "alice" }
     password              { "P@ssw0rd" }
     password_confirmation { "P@ssw0rd" }
     first_name            { "Alice" }

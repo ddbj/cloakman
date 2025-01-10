@@ -17,7 +17,7 @@ class UpdatePasswordForm
     return false unless valid?
 
     begin
-      Keycloak.client.password.get_token(account.account_id, current_password)
+      Keycloak.client.password.get_token(account.username, current_password)
     rescue OAuth2::Error
       errors.add :current_password, "is invalid"
 
