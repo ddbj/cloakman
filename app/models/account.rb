@@ -23,8 +23,6 @@ class Account
   attribute :city,                  :string
   attribute :street,                :string
   attribute :phone,                 :string
-  attribute :fax,                   :string
-  attribute :lang,                  :string
   attribute :job_title,             :string
   attribute :job_title_japanese,    :string
   attribute :orcid,                 :string
@@ -61,8 +59,6 @@ class Account
       city:                  attrs[:city]&.first,
       street:                attrs[:street]&.first,
       phone:                 attrs[:phone]&.first,
-      fax:                   attrs[:fax]&.first,
-      lang:                  attrs[:lang]&.first,
       job_title:             attrs[:jobTitle]&.first,
       job_title_japanese:    attrs[:jobTitleJapanese]&.first,
       orcid:                 attrs[:orcid]&.first,
@@ -128,8 +124,6 @@ class Account
         city:                 Array(city),
         street:               Array(street),
         phone:                Array(phone),
-        fax:                  Array(fax),
-        lang:                 Array(lang),
         jobTitle:             Array(job_title),
         jobTitleJapanese:     Array(job_title_japanese),
         orcid:                Array(orcid),

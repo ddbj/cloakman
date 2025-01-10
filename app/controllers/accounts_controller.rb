@@ -68,8 +68,6 @@ class AccountsController < ApplicationController
       :city,
       :street,
       :phone,
-      :fax,
-      :lang,
       :job_title,
       :job_title_japanese,
       :orcid,
