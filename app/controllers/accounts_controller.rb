@@ -61,7 +61,7 @@ class AccountsController < ApplicationController
       :organization_japanese,
       :lab_fac_dep,
       :lab_fac_dep_japanese,
-      :url,
+      :organization_url,
       :country,
       :postal_code,
       :prefecture,

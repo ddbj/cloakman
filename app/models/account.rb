@@ -16,7 +16,7 @@ class Account
   attribute :organization_japanese, :string
   attribute :lab_fac_dep,           :string
   attribute :lab_fac_dep_japanese,  :string
-  attribute :url,                   :string
+  attribute :organization_url,      :string
   attribute :country,               :string
   attribute :postal_code,           :string
   attribute :prefecture,            :string
@@ -54,7 +54,7 @@ class Account
       organization_japanese: attrs[:organizationJapanese]&.first,
       lab_fac_dep:           attrs[:labFacDep]&.first,
       lab_fac_dep_japanese:  attrs[:labFacDepJapanese]&.first,
-      url:                   attrs[:url]&.first,
+      organization_url:      attrs[:organizationURL]&.first,
       country:               attrs[:country]&.first,
       postal_code:           attrs[:postalCode]&.first,
       prefecture:            attrs[:prefecture]&.first,
@@ -121,7 +121,7 @@ class Account
         organizationJapanese: Array(organization_japanese),
         labFacDep:            Array(lab_fac_dep),
         labFacDepJapanese:    Array(lab_fac_dep_japanese),
-        url:                  Array(url),
+        organizationURL:      Array(organization_url),
         country:              Array(country),
         postalCode:           Array(postal_code),
         prefecture:           Array(prefecture),
