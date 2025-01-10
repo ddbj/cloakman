@@ -1,7 +1,7 @@
 <h1 class="mb-3">New Account</h1>
 
 <%= bootstrap_form_for @account, url: account_path do |f| %>
-  <%= f.text_field :account_id, required: true %>
+  <%= f.text_field :username, required: true %>
   <%= f.password_field :password, required: true %>
   <%= f.password_field :password_confirmation, required: true %>
   <%= f.email_field :email, required: true %>

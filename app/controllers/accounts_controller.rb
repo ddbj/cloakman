@@ -39,7 +39,7 @@ class AccountsController < ApplicationController
 
   def account_create_params
     params.expect(account: [
-      :account_id,
+      :username,
       :password,
       :password_confirmation,
       :email,

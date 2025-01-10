@@ -3,7 +3,7 @@ class Account
   include ActiveModel::Attributes
 
   attribute :id,                    :string
-  attribute :account_id,            :string
+  attribute :username,              :string
   attribute :password,              :string
   attribute :password_confirmation, :string
   attribute :email,                 :string
@@ -31,7 +31,7 @@ class Account
   attribute :erad_id,               :string
   attribute :ssh_keys,              default: -> { [] }
 
-  validates :account_id, presence: true
+  validates :username,   presence: true
   validates :password,   presence: true, confirmation: true, on: :create
   validates :first_name, presence: true
   validates :last_name,  presence: true
@@ -43,7 +43,7 @@ class Account
 
     new(
       id:                    res[:id],
-      account_id:            res[:username],
+      username:              res[:username],
       email:                 res[:email],
       first_name:            res[:firstName],
       middle_name:           attrs[:middleName]&.first,
@@ -137,8 +137,8 @@ class Account
         sshKeys:              ssh_keys
       }
     }.tap { |payload|
-      payload[:id]       = self.id    if id
-      payload[:username] = account_id if username
+      payload[:id]       = self.id       if id
+      payload[:username] = self.username if username
     }
   end
 

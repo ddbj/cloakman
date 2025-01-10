@@ -16,7 +16,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     post account_path, params: {
       account: {
-        account_id:            "alice",
+        username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",
@@ -71,7 +71,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "account creation failed" do
     post account_path, params: {
       account: {
-        account_id:            "alice",
+        username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
         email:                 "alice@example.com",
