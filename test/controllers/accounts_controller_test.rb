@@ -21,7 +21,10 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",
         first_name:            "Alice",
-        last_name:             "Liddell"
+        last_name:             "Liddell",
+        organization:          "ACME",
+        country:               "US",
+        city:                  "Springfield"
       }
     }
 
@@ -39,15 +42,15 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           middleName:           [],
           firstNameJapanese:    [],
           lastNameJapanese:     [],
-          organization:         [],
+          organization:         [ "ACME" ],
           organizationJapanese: [],
           labFacDep:            [],
           labFacDepJapanese:    [],
           organizationURL:      [],
-          country:              [],
+          country:              [ "US" ],
           postalCode:           [],
           prefecture:           [],
-          city:                 [],
+          city:                 [ "Springfield" ],
           street:               [],
           phone:                [],
           jobTitle:             [],
@@ -74,7 +77,10 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         password_confirmation: "P@ssw0rd123",
         email:                 "alice@example.com",
         first_name:            "Alice",
-        last_name:             "Liddell"
+        last_name:             "Liddell",
+        organization:          "ACME",
+        country:               "US",
+        city:                  "Springfield"
       }
     }
 
@@ -90,9 +96,12 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     patch account_path, params: {
       account: {
-        email:      "bob@example.com",
-        first_name: "Bob",
-        last_name:  "Martin"
+        email:        "bob@example.com",
+        first_name:   "Bob",
+        last_name:    "Martin",
+        organization: "ACME",
+        country:      "US",
+        city:         "Springfield"
       }
     }
 
@@ -108,15 +117,15 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           middleName:           [],
           firstNameJapanese:    [],
           lastNameJapanese:     [],
-          organization:         [],
+          organization:         [ "ACME" ],
           organizationJapanese: [],
           labFacDep:            [],
           labFacDepJapanese:    [],
           organizationURL:      [],
-          country:              [],
+          country:              [ "US" ],
           postalCode:           [],
           prefecture:           [],
-          city:                 [],
+          city:                 [ "Springfield" ],
           street:               [],
           phone:                [],
           jobTitle:             [],
@@ -134,9 +143,12 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     patch account_path, params: {
       account: {
-        email:      "",
-        first_name: "Bob",
-        last_name:  "Martin"
+        email:        "",
+        first_name:   "Bob",
+        last_name:    "Martin",
+        organization: "ACME",
+        country:      "US",
+        city:         "Springfield"
       }
     }
 

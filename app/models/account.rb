@@ -12,6 +12,10 @@ class Account
   attribute :last_name,             :string
   attribute :first_name_japanese,   :string
   attribute :last_name_japanese,    :string
+  attribute :job_title,             :string
+  attribute :job_title_japanese,    :string
+  attribute :orcid,                 :string
+  attribute :erad_id,               :string
   attribute :organization,          :string
   attribute :organization_japanese, :string
   attribute :lab_fac_dep,           :string
@@ -23,17 +27,16 @@ class Account
   attribute :city,                  :string
   attribute :street,                :string
   attribute :phone,                 :string
-  attribute :job_title,             :string
-  attribute :job_title_japanese,    :string
-  attribute :orcid,                 :string
-  attribute :erad_id,               :string
   attribute :ssh_keys,              default: -> { [] }
 
-  validates :username,   presence: true
-  validates :password,   presence: true, confirmation: true, on: :create
-  validates :first_name, presence: true
-  validates :last_name,  presence: true
-  validates :email,      presence: true
+  validates :username,     presence: true
+  validates :password,     presence: true, confirmation: true, on: :create
+  validates :email,        presence: true
+  validates :first_name,   presence: true
+  validates :last_name,    presence: true
+  validates :organization, presence: true
+  validates :country,      presence: true
+  validates :city,         presence: true
 
   def self.find(uid)
     res   = Keycloak.admin.get("users/#{uid}").parsed
@@ -67,7 +70,8 @@ class Account
     )
   end
 
-  def persisted? = !!id
+  def new_record? = !id
+  def persisted?  = !!id
 
   def save
     update
@@ -82,7 +86,7 @@ class Account
   def update(attrs = {})
     assign_attributes attrs
 
-    return create unless persisted?
+    return create if new_record?
 
     return false unless valid?(:update)
 

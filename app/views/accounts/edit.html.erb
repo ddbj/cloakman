@@ -1,70 +1,7 @@
 <h1 class="mb-3">Profile</h1>
 
-<%= bootstrap_form_for @account, url: account_path do |f| %>
-  <%= f.text_field :username, required: true, disabled: true %>
-  <%= f.email_field :email, required: true %>
+<%= bootstrap_form_for @account, url: account_path do |form| %>
+  <%= render "form", form: %>
 
-  <div class="row row-cols-2">
-    <%= f.text_field :first_name, required: true %>
-    <%= f.text_field :first_name_japanese, label: "First name in Japanese" %>
-  </div>
-
-  <%= f.text_field :middle_name %>
-
-  <div class="row row-cols-2">
-    <%= f.text_field :last_name, required: true, wrapper: { class: "mb-0" } %>
-    <%= f.text_field :last_name_japanese, label: "Last name in Japanese", wrapper: { class: "mb-0" } %>
-  </div>
-
-  <hr>
-
-  <div class="row row-cols-2">
-    <%= f.text_field :organization, label: "Organization" %>
-    <%= f.text_field :organization_japanese, label: "Organization in Japanese" %>
-  </div>
-
-  <div class="row row-cols-2">
-    <%= f.text_field :lab_fac_dep, label: "Laboratory, Faculty, Department" %>
-    <%= f.text_field :lab_fac_dep_japanese, label: "Laboratory, Faculty, Department in Japanese" %>
-  </div>
-
-  <%= f.url_field :organization_url, label: "Organization URL" %>
-
-  <%
-    opts = safe_join([
-      options_from_collection_for_select(
-        [ ISO3166::Country[:JP] ],
-        :alpha2,
-        :common_name,
-        @account.country
-      ),
-      tag(:hr),
-      options_from_collection_for_select(
-        ISO3166::Country.all.sort_by(&:common_name),
-        :alpha2,
-        :common_name,
-        @account.country
-      )
-    ])
-  %>
-
-  <%= f.select :country, opts, include_blank: true %>
-
-  <%= f.text_field :postal_code, label: "Postal code/Zip code" %>
-  <%= f.text_field :prefecture, label: "State/Prefecture" %>
-  <%= f.text_field :city %>
-  <%= f.text_field :street %>
-  <%= f.telephone_field :phone %>
-
-  <hr>
-
-  <div class="row row-cols-2">
-    <%= f.text_field :job_title %>
-    <%= f.text_field :job_title_japanese, label: "Job title in Japanese" %>
-  </div>
-
-  <%= f.text_field :orcid, label: "ORCID" %>
-  <%= f.text_field :erad_id, label: "e-Rad Researcher number" %>
-
-  <%= f.primary "Update profile" %>
+  <%= form.primary "Update profile" %>
 <% end %>
