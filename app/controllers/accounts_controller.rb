@@ -37,41 +37,40 @@ class AccountsController < ApplicationController
 
   private
 
+  COMMON_ATTRS = %i[
+    email
+    first_name
+    middle_name
+    last_name
+    first_name_japanese
+    last_name_japanese
+    organization
+    organization_japanese
+    lab_fac_dep
+    lab_fac_dep_japanese
+    organization_url
+    country
+    postal_code
+    prefecture
+    city
+    street
+    phone
+    job_title
+    job_title_japanese
+    orcid
+    erad_id
+  ]
+
   def account_create_params
     params.expect(account: [
       :username,
       :password,
       :password_confirmation,
-      :email,
-      :first_name,
-      :middle_name,
-      :last_name
+      *COMMON_ATTRS
     ])
   end
 
   def account_update_params
-    params.expect(account: [
-      :email,
-      :first_name,
-      :middle_name,
-      :last_name,
-      :first_name_japanese,
-      :last_name_japanese,
-      :organization,
-      :organization_japanese,
-      :lab_fac_dep,
-      :lab_fac_dep_japanese,
-      :organization_url,
-      :country,
-      :postal_code,
-      :prefecture,
-      :city,
-      :street,
-      :phone,
-      :job_title,
-      :job_title_japanese,
-      :orcid,
-      :erad_id
-    ])
+    params.expect(account: COMMON_ATTRS)
   end
 end

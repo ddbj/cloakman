@@ -1,0 +1,72 @@
+<%# locals: (form:) %>
+
+<% account = form.object %>
+
+<%= form.text_field :username, required: true, disabled: account.persisted? %>
+
+<% if account.new_record? %>
+  <%= form.password_field :password, required: true %>
+  <%= form.password_field :password_confirmation, required: true %>
+<% end %>
+
+<%= form.email_field :email, required: true %>
+
+<div class="row row-cols-2">
+  <%= form.text_field :first_name, required: true %>
+  <%= form.text_field :first_name_japanese, label: "First name in Japanese" %>
+</div>
+
+<%= form.text_field :middle_name %>
+
+<div class="row row-cols-2">
+  <%= form.text_field :last_name, required: true %>
+  <%= form.text_field :last_name_japanese, label: "Last name in Japanese" %>
+</div>
+
+<div class="row row-cols-2">
+  <%= form.text_field :job_title %>
+  <%= form.text_field :job_title_japanese, label: "Job title in Japanese" %>
+</div>
+
+<%= form.text_field :orcid, label: "ORCID" %>
+<%= form.text_field :erad_id, label: "e-Rad Researcher number" %>
+
+<hr>
+
+<div class="row row-cols-2">
+  <%= form.text_field :organization, label: "Organization", required: true %>
+  <%= form.text_field :organization_japanese, label: "Organization in Japanese" %>
+</div>
+
+<div class="row row-cols-2">
+  <%= form.text_field :lab_fac_dep, label: "Laboratory, Faculty, Department" %>
+  <%= form.text_field :lab_fac_dep_japanese, label: "Laboratory, Faculty, Department in Japanese" %>
+</div>
+
+<%= form.url_field :organization_url, label: "Organization URL" %>
+
+<%
+  opts = safe_join([
+    options_from_collection_for_select(
+      [ ISO3166::Country[:JP] ],
+      :alpha2,
+      :common_name,
+      account.country
+    ),
+    tag(:hr),
+    options_from_collection_for_select(
+      ISO3166::Country.all.sort_by(&:common_name),
+      :alpha2,
+      :common_name,
+      account.country
+    )
+  ])
+%>
+
+<%= form.select :country, opts, include_blank: true, required: true %>
+
+<%= form.text_field :postal_code, label: "Postal code/Zip code" %>
+<%= form.text_field :prefecture, label: "State/Prefecture" %>
+<%= form.text_field :city, required: true %>
+<%= form.text_field :street %>
+<%= form.telephone_field :phone %>
