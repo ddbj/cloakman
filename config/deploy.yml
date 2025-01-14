@@ -32,9 +32,6 @@ asset_path: /rails/public/assets
 builder:
   arch: amd64
 
-ssh:
-  user: ursm
-
 deploy_timeout: 120
 
 accessories:

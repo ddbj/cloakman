@@ -11,6 +11,9 @@ env:
     APP_URL: https://cloakman.ursm.jp
     KEYCLOAK_URL: https://keycloak.ursm.jp
 
+ssh:
+  user: ursm
+
 accessories:
   keycloak:
     host: bastion

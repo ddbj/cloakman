@@ -1,0 +1,26 @@
+servers:
+  web:
+    - at026
+
+proxy:
+  ssl: false
+  host: accounts-dev.ddbj.nig.ac.jp
+  app_port: 5000
+
+env:
+  clear:
+    APP_URL: https://accounts-dev.ddbj.nig.ac.jp
+    KEYCLOAK_URL: https://idp-dev.ddbj.nig.ac.jp
+
+ssh:
+  user: w3const
+
+accessories:
+  keycloak:
+    host: at026
+
+    proxy:
+      host: accounts-dev.ddbj.nig.ac.jp
+
+  openldap:
+    host: at026
