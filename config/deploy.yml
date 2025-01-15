@@ -40,7 +40,7 @@ deploy_timeout: 120
 accessories:
   keycloak:
     image: keycloak/keycloak:26.0
-    cmd: start-dev
+    cmd: start --http-enabled true --hostname-strict false --proxy-headers xforwarded
 
     proxy:
       app_port: 8080
@@ -52,10 +52,6 @@ accessories:
       secret:
         - KEYCLOAK_ADMIN
         - KEYCLOAK_ADMIN_PASSWORD
-
-      clear:
-        KC_HTTP_ENABLED: true
-        KC_PROXY: edge
 
     volumes:
       - cloakman_keycloak:/opt/keycloak/data
