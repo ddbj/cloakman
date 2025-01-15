@@ -39,8 +39,8 @@ deploy_timeout: 120
 
 accessories:
   keycloak:
-    image: keycloak/keycloak:25.0
-    cmd: start-dev
+    image: keycloak/keycloak:26.0
+    cmd: start --http-enabled true --hostname-strict false --proxy-headers xforwarded
 
     proxy:
       app_port: 8080
@@ -53,12 +53,11 @@ accessories:
         - KEYCLOAK_ADMIN
         - KEYCLOAK_ADMIN_PASSWORD
 
-      clear:
-        KC_HTTP_ENABLED: true
-        KC_PROXY: edge
-
     volumes:
       - cloakman_keycloak:/opt/keycloak/data
+
+    files:
+      - keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
 
   openldap:
     image: bitnami/openldap:2.6
@@ -72,10 +71,10 @@ accessories:
         LDAP_ROOT: dc=ddbj,dc=nig,dc=ac,dc=jp
         LDAP_SKIP_DEFAULT_TREE: 'yes'
 
+    volumes:
+      - cloakman_openldap:/bitnami/openldap
+
     files:
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
       - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
-
-    volumes:
-      - cloakman_openldap:/bitnami/openldap
