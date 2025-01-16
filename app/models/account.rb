@@ -145,13 +145,23 @@ class Account
   def create
     return false unless valid?(:create)
 
+    payload    = to_payload(id: false, username: true)
+    attrs      = payload[:attributes]
+    uid_number = UidNumber.create!.id
+
     res = Keycloak.admin.post("users", **{
       headers: {
         "Content-Type": "application/json"
       },
 
-      body: to_payload(id: false, username: true).merge(
+      body: payload.merge(
         enabled: true,
+
+        attributes: attrs.merge(
+          uidNumber:     Array(uid_number),
+          gidNumber:     [ 61000 ],
+          homeDirectory: [ "/submission/#{username}" ]
+        ),
 
         credentials: [
           type:      "password",

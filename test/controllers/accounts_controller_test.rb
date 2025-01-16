@@ -57,7 +57,10 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
           jobTitleJapanese:     [],
           orcid:                [],
           eradID:               [],
-          sshKeys:              []
+          sshKeys:              [],
+          uidNumber:            [ 1 ],
+          gidNumber:            [ 61000 ],
+          homeDirectory:        [ "/submission/alice" ]
         },
 
         credentials: [

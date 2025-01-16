@@ -1,0 +1,2 @@
+class UidNumber < ApplicationRecord
+end
