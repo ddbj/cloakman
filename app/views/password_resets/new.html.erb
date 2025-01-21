@@ -1,0 +1,13 @@
+<h1>Forgot your password?</h1>
+
+<%= bootstrap_form_with url: password_resets_path do |form| %>
+  <%= form.email_field :email, **{
+    required:     true,
+    autofocus:    true,
+    autocomplete: "username",
+    placeholder:  "Enter your email address",
+    value:        params[:email]
+  } %>
+
+  <%= form.primary "Email reset instructions" %>
+<% end %>

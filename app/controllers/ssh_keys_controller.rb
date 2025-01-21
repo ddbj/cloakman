@@ -5,36 +5,28 @@ class SSHKeysController < ApplicationController
   end
 
   def new
-    @form = CreateSSHKeyForm.new(account: current_account)
+    @key = Current.user.ssh_keys.build
   end
 
   def create
-    @form = CreateSSHKeyForm.new(account: current_account, **create_ssh_key_form_params)
+    @key = Current.user.ssh_keys.build(key_params)
 
-    if @form.save
+    if @key.save
       redirect_to ssh_keys_path, notice: "SSH key added successfully."
     else
-      flash[:alert] = @form.errors.full_messages_for(:base).join(" ")
-
       render :new, status: :unprocessable_content
     end
   end
 
   def destroy
-    current_account.ssh_keys.delete_at params.expect(:id).to_i
+    Current.user.ssh_keys.find(params.expect(:id)).destroy!
 
-    if current_account.save
-      redirect_to ssh_keys_path, notice: "SSH key deleted successfully."
-    else
-      flash[:alert] = current_account.errors.full_messages_for(:base).join(" ")
-
-      render :index, status: :unprocessable_content
-    end
+    redirect_to ssh_keys_path, notice: "SSH key deleted successfully."
   end
 
   private
 
-  def create_ssh_key_form_params
-    params.expect(create_ssh_key_form: [ :ssh_key ])
+  def key_params
+    params.expect(ssh_key: [ :key, :title ])
   end
 end

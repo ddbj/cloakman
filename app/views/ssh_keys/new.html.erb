@@ -1,7 +1,8 @@
 <h1 class="mb-3">Add new SSH key</h1>
 
-<%= bootstrap_form_with model: @form, url: ssh_keys_path do |f| %>
-  <%= f.text_area :ssh_key, label: "Key", required: true, data: { controller: "autosize" } %>
+<%= bootstrap_form_with model: @key, url: ssh_keys_path do |f| %>
+  <%= f.text_field :title, label: "Title" %>
+  <%= f.text_area :key, label: "Key", required: true, data: { controller: "autosize" } %>
 
   <%= f.primary "Add SSH key" %>
 <% end %>

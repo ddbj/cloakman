@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "~> 8.0.0"
 
+gem "bcrypt"
 gem "bootsnap", require: false
 gem "bootstrap"
 gem "bootstrap_form"
@@ -9,9 +10,6 @@ gem "countries"
 gem "dartsass-rails"
 gem "importmap-rails"
 gem "kamal", require: false
-gem "oauth2"
-gem "omniauth-rails_csrf_protection"
-gem "omniauth_openid_connect"
 gem "propshaft"
 gem "puma"
 gem "solid_cache"
@@ -25,7 +23,6 @@ gem "turbo-rails"
 group :development, :test do
   gem "brakeman", require: false
   gem "debug", require: "debug/prelude"
-  gem "factory_bot_rails"
   gem "rubocop-rails-omakase", require: false
 end
 

@@ -28,12 +28,12 @@
       <div class="container">
         <%= link_to "Cloakman", root_path, class: "navbar-brand" %>
 
-        <% if signed_in? %>
+        <% if authenticated? %>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <%= current_account.username %>
+                  <%= Current.user.username %>
                 </a>
 
                 <ul class="dropdown-menu">

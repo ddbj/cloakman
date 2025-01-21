@@ -2,11 +2,11 @@ class PasswordsController < ApplicationController
   layout "main"
 
   def edit
-    @form = UpdatePasswordForm.new(account: current_account)
+    @form = UpdatePasswordForm.new(account: Current.user)
   end
 
   def update
-    @form = UpdatePasswordForm.new(account: current_account, **update_password_form_params)
+    @form = UpdatePasswordForm.new(account: Current.user, **update_password_form_params)
 
     if @form.save
       redirect_to edit_password_path, notice: "Password updated successfully."

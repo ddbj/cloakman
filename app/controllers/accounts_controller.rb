@@ -1,35 +1,36 @@
 class AccountsController < ApplicationController
   layout -> { action_name.in?(%w[new create]) ? "application" : "main" }
 
-  skip_before_action :authenticate!, only: %i[new create]
+  allow_unauthenticated_access only: %i[new create]
 
   def new
-    @account = Account.new
+    @user = User.new
   end
 
   def create
-    @account = Account.new(account_create_params)
+    @user = User.new(account_create_params)
+    @user.build_uid_number
 
-    if @account.save
-      redirect_to root_path, notice: "Your account has been successfully created. Please sign in to continue."
+    if @user.save
+      redirect_to new_session_path, notice: "Your user has been successfully created. Please sign in to continue."
     else
-      flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 
       render :new, status: :unprocessable_content
     end
   end
 
   def edit
-    @account = current_account
+    @user = Current.user
   end
 
   def update
-    @account = current_account
+    @user = Current.user
 
-    if @account.update(account_update_params)
+    if @user.update(account_update_params)
       redirect_to edit_account_path, notice: "Profile updated successfully."
     else
-      flash.now[:alert] = @account.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 
       render :edit, status: :unprocessable_content
     end

@@ -1,19 +1,16 @@
 require "test_helper"
 
 class AccountsControllerTest < ActionDispatch::IntegrationTest
-  include IntegrationTestHelper
+  def sign_in(user)
+    Current.session = user.sessions.create!
 
-  setup do
-    stub_token_request
+    ActionDispatch::TestRequest.create.cookie_jar.tap do |jar|
+      jar.signed[:session_id] = Current.session.id
+      cookies[:session_id]    = jar[:session_id]
+    end
   end
 
   test "account created successfully" do
-    stub_request(:post, "http://keycloak.example.com/admin/realms/master/users").to_return(
-      headers: {
-        Location: "http://keycloak.example.com/amin/relms/master/users/42"
-      }
-    )
-
     post account_path, params: {
       account: {
         username:              "alice",
@@ -28,45 +25,19 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to root_path
+    assert_redirected_to new_session_path
 
-    assert_requested :post, "http://keycloak.example.com/admin/realms/master/users", **{
-      body: {
-        username:  "alice",
-        firstName: "Alice",
-        lastName:  "Liddell",
-        email:     "alice@example.com",
-        enabled:   true,
+    user = User.last
 
-        attributes: {
-          middleName:           [],
-          firstNameJapanese:    [],
-          lastNameJapanese:     [],
-          organization:         [ "ACME" ],
-          organizationJapanese: [],
-          labFacDep:            [],
-          labFacDepJapanese:    [],
-          organizationURL:      [],
-          country:              [ "US" ],
-          postalCode:           [],
-          prefecture:           [],
-          city:                 [ "Springfield" ],
-          street:               [],
-          phone:                [],
-          jobTitle:             [],
-          jobTitleJapanese:     [],
-          orcid:                [],
-          eradID:               [],
-          sshKeys:              []
-        },
+    assert_equal "alice",             user.username
+    assert_equal "Alice",             user.first_name
+    assert_equal "Liddell",           user.last_name
+    assert_equal "alice@example.com", user.email
+    assert_equal "ACME",              user.organization
+    assert_equal "US",                user.country
+    assert_equal "Springfield",       user.city
 
-        credentials: [
-          type:      "password",
-          temporary: false,
-          value:     "P@ssw0rd"
-        ]
-      }
-    }
+    assert user.authenticate("P@ssw0rd")
   end
 
   test "account creation failed" do
@@ -90,9 +61,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "account updated successfully" do
-    sign_in FactoryBot.create(:account, id: 42)
-
-    stub_request :put, "http://keycloak.example.com/admin/realms/master/users/42"
+    sign_in users(:ursm)
 
     patch account_path, params: {
       account: {
@@ -107,39 +76,18 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to edit_account_path
 
-    assert_requested :put, "http://keycloak.example.com/admin/realms/master/users/42", **{
-      body: {
-        firstName: "Bob",
-        lastName:  "Martin",
-        email:     "bob@example.com",
+    user = User.last
 
-        attributes: {
-          middleName:           [],
-          firstNameJapanese:    [],
-          lastNameJapanese:     [],
-          organization:         [ "ACME" ],
-          organizationJapanese: [],
-          labFacDep:            [],
-          labFacDepJapanese:    [],
-          organizationURL:      [],
-          country:              [ "US" ],
-          postalCode:           [],
-          prefecture:           [],
-          city:                 [ "Springfield" ],
-          street:               [],
-          phone:                [],
-          jobTitle:             [],
-          jobTitleJapanese:     [],
-          orcid:                [],
-          eradID:               [],
-          sshKeys:              []
-        }
-      }
-    }
+    assert_equal "Bob",             user.first_name
+    assert_equal "Martin",          user.last_name
+    assert_equal "bob@example.com", user.email
+    assert_equal "ACME",            user.organization
+    assert_equal "US",              user.country
+    assert_equal "Springfield",     user.city
   end
 
   test "account update failed" do
-    sign_in FactoryBot.create(:account)
+    sign_in users(:ursm)
 
     patch account_path, params: {
       account: {
