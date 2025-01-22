@@ -1,7 +1,7 @@
 <% password_digest = BCrypt::Password.create("password") %>
 
 ursm:
-  username:        ursm
+  account:         ursm
   password_digest: <%= password_digest %>
   email:           ursm@ursm.jp
   first_name:      Keita
@@ -9,3 +9,4 @@ ursm:
   organization:    Kotonoha System LLC
   country:         JP
   city:            Nagoya
+  uid_number:      1000

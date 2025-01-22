@@ -12,11 +12,13 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if user = User.authenticate_by(params.permit(:username, :password))
+    params.to_unsafe_h => { username:, password: }
+
+    if user = User.joins(:account).authenticate_by(accounts: { username: }, password:)
       start_new_session_for user
       redirect_to after_authentication_url
     else
-      redirect_to new_session_path, alert: "Try another email address or password."
+      redirect_to new_session_path, alert: "Try another username or password."
     end
   end
 

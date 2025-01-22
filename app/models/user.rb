@@ -1,11 +1,11 @@
 class User < ApplicationRecord
   has_secure_password
 
-  has_many :sessions,   dependent: :destroy
-  has_many :ssh_keys,   dependent: :destroy
-  has_one  :uid_number, dependent: :destroy
+  belongs_to :account
 
-  validates :username,     presence: true
+  has_many :sessions, dependent: :destroy
+  has_many :ssh_keys, dependent: :destroy
+
   validates :password,     presence: true, confirmation: true, on: :create
   validates :email,        presence: true
   validates :first_name,   presence: true

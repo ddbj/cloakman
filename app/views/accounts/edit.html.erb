@@ -1,6 +1,6 @@
 <h1 class="mb-3">Profile</h1>
 
-<%= bootstrap_form_with model: @user, scope: :account, url: account_path do |form| %>
+<%= bootstrap_form_with model: @account, url: account_path do |form| %>
   <%= render "form", form: %>
 
   <%= form.primary "Update profile" %>

@@ -13,15 +13,18 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "account created successfully" do
     post account_path, params: {
       account: {
-        username:              "alice",
-        password:              "P@ssw0rd",
-        password_confirmation: "P@ssw0rd",
-        email:                 "alice@example.com",
-        first_name:            "Alice",
-        last_name:             "Liddell",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        username: "alice",
+
+        user_attributes: {
+          password:              "P@ssw0rd",
+          password_confirmation: "P@ssw0rd",
+          email:                 "alice@example.com",
+          first_name:            "Alice",
+          last_name:             "Liddell",
+          organization:          "ACME",
+          country:               "US",
+          city:                  "Springfield"
+        }
       }
     }
 
@@ -29,7 +32,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     user = User.last
 
-    assert_equal "alice",             user.username
+    assert_equal "alice",             user.account.username
     assert_equal "Alice",             user.first_name
     assert_equal "Liddell",           user.last_name
     assert_equal "alice@example.com", user.email
@@ -43,15 +46,18 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "account creation failed" do
     post account_path, params: {
       account: {
-        username:              "alice",
-        password:              "P@ssw0rd",
-        password_confirmation: "P@ssw0rd123",
-        email:                 "alice@example.com",
-        first_name:            "Alice",
-        last_name:             "Liddell",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        username: "alice",
+
+        user_attributes: {
+          password:              "P@ssw0rd",
+          password_confirmation: "P@ssw0rd123",
+          email:                 "alice@example.com",
+          first_name:            "Alice",
+          last_name:             "Liddell",
+          organization:          "ACME",
+          country:               "US",
+          city:                  "Springfield"
+        }
       }
     }
 
@@ -65,12 +71,15 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     patch account_path, params: {
       account: {
-        email:        "bob@example.com",
-        first_name:   "Bob",
-        last_name:    "Martin",
-        organization: "ACME",
-        country:      "US",
-        city:         "Springfield"
+        user_attributes: {
+          id:           users(:ursm).id,
+          email:        "bob@example.com",
+          first_name:   "Bob",
+          last_name:    "Martin",
+          organization: "ACME",
+          country:      "US",
+          city:         "Springfield"
+        }
       }
     }
 
@@ -91,12 +100,14 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     patch account_path, params: {
       account: {
-        email:        "",
-        first_name:   "Bob",
-        last_name:    "Martin",
-        organization: "ACME",
-        country:      "US",
-        city:         "Springfield"
+        user_attributes: {
+          email:        "",
+          first_name:   "Bob",
+          last_name:    "Martin",
+          organization: "ACME",
+          country:      "US",
+          city:         "Springfield"
+        }
       }
     }
 

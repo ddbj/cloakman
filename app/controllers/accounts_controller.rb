@@ -4,34 +4,36 @@ class AccountsController < ApplicationController
   allow_unauthenticated_access only: %i[new create]
 
   def new
-    @user = User.new
+    @account = Account.new
+    @account.build_user
   end
 
   def create
-    @user = User.new(account_create_params)
-    @user.build_uid_number
+    @account = Account.new(account_create_params)
 
-    if @user.save
+    saved = ActiveRecord::Base.transaction {
+      @account.user.uid_number = User.maximum(:uid_number).to_i + 1
+
+      @account.save
+    }
+
+    if saved
       redirect_to new_session_path, notice: "Your user has been successfully created. Please sign in to continue."
     else
-      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
-
       render :new, status: :unprocessable_content
     end
   end
 
   def edit
-    @user = Current.user
+    @account = Current.user.account
   end
 
   def update
-    @user = Current.user
+    @account = Current.user.account
 
-    if @user.update(account_update_params)
+    if @account.update(account_update_params)
       redirect_to edit_account_path, notice: "Profile updated successfully."
     else
-      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
-
       render :edit, status: :unprocessable_content
     end
   end
@@ -65,13 +67,21 @@ class AccountsController < ApplicationController
   def account_create_params
     params.expect(account: [
       :username,
-      :password,
-      :password_confirmation,
-      *COMMON_ATTRS
+
+      user_attributes: [
+        :password,
+        :password_confirmation,
+        *COMMON_ATTRS
+      ]
     ])
   end
 
   def account_update_params
-    params.expect(account: COMMON_ATTRS)
+    params.expect(account: [
+      user_attributes: [
+        :id,
+        *COMMON_ATTRS
+      ]
+    ])
   end
 end
