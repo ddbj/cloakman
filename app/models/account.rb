@@ -41,7 +41,7 @@ class Account
   validates :city,         presence: true
 
   def self.find(username)
-    entries = LDAP.search(base: "cn=#{username},dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp")
+    entries = LDAP.connection.search(base: "cn=#{username},dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp")
 
     raise ActiveRecord::RecordNotFound unless entries
 
@@ -117,16 +117,15 @@ class Account
       ssh_keys:              :sshPublicKey
     }.each do |model_key, ldap_key|
       if val = public_send(model_key).presence
-        LDAP.replace_attribute(dn, ldap_key, val).assert
+        LDAP.connection.replace_attribute(dn, ldap_key, val).assert
       else
         begin
-          LDAP.delete_attribute(dn, ldap_key).assert
+          LDAP.connection.delete_attribute(dn, ldap_key).assert
         rescue LDAPError::NoSuchAttribute
           # do nothing
         end
       end
     rescue LDAPError => e
-      p e.result
       errors.add model_key, e.message
     end
 
@@ -134,7 +133,7 @@ class Account
   end
 
   def update_password(new_password:, old_password: nil)
-    LDAP.password_modify(dn:, new_password:, old_password:).assert
+    LDAP.connection.password_modify(dn:, new_password:, old_password:).assert
   end
 
   private
@@ -151,7 +150,7 @@ class Account
     return false unless valid?(:create)
 
     begin
-      LDAP.add(
+      LDAP.connection.add(
         dn:,
 
         attributes: {
@@ -201,7 +200,7 @@ class Account
     begin
       update_password new_password: password
     rescue LDAPError => e
-      LDAP.delete dn
+      LDAP.connection.delete dn
 
       errors.add :password, e.message
 
