@@ -190,8 +190,9 @@ class User
           sshPublicKey:                     ssh_keys,
           uid:                              username,
           uidNumber:                        uid_number.to_s,
-          gidNumber:                        "1000",
-          homeDirectory:                    "/home/#{username}",
+          gidNumber:                        "61000",
+          homeDirectory:                    "/submission/#{username}",
+          loginShell:                       "/bin/bash",
           inetUserStatus:                   "active"
         }.compact_blank
       ).assert
