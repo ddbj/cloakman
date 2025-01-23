@@ -1,8 +1,10 @@
+using LDAPAssertion
+
 class Account
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  attribute :id,                    :string
+  attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
   attribute :password,              :string
   attribute :password_confirmation, :string
@@ -38,49 +40,49 @@ class Account
   validates :country,      presence: true
   validates :city,         presence: true
 
-  def self.find(uid)
-    res   = Keycloak.admin.get("users/#{uid}").parsed
-    attrs = res[:attributes] || {}
+  def self.find(username)
+    entries = LDAP.search(base: "cn=#{username},dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp")
+
+    raise ActiveRecord::RecordNotFound unless entries
+
+    entry = entries.first
 
     new(
-      id:                    res[:id],
-      username:              res[:username],
-      email:                 res[:email],
-      first_name:            res[:firstName],
-      middle_name:           attrs[:middleName]&.first,
-      last_name:             res[:lastName],
-      first_name_japanese:   attrs[:firstNameJapanese]&.first,
-      last_name_japanese:    attrs[:lastNameJapanese]&.first,
-      organization:          attrs[:organization]&.first,
-      organization_japanese: attrs[:organizationJapanese]&.first,
-      lab_fac_dep:           attrs[:labFacDep]&.first,
-      lab_fac_dep_japanese:  attrs[:labFacDepJapanese]&.first,
-      organization_url:      attrs[:organizationURL]&.first,
-      country:               attrs[:country]&.first,
-      postal_code:           attrs[:postalCode]&.first,
-      prefecture:            attrs[:prefecture]&.first,
-      city:                  attrs[:city]&.first,
-      street:                attrs[:street]&.first,
-      phone:                 attrs[:phone]&.first,
-      job_title:             attrs[:jobTitle]&.first,
-      job_title_japanese:    attrs[:jobTitleJapanese]&.first,
-      orcid:                 attrs[:orcid]&.first,
-      erad_id:               attrs[:eradID]&.first,
-      ssh_keys:              attrs[:sshKeys]
+      persisted?:            true,
+      username:              entry.first(:cn),
+      email:                 entry.first(:mail),
+      first_name:            entry.first(:givenName),
+      middle_name:           entry.first(:middleName),
+      last_name:             entry.first(:sn),
+      first_name_japanese:   entry.first("givenName;lang-ja"),
+      last_name_japanese:    entry.first("sn;lang-ja"),
+      organization:          entry.first(:o),
+      organization_japanese: entry.first("o;lang-ja"),
+      lab_fac_dep:           entry.first(:ou),
+      lab_fac_dep_japanese:  entry.first("ou;lang-ja"),
+      organization_url:      entry.first(:organizationURL),
+      country:               entry.first(:c),
+      postal_code:           entry.first(:postalCode),
+      prefecture:            entry.first(:st),
+      city:                  entry.first(:l),
+      street:                entry.first(:street),
+      phone:                 entry.first(:telephoneNumber),
+      job_title:             entry.first(:title),
+      job_title_japanese:    entry.first("title;lang-ja"),
+      orcid:                 entry.first(:orcid),
+      erad_id:               entry.first(:eradID),
+      ssh_keys:              entry[:sshPublicKey]
     )
   end
 
-  def new_record? = !id
-  def persisted?  = !!id
+  def new_record? = !persisted?
 
   def save
     update
   end
 
   def save!
-    unless update
-      raise ActiveRecord::RecordInvalid, self
-    end
+    raise ActiveRecord::RecordInvalid, self unless update
   end
 
   def update(attrs = {})
@@ -90,85 +92,115 @@ class Account
 
     return false unless valid?(:update)
 
-    Keycloak.admin.put("users/#{id}", **{
-      headers: {
-        "Content-Type": "application/json"
-      },
+    {
+      email:                 :mail,
+      first_name:            :givenName,
+      first_name_japanese:   "givenName;lang-ja",
+      middle_name:           :middleName,
+      last_name:             :surname,
+      last_name_japanese:    "surname;lang-ja",
+      job_title:             :title,
+      job_title_japanese:    "title;lang-ja",
+      orcid:                 :orcid,
+      erad_id:               :eradID,
+      organization:          :organizationName,
+      organization_japanese: "organizationName;lang-ja",
+      lab_fac_dep:           :organizationalUnitName,
+      lab_fac_dep_japanese:  "organizationalUnitName;lang-ja",
+      organization_url:      :organizationURL,
+      country:               :countryName,
+      postal_code:           :postalCode,
+      prefecture:            :stateOrProvinceName,
+      city:                  :localityName,
+      street:                :streetAddress,
+      phone:                 :telephoneNumber,
+      ssh_keys:              :sshPublicKey
+    }.each do |model_key, ldap_key|
+      if val = public_send(model_key).presence
+        LDAP.replace_attribute(dn, ldap_key, val).assert
+      else
+        begin
+          LDAP.delete_attribute(dn, ldap_key).assert
+        rescue LDAPError::NoSuchAttribute
+          # do nothing
+        end
+      end
+    rescue LDAPError => e
+      p e.result
+      errors.add model_key, e.message
+    end
 
-      body: to_payload(id: false, username: false).to_json
-    })
-
-    true
-  rescue OAuth2::Error => e
-    parsed = e.response.parsed
-
-    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
-
-    false
+    errors.empty?
   end
 
-  def to_payload(id:, username:)
-    {
-      firstName:  first_name,
-      lastName:   last_name,
-      email:      email,
-
-      attributes: {
-        middleName:           Array(middle_name),
-        firstNameJapanese:    Array(first_name_japanese),
-        lastNameJapanese:     Array(last_name_japanese),
-        organization:         Array(organization),
-        organizationJapanese: Array(organization_japanese),
-        labFacDep:            Array(lab_fac_dep),
-        labFacDepJapanese:    Array(lab_fac_dep_japanese),
-        organizationURL:      Array(organization_url),
-        country:              Array(country),
-        postalCode:           Array(postal_code),
-        prefecture:           Array(prefecture),
-        city:                 Array(city),
-        street:               Array(street),
-        phone:                Array(phone),
-        jobTitle:             Array(job_title),
-        jobTitleJapanese:     Array(job_title_japanese),
-        orcid:                Array(orcid),
-        eradID:               Array(erad_id),
-        sshKeys:              ssh_keys
-      }
-    }.tap { |payload|
-      payload[:id]       = self.id       if id
-      payload[:username] = self.username if username
-    }
+  def update_password(new_password:, old_password: nil)
+    LDAP.password_modify(dn:, new_password:, old_password:).assert
   end
 
   private
 
+  def base
+    "dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
+  end
+
+  def dn
+    "cn=#{username},#{base}"
+  end
+
   def create
     return false unless valid?(:create)
 
-    res = Keycloak.admin.post("users", **{
-      headers: {
-        "Content-Type": "application/json"
-      },
+    begin
+      LDAP.add(
+        dn:,
 
-      body: to_payload(id: false, username: true).merge(
-        enabled: true,
+        attributes: {
+          objectclass: %w[
+            ddbjUser
+            ldapPublicKey
+          ],
 
-        credentials: [
-          type:      "password",
-          temporary: false,
-          value:     password
-        ]
-      ).to_json
-    })
+          cn:                               username,
+          mail:                             email,
+          givenName:                        first_name,
+          "givenName;lang-ja":              first_name_japanese,
+          middleName:                       middle_name,
+          surname:                          last_name,
+          "surname;lang-ja":                last_name_japanese,
+          title:                            job_title,
+          "title;lang-ja":                  job_title_japanese,
+          orcid:                            orcid,
+          eradID:                           erad_id,
+          organizationName:                 organization,
+          "organizationName;lang-ja":       organization_japanese,
+          organizationalUnitName:           lab_fac_dep,
+          "organizationalUnitName;lang-ja": lab_fac_dep_japanese,
+          organizationURL:                  organization_url,
+          countryName:                      country,
+          postalCode:                       postal_code,
+          stateOrProvinceName:              prefecture,
+          localityName:                     city,
+          streetAddress:                    street,
+          telephoneNumber:                  phone,
+          sshPublicKey:                     ssh_keys
+        }.compact_blank
+      ).assert
+    rescue LDAPError => e
+      errors.add :base, e.message
 
-    self.id = res.response["Location"].split("/").last
+      return false
+    end
+
+    begin
+      update_password new_password: password
+    rescue LDAPError => e
+      LDAP.delete dn
+
+      errors.add :password, e.message
+
+      return false
+    end
 
     true
-  rescue OAuth2::Error => e
-    parsed = e.response.parsed
-
-    errors.add :base, parsed[:errorMessage] || parsed[:error_description] || parsed[:error] || e.message
-
-    false
   end
 end

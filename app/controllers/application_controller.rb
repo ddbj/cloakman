@@ -11,11 +11,11 @@ class ApplicationController < ActionController::Base
   def current_account
     return @current_account if defined?(@current_account)
 
-    if uid = session[:uid]
+    if username = session[:username]
       begin
-        @current_account = Account.find(uid)
-      rescue OAuth2::Error
-        session.delete :uid
+        @current_account = Account.find(username)
+      rescue ActiveRecord::RecordNotFound
+        session.delete :username
 
         @current_account = nil
       end

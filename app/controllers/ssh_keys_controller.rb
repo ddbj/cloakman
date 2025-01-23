@@ -1,20 +1,46 @@
 class SSHKeysController < ApplicationController
+  class Form
+    include ActiveModel::Model
+    include ActiveModel::Attributes
+
+    attribute :account
+    attribute :ssh_key, :string
+
+    validates :ssh_key, presence: true
+
+    validates_each :ssh_key do |record, attr, value|
+      SSHData::PublicKey.parse_openssh value
+    rescue SSHData::DecodeError
+      record.errors.add attr, "Key is invalid. You must supply a key in OpenSSH public key format."
+    end
+
+    def save
+      return false unless valid?
+
+      (account.ssh_keys ||= []) << ssh_key.strip
+
+      account.save
+    end
+  end
+
   layout "main"
 
   def index
   end
 
   def new
-    @form = CreateSSHKeyForm.new(account: current_account)
+    @form = Form.new(account: current_account)
   end
 
   def create
-    @form = CreateSSHKeyForm.new(account: current_account, **create_ssh_key_form_params)
+    @form = Form.new(account: current_account, **form_params)
 
     if @form.save
       redirect_to ssh_keys_path, notice: "SSH key added successfully."
     else
-      flash[:alert] = @form.errors.full_messages_for(:base).join(" ")
+      @form.account.errors[:ssh_keys].each do |error|
+        @form.errors.add :ssh_key, error
+      end
 
       render :new, status: :unprocessable_content
     end
@@ -34,7 +60,7 @@ class SSHKeysController < ApplicationController
 
   private
 
-  def create_ssh_key_form_params
-    params.expect(create_ssh_key_form: [ :ssh_key ])
+  def form_params
+    params.expect(form: [ :ssh_key ])
   end
 end

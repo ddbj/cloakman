@@ -2,9 +2,7 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate!, only: %i[create failure]
 
   def create
-    user_info = request.env["omniauth.auth"]
-
-    session[:uid] = user_info["uid"]
+    session[:username] = request.env.dig("omniauth.auth", "extra", "raw_info", "preferred_username")
 
     redirect_to root_path, notice: "You have been logged in."
   end
