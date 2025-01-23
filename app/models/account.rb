@@ -4,6 +4,8 @@ class Account
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  BASE_DN = "dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
+
   attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
   attribute :password,              :string
@@ -41,7 +43,7 @@ class Account
   validates :city,         presence: true
 
   def self.find(username)
-    entries = LDAP.connection.search(base: "cn=#{username},dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp")
+    entries = LDAP.connection.search(base: "cn=#{username},#{BASE_DN}")
 
     raise ActiveRecord::RecordNotFound unless entries
 
@@ -138,16 +140,14 @@ class Account
 
   private
 
-  def base
-    "dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
-  end
-
   def dn
-    "cn=#{username},#{base}"
+    "cn=#{username},#{BASE_DN}"
   end
 
   def create
     return false unless valid?(:create)
+
+    uid_number = REDIS.call(:incr, "uid_number")
 
     begin
       LDAP.connection.add(
@@ -185,7 +185,7 @@ class Account
           telephoneNumber:                  phone,
           sshPublicKey:                     ssh_keys,
           uid:                              username,
-          uidNumber:                        "1000",
+          uidNumber:                        uid_number.to_s,
           gidNumber:                        "1000",
           homeDirectory:                    "/home/#{username}",
           inetUserStatus:                   "active"

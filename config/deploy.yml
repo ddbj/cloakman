@@ -16,6 +16,7 @@ env:
   clear:
     KEYCLOAK_CLIENT_ID: cloakman
     KEYCLOAK_REALM: master
+    REDIS_URL: redis://redis:6379
     SOLID_QUEUE_IN_PUMA: true
 
 aliases:
@@ -78,3 +79,9 @@ accessories:
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
       - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
+
+  redis:
+    image: redis:7.4
+
+    volumes:
+      - cloakman_redis:/data
