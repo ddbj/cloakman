@@ -10,7 +10,6 @@ gem "dartsass-rails"
 gem "importmap-rails"
 gem "kamal", require: false
 gem "net-ldap"
-gem "oauth2"
 gem "omniauth-rails_csrf_protection"
 gem "omniauth_openid_connect"
 gem "propshaft"
