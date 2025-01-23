@@ -1,7 +1,7 @@
 <h1 class="mb-3">New Account</h1>
 
-<%= bootstrap_form_for @account, url: account_path do |form| %>
-  <%= render "form", form: %>
+<%= bootstrap_form_for @user, url: account_path do |form| %>
+  <%= render "profiles/form", form: %>
 
   <%= form.primary "Create Account" %>
 <% end %>

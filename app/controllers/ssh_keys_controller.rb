@@ -3,7 +3,7 @@ class SSHKeysController < ApplicationController
     include ActiveModel::Model
     include ActiveModel::Attributes
 
-    attribute :account
+    attribute :user
     attribute :ssh_key, :string
 
     validates :ssh_key, presence: true
@@ -17,9 +17,9 @@ class SSHKeysController < ApplicationController
     def save
       return false unless valid?
 
-      (account.ssh_keys ||= []) << ssh_key.strip
+      user.ssh_keys << ssh_key.strip
 
-      account.save
+      user.save
     end
   end
 
@@ -29,16 +29,16 @@ class SSHKeysController < ApplicationController
   end
 
   def new
-    @form = Form.new(account: current_account)
+    @form = Form.new(user: current_user)
   end
 
   def create
-    @form = Form.new(account: current_account, **form_params)
+    @form = Form.new(user: current_user, **form_params)
 
     if @form.save
       redirect_to ssh_keys_path, notice: "SSH key added successfully."
     else
-      @form.account.errors[:ssh_keys].each do |error|
+      @form.user.errors[:ssh_keys].each do |error|
         @form.errors.add :ssh_key, error
       end
 
@@ -47,12 +47,12 @@ class SSHKeysController < ApplicationController
   end
 
   def destroy
-    current_account.ssh_keys.delete_at params.expect(:id).to_i
+    current_user.ssh_keys.delete_at params.expect(:id).to_i
 
-    if current_account.save
+    if current_user.save
       redirect_to ssh_keys_path, notice: "SSH key deleted successfully."
     else
-      flash[:alert] = current_account.errors.full_messages_for(:base).join(" ")
+      flash[:alert] = current_user.errors.full_messages_for(:base).join(" ")
 
       render :index, status: :unprocessable_content
     end

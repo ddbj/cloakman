@@ -9,7 +9,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
   test "account created successfully" do
     post account_path, params: {
-      account: {
+      user: {
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
@@ -27,7 +27,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
   test "account creation failed" do
     post account_path, params: {
-      account: {
+      user: {
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
@@ -46,10 +46,10 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "account updated successfully" do
-    sign_in FactoryBot.create(:account, id: 42)
+    sign_in FactoryBot.create(:user, id: 42)
 
     patch account_path, params: {
-      account: {
+      user: {
         email:        "bob@example.com",
         first_name:   "Bob",
         last_name:    "Martin",
@@ -59,14 +59,14 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to edit_account_path
+    assert_redirected_to edit_profile_path
   end
 
   test "account update failed" do
-    sign_in FactoryBot.create(:account)
+    sign_in FactoryBot.create(:user)
 
     patch account_path, params: {
-      account: {
+      user: {
         email:        "",
         first_name:   "Bob",
         last_name:    "Martin",

@@ -1,6 +1,6 @@
 using LDAPAssertion
 
-class Account
+class User
   include ActiveModel::Model
   include ActiveModel::Attributes
 

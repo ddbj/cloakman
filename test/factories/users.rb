@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :account do
+  factory :user do
     username              { "alice" }
     password              { "P@ssw0rd" }
     password_confirmation { "P@ssw0rd" }

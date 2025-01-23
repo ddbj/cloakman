@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   get "auth/failure",            to: "sessions#failure"
 
   resource :session, only: %i[destroy]
-  resource :account, only: %i[new edit create update]
+  resource :account, only: %i[new create]
+  resource :profile, only: %i[edit update]
   resource :password, only: %i[edit update]
   resources :ssh_keys, only: %i[index new create destroy]
 

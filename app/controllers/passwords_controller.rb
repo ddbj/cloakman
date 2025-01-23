@@ -23,7 +23,7 @@ class PasswordsController < ApplicationController
     @form = Form.new(form_params)
 
     if @form.valid?
-      current_account.update_password new_password: @form.new_password, old_password: @form.old_password
+      current_user.update_password new_password: @form.new_password, old_password: @form.old_password
 
       redirect_to edit_password_path, notice: "Password updated successfully."
     else

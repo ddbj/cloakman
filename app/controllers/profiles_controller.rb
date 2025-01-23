@@ -1,19 +1,19 @@
-class AccountsController < ApplicationController
-  skip_before_action :authenticate!
+class ProfilesController < ApplicationController
+  layout "main"
 
-  def new
-    @user = User.new
+  def edit
+    @user = current_user
   end
 
-  def create
-    @user = User.new(user_params)
+  def update
+    @user = current_user
 
-    if @user.save
-      redirect_to root_path, notice: "Your account has been successfully created. Please sign in to continue."
+    if @user.update(user_params)
+      redirect_to edit_profile_path, notice: "Profile updated successfully."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 
-      render :new, status: :unprocessable_content
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -21,9 +21,6 @@ class AccountsController < ApplicationController
 
   def user_params
     params.expect(user: [
-      :username,
-      :password,
-      :password_confirmation,
       :email,
       :first_name,
       :middle_name,

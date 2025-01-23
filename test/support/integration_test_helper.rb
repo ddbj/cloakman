@@ -11,10 +11,10 @@ module IntegrationTestHelper
     )
   end
 
-  def sign_in(account)
+  def sign_in(user)
     OmniAuth.config.add_mock :keycloak, extra: {
       raw_info: {
-        preferred_username: account.username
+        preferred_username: user.username
       }
     }
 
