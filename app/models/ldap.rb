@@ -4,13 +4,13 @@ module LDAP
       conn
     else
       conn = Net::LDAP.new(
-        host: "localhost",
-        port: 1389,
+        host: ENV.fetch("LDAP_HOST", "localhost"),
+        port: ENV.fetch("LDAP_PORT", 1389),
 
         auth: {
           method:   :simple,
-          username: "cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp",
-          password: "adminpassword"
+          username: ENV.fetch("LDAP_ADMIN_DN"),
+          password: ENV.fetch("LDAP_ADMIN_PASSWORD")
         }
       )
 

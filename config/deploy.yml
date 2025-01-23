@@ -11,11 +11,16 @@ registry:
 env:
   secret:
     - KEYCLOAK_CLIENT_SECRET
+    - LDAP_ADMIN_DN
+    - LDAP_ADMIN_PASSWORD
     - RAILS_MASTER_KEY
 
   clear:
     KEYCLOAK_CLIENT_ID: cloakman
     KEYCLOAK_REALM: master
+    LDAP_BASE_DN: dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp
+    LDAP_HOST: cloakman-openldap
+    LDAP_PORT: 1389
     REDIS_URL: redis://redis:6379
     SOLID_QUEUE_IN_PUMA: true
 

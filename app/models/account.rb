@@ -4,8 +4,6 @@ class Account
   include ActiveModel::Model
   include ActiveModel::Attributes
 
-  BASE_DN = "dc=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
-
   attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
   attribute :password,              :string
@@ -42,8 +40,14 @@ class Account
   validates :country,      presence: true
   validates :city,         presence: true
 
+  def self.base_dn
+    ENV.fetch("LDAP_BASE_DN")
+  end
+
+  delegate :base_dn, to: :class
+
   def self.find(username)
-    entries = LDAP.connection.search(base: "cn=#{username},#{BASE_DN}")
+    entries = LDAP.connection.search(base: "cn=#{username},#{base_dn}")
 
     raise ActiveRecord::RecordNotFound unless entries
 
@@ -141,7 +145,7 @@ class Account
   private
 
   def dn
-    "cn=#{username},#{BASE_DN}"
+    "cn=#{username},#{base_dn}"
   end
 
   def create
