@@ -158,6 +158,8 @@ class Account
           objectclass: %w[
             ddbjUser
             ldapPublicKey
+            posixAccount
+            inetUser
           ],
 
           cn:                               username,
@@ -182,7 +184,12 @@ class Account
           localityName:                     city,
           streetAddress:                    street,
           telephoneNumber:                  phone,
-          sshPublicKey:                     ssh_keys
+          sshPublicKey:                     ssh_keys,
+          uid:                              username,
+          uidNumber:                        "1000",
+          gidNumber:                        "1000",
+          homeDirectory:                    "/home/#{username}",
+          inetUserStatus:                   "active"
         }.compact_blank
       ).assert
     rescue LDAPError => e
