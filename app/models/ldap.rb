@@ -1,0 +1,20 @@
+module LDAP
+  def self.connection
+    if conn = Thread.current.thread_variable_get(:ldap_connection)
+      conn
+    else
+      conn = Net::LDAP.new(
+        host: ENV.fetch("LDAP_HOST", "localhost"),
+        port: ENV.fetch("LDAP_PORT", 1389),
+
+        auth: {
+          method:   :simple,
+          username: ENV.fetch("LDAP_ADMIN_DN"),
+          password: ENV.fetch("LDAP_ADMIN_PASSWORD")
+        }
+      )
+
+      Thread.current.thread_variable_set(:ldap_connection, conn)
+    end
+  end
+end

@@ -8,25 +8,25 @@ class ApplicationController < ActionController::Base
     redirect_to root_path, alert: "You must be signed in to access this page." unless signed_in?
   end
 
-  def current_account
-    return @current_account if defined?(@current_account)
+  def current_user
+    return @current_user if defined?(@current_user)
 
-    if uid = session[:uid]
+    if username = session[:username]
       begin
-        @current_account = Account.find(uid)
-      rescue OAuth2::Error
-        session.delete :uid
+        @current_user = User.find(username)
+      rescue ActiveRecord::RecordNotFound
+        session.delete :username
 
-        @current_account = nil
+        @current_user = nil
       end
     else
-      @current_account = nil
+      @current_user = nil
     end
   end
 
-  helper_method :current_account
+  helper_method :current_user
 
-  def signed_in? = !!current_account
+  def signed_in? = !!current_user
 
   helper_method :signed_in?
 end

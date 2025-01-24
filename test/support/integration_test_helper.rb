@@ -11,17 +11,17 @@ module IntegrationTestHelper
     )
   end
 
-  def sign_in(account)
-    OmniAuth.config.add_mock :keycloak, uid: account.id
+  def sign_in(user)
+    OmniAuth.config.add_mock :keycloak, extra: {
+      raw_info: {
+        preferred_username: user.username
+      }
+    }
 
     begin
       get auth_callback_path("keycloak")
     ensure
       OmniAuth.config.mock_auth[:keycloak] = nil
     end
-
-    stub_request(:get, "http://keycloak.example.com/admin/realms/master/users/#{account.id}").to_return_json(
-      body: account.to_payload(id: true, username: true)
-    )
   end
 end

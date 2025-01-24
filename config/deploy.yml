@@ -11,11 +11,17 @@ registry:
 env:
   secret:
     - KEYCLOAK_CLIENT_SECRET
+    - LDAP_ADMIN_DN
+    - LDAP_ADMIN_PASSWORD
     - RAILS_MASTER_KEY
 
   clear:
     KEYCLOAK_CLIENT_ID: cloakman
     KEYCLOAK_REALM: master
+    LDAP_BASE_DN: ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp
+    LDAP_HOST: cloakman-openldap
+    LDAP_PORT: 1389
+    REDIS_URL: redis://redis:6379
     SOLID_QUEUE_IN_PUMA: true
 
 aliases:
@@ -39,7 +45,7 @@ deploy_timeout: 120
 
 accessories:
   keycloak:
-    image: keycloak/keycloak:26.0
+    image: keycloak/keycloak:26.1
     cmd: start --http-enabled true --hostname-strict false --proxy-headers xforwarded
 
     proxy:
@@ -78,3 +84,9 @@ accessories:
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
       - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
+
+  redis:
+    image: redis:7.4
+
+    volumes:
+      - cloakman_redis:/data

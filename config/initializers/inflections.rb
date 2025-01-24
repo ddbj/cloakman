@@ -16,5 +16,6 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym "LDAP"
   inflect.acronym "SSH"
 end
