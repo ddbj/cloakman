@@ -41,7 +41,7 @@ class User
   validates :city,         presence: true
 
   def self.find(username)
-    entries = LDAP.connection.search(base: "cn=#{username},#{LDAP.base_dn}")
+    entries = LDAP.connection.search(base: "cn=#{username},#{LDAP.users_dn}")
 
     raise ActiveRecord::RecordNotFound unless entries
 
@@ -92,41 +92,49 @@ class User
 
     return false unless valid?(:update)
 
-    {
-      email:                 :mail,
-      first_name:            :givenName,
-      first_name_japanese:   "givenName;lang-ja",
-      middle_name:           :middleName,
-      last_name:             :surname,
-      last_name_japanese:    "surname;lang-ja",
-      job_title:             :title,
-      job_title_japanese:    "title;lang-ja",
-      orcid:                 :orcid,
-      erad_id:               :eradID,
-      organization:          :organizationName,
-      organization_japanese: "organizationName;lang-ja",
-      lab_fac_dep:           :organizationalUnitName,
-      lab_fac_dep_japanese:  "organizationalUnitName;lang-ja",
-      organization_url:      :organizationURL,
-      country:               :countryName,
-      postal_code:           :postalCode,
-      prefecture:            :stateOrProvinceName,
-      city:                  :localityName,
-      street:                :streetAddress,
-      phone:                 :telephoneNumber,
-      ssh_keys:              :sshPublicKey
-    }.each do |model_key, ldap_key|
-      if val = public_send(model_key).presence
-        LDAP.connection.replace_attribute(dn, ldap_key, val).assert
-      else
-        begin
-          LDAP.connection.delete_attribute(dn, ldap_key).assert
-        rescue LDAPError::NoSuchAttribute
-          # do nothing
-        end
+    REDIS.with_lock "email:#{email}" do
+      if email_exists?
+        errors.add :email, "has already been taken"
+
+        return false
       end
-    rescue LDAPError => e
-      errors.add model_key, e.message
+
+      {
+        email:                 :mail,
+        first_name:            :givenName,
+        first_name_japanese:   "givenName;lang-ja",
+        middle_name:           :middleName,
+        last_name:             :surname,
+        last_name_japanese:    "surname;lang-ja",
+        job_title:             :title,
+        job_title_japanese:    "title;lang-ja",
+        orcid:                 :orcid,
+        erad_id:               :eradID,
+        organization:          :organizationName,
+        organization_japanese: "organizationName;lang-ja",
+        lab_fac_dep:           :organizationalUnitName,
+        lab_fac_dep_japanese:  "organizationalUnitName;lang-ja",
+        organization_url:      :organizationURL,
+        country:               :countryName,
+        postal_code:           :postalCode,
+        prefecture:            :stateOrProvinceName,
+        city:                  :localityName,
+        street:                :streetAddress,
+        phone:                 :telephoneNumber,
+        ssh_keys:              :sshPublicKey
+      }.each do |model_key, ldap_key|
+        if val = public_send(model_key).presence
+          LDAP.connection.replace_attribute(dn, ldap_key, val).assert
+        else
+          begin
+            LDAP.connection.delete_attribute(dn, ldap_key).assert
+          rescue LDAPError::NoSuchAttribute
+            # do nothing
+          end
+        end
+      rescue LDAPError => e
+        errors.add model_key, e.message
+      end
     end
 
     errors.empty?
@@ -136,70 +144,78 @@ class User
     LDAP.connection.password_modify(dn:, new_password:, old_password:).assert
   end
 
-  private
-
   def dn
-    "cn=#{username},#{LDAP.base_dn}"
+    "cn=#{username},#{LDAP.users_dn}"
   end
+
+  private
 
   def create
     return false unless valid?(:create)
 
-    if ExtLDAP.connection.search(base: "cn=#{username},#{ExtLDAP.base_dn}", scope: Net::LDAP::SearchScope_BaseObject, return_result: false)
+    if user_exists_in_ext_ldap?
       errors.add :username, "has already been taken"
 
       return false
     end
 
-    uid_number = REDIS.call(:incr, "uid_number")
+    REDIS.with_lock "email:#{email}" do
+      if email_exists?
+        errors.add :email, "has already been taken"
 
-    begin
-      LDAP.connection.add(
-        dn:,
+        return false
+      end
 
-        attributes: {
-          objectclass: %w[
-            ddbjUser
-            ldapPublicKey
-            posixAccount
-            inetUser
-          ],
+      uid_number = REDIS.call(:incr, "uid_number")
 
-          cn:                               username,
-          mail:                             email,
-          givenName:                        first_name,
-          "givenName;lang-ja":              first_name_japanese,
-          middleName:                       middle_name,
-          surname:                          last_name,
-          "surname;lang-ja":                last_name_japanese,
-          title:                            job_title,
-          "title;lang-ja":                  job_title_japanese,
-          orcid:                            orcid,
-          eradID:                           erad_id,
-          organizationName:                 organization,
-          "organizationName;lang-ja":       organization_japanese,
-          organizationalUnitName:           lab_fac_dep,
-          "organizationalUnitName;lang-ja": lab_fac_dep_japanese,
-          organizationURL:                  organization_url,
-          countryName:                      country,
-          postalCode:                       postal_code,
-          stateOrProvinceName:              prefecture,
-          localityName:                     city,
-          streetAddress:                    street,
-          telephoneNumber:                  phone,
-          sshPublicKey:                     ssh_keys,
-          uid:                              username,
-          uidNumber:                        uid_number.to_s,
-          gidNumber:                        "61000",
-          homeDirectory:                    "/submission/#{username}",
-          loginShell:                       "/bin/bash",
-          inetUserStatus:                   "active"
-        }.compact_blank
-      ).assert
-    rescue LDAPError => e
-      errors.add :base, e.message
+      begin
+        LDAP.connection.add(
+          dn:,
 
-      return false
+          attributes: {
+            objectclass: %w[
+              ddbjUser
+              ldapPublicKey
+              posixAccount
+              inetUser
+            ],
+
+            cn:                               username,
+            mail:                             email,
+            givenName:                        first_name,
+            "givenName;lang-ja":              first_name_japanese,
+            middleName:                       middle_name,
+            surname:                          last_name,
+            "surname;lang-ja":                last_name_japanese,
+            title:                            job_title,
+            "title;lang-ja":                  job_title_japanese,
+            orcid:                            orcid,
+            eradID:                           erad_id,
+            organizationName:                 organization,
+            "organizationName;lang-ja":       organization_japanese,
+            organizationalUnitName:           lab_fac_dep,
+            "organizationalUnitName;lang-ja": lab_fac_dep_japanese,
+            organizationURL:                  organization_url,
+            countryName:                      country,
+            postalCode:                       postal_code,
+            stateOrProvinceName:              prefecture,
+            localityName:                     city,
+            streetAddress:                    street,
+            telephoneNumber:                  phone,
+            sshPublicKey:                     ssh_keys,
+            uid:                              username,
+            uidNumber:                        uid_number.to_s,
+            gidNumber:                        "61000",
+            homeDirectory:                    "/submission/#{username}",
+            loginShell:                       "/bin/bash",
+            inetUserStatus:                   "active"
+          }.compact_blank
+        ).assert
+      rescue LDAPError => e
+        errors.add :base, e.message
+
+        return false
+      end
     end
 
     begin
@@ -213,5 +229,20 @@ class User
     end
 
     true
+  end
+
+  def user_exists_in_ext_ldap?
+    !!ExtLDAP.connection.search(
+      base:  "cn=#{username},#{ExtLDAP.users_dn}",
+      scope: Net::LDAP::SearchScope_BaseObject
+    )
+  end
+
+  def email_exists?
+    !LDAP.connection.search(
+      base:   LDAP.users_dn,
+      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("cn", username),
+      scope:  Net::LDAP::SearchScope_SingleLevel
+    ).empty?
   end
 end

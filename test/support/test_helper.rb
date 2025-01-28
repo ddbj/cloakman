@@ -1,6 +1,6 @@
 module TestHelper
   def reset_data
-    LDAP.connection.search base: ENV.fetch("LDAP_BASE_DN"), scope: Net::LDAP::SearchScope_SingleLevel do |entry|
+    LDAP.connection.search base: ENV.fetch("LDAP_USERS_DN"), scope: Net::LDAP::SearchScope_SingleLevel do |entry|
       LDAP.connection.delete dn: entry.dn
     end
 
