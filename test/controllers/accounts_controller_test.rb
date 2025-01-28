@@ -1,16 +1,10 @@
 require "test_helper"
 
 class AccountsControllerTest < ActionDispatch::IntegrationTest
-  include IntegrationTestHelper
+  include TestHelper
 
   setup do
-    LDAP.connection.search base: ENV.fetch("LDAP_BASE_DN"), scope: Net::LDAP::SearchScope_SingleLevel do |entry|
-      LDAP.connection.delete dn: entry.dn
-    end
-
-    REDIS.call :select, 1
-    REDIS.call :flushdb
-    REDIS.call :set, "uid_number", 1000
+    reset_data
   end
 
   test "account created successfully" do
@@ -57,42 +51,27 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_response :unprocessable_entity
+
     assert_select ".invalid-feedback", text: "doesn't match Password"
   end
 
-  test "profile updated successfully" do
-    sign_in FactoryBot.create(:user)
-
-    patch profile_path, params: {
+  test "username already taken externally" do
+    post account_path, params: {
       user: {
-        email:        "bob@example.com",
-        first_name:   "Bob",
-        last_name:    "Martin",
-        organization: "ACME",
-        country:      "US",
-        city:         "Springfield"
-      }
-    }
-
-    assert_redirected_to edit_profile_path
-  end
-
-  test "profile update failed" do
-    sign_in FactoryBot.create(:user)
-
-    patch profile_path, params: {
-      user: {
-        email:        "",
-        first_name:   "Bob",
-        last_name:    "Martin",
-        organization: "ACME",
-        country:      "US",
-        city:         "Springfield"
+        username:              "user01",
+        password:              "P@ssw0rd",
+        password_confirmation: "P@ssw0rd",
+        email:                 "alice@example.com",
+        first_name:            "Alice",
+        last_name:             "Liddell",
+        organization:          "ACME",
+        country:               "US",
+        city:                  "Springfield"
       }
     }
 
     assert_response :unprocessable_entity
 
-    assert_select ".invalid-feedback", text: "can't be blank"
+    assert_select ".invalid-feedback", text: "has already been taken"
   end
 end
