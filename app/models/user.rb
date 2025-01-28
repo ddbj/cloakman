@@ -41,7 +41,7 @@ class User
   validates :city,         presence: true
 
   def self.base_dn
-    ENV.fetch("LDAP_BASE_DN")
+    ENV.fetch("LDAP_BASE_DN", "ou=users,dc=example,dc=org")
   end
 
   delegate :base_dn, to: :class

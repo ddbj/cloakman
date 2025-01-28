@@ -1,3 +1,8 @@
+ENV["LDAP_ADMIN_DN"]       = "cn=admin,dc=example,dc=org"
+ENV["LDAP_ADMIN_PASSWORD"] = "adminpassword"
+ENV["LDAP_BASE_DN"]        = "ou=users,dc=example,dc=org"
+ENV["LDAP_PORT"]           = "2389"
+
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
