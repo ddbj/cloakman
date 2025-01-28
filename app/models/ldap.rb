@@ -9,12 +9,16 @@ module LDAP
 
         auth: {
           method:   :simple,
-          username: ENV.fetch("LDAP_ADMIN_DN", "cn=admin,dc=example,dc=org"),
+          username: ENV.fetch("LDAP_ADMIN_DN",       "cn=admin,dc=example,dc=org"),
           password: ENV.fetch("LDAP_ADMIN_PASSWORD", "adminpassword")
         }
       )
 
       Thread.current.thread_variable_set(:ldap_connection, conn)
     end
+  end
+
+  def self.base_dn
+    ENV.fetch("LDAP_BASE_DN", "ou=users,dc=example,dc=org")
   end
 end

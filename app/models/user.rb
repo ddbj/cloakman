@@ -40,14 +40,8 @@ class User
   validates :country,      presence: true
   validates :city,         presence: true
 
-  def self.base_dn
-    ENV.fetch("LDAP_BASE_DN", "ou=users,dc=example,dc=org")
-  end
-
-  delegate :base_dn, to: :class
-
   def self.find(username)
-    entries = LDAP.connection.search(base: "cn=#{username},#{base_dn}")
+    entries = LDAP.connection.search(base: "cn=#{username},#{LDAP.base_dn}")
 
     raise ActiveRecord::RecordNotFound unless entries
 
@@ -145,11 +139,17 @@ class User
   private
 
   def dn
-    "cn=#{username},#{base_dn}"
+    "cn=#{username},#{LDAP.base_dn}"
   end
 
   def create
     return false unless valid?(:create)
+
+    if ExtLDAP.connection.search(base: "cn=#{username},#{ExtLDAP.base_dn}", scope: Net::LDAP::SearchScope_BaseObject, return_result: false)
+      errors.add :username, "has already been taken"
+
+      return false
+    end
 
     uid_number = REDIS.call(:incr, "uid_number")
 

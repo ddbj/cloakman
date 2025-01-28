@@ -64,6 +64,11 @@ jobs:
         env:
           LDAP_CONFIG_ADMIN_ENABLED: "yes"
 
+      ext-openldap:
+        image: bitnami/openldap
+        ports:
+          - 3389:1389
+
       redis:
         image: redis
         ports:
