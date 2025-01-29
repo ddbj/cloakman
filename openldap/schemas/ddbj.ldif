@@ -18,8 +18,8 @@ olcAttributeTypes: ( 1.3.6.1.4.1.99999.1.2.4
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
 olcAttributeTypes: ( 1.3.6.1.4.1.99999.1.2.5
   NAME 'eradID'
-  EQUALITY integerMatch
-  SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
+  EQUALITY numericStringMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 )
 olcObjectClasses: ( 1.3.6.1.4.1.99999.1.1.1
   NAME 'ddbjUser'
   SUP inetOrgPerson STRUCTURAL
