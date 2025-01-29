@@ -13,6 +13,12 @@
         <%= link_to "SSH keys", ssh_keys_path, **{
           class: ["list-group-item", "list-group-item-action", active: current_page?(ssh_keys_path)]
         } %>
+
+        <% if current_user.admin? %>
+          <%= link_to "Administration", new_admin_user_path, **{
+            class: ["list-group-item", "list-group-item-action", active: current_page?(new_admin_user_path)]
+          } %>
+        <% end %>
       </div>
     </div>
 
