@@ -1,5 +1,5 @@
 class LDAPError < StandardError
-  MAPPINGS = Net::LDAP.constants.grep(/ResultCode[A-Z]/).without(:ResultCodeSuccess).map { |name|
+  MAPPINGS = Net::LDAP.constants.grep(/ResultCode[A-Z]/).map { |name|
     [
       Net::LDAP.const_get(name),
       name.to_s.delete_prefix("ResultCode")
@@ -11,7 +11,11 @@ class LDAPError < StandardError
   end
 
   def self.from_result(result)
-    const_get(MAPPINGS.fetch(result.code)).new(result)
+    if klass = MAPPINGS[result.code]
+      const_get(klass).new(result)
+    else
+      new(result)
+    end
   end
 
   def initialize(result)
