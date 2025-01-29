@@ -42,4 +42,25 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_select ".invalid-feedback", text: "can't be blank"
   end
+
+  test "duplicate emails are not allowed" do
+    FactoryBot.create :user, username: "bob", email: "bob@example.com"
+
+    sign_in FactoryBot.create(:user)
+
+    patch profile_path, params: {
+      user: {
+        email:        "bob@example.com",
+        first_name:   "Alice",
+        last_name:    "Liddell",
+        organization: "Wonderland",
+        country:      "GB",
+        city:         "Daresbury"
+      }
+    }
+
+    assert_response :unprocessable_entity
+
+    assert_select ".invalid-feedback", text: "has already been taken"
+  end
 end

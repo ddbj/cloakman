@@ -109,9 +109,6 @@ GEM
     connection_pool (2.5.0)
     countries (7.1.0)
       unaccent (~> 0.3)
-    crack (1.0.0)
-      bigdecimal
-      rexml
     crass (1.0.6)
     dartsass-rails (0.5.1)
       railties (>= 6.0.0)
@@ -165,7 +162,6 @@ GEM
     google-protobuf (4.29.3-x86_64-linux)
       bigdecimal
       rake (>= 13)
-    hashdiff (1.1.2)
     hashie (5.0.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
@@ -475,10 +471,6 @@ GEM
       activesupport
       faraday (~> 2.0)
       faraday-follow_redirects
-    webmock (3.24.0)
-      addressable (>= 2.8.0)
-      crack (>= 0.3.2)
-      hashdiff (>= 0.4.0, < 2.0.0)
     websocket (1.2.11)
     websocket-driver (0.7.7)
       base64
@@ -533,7 +525,6 @@ DEPENDENCIES
   thruster
   turbo-rails
   web-console
-  webmock
 
 BUNDLED WITH
    2.6.2
