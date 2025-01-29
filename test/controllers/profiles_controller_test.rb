@@ -5,11 +5,11 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     reset_data
+
+    sign_in FactoryBot.create(:user)
   end
 
   test "profile updated successfully" do
-    sign_in FactoryBot.create(:user)
-
     patch profile_path, params: {
       user: {
         email:        "bob@example.com",
@@ -25,8 +25,6 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "profile update failed" do
-    sign_in FactoryBot.create(:user)
-
     patch profile_path, params: {
       user: {
         email:        "",
@@ -45,8 +43,6 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
 
   test "duplicate emails are not allowed" do
     FactoryBot.create :user, username: "bob", email: "bob@example.com"
-
-    sign_in FactoryBot.create(:user)
 
     patch profile_path, params: {
       user: {
