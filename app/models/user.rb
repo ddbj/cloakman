@@ -140,8 +140,8 @@ class User
     errors.empty?
   end
 
-  def update_password(new_password:, old_password: nil)
-    LDAP.connection.password_modify(dn:, new_password:, old_password:).assert
+  def update_password(new_password:, current_password: nil)
+    LDAP.connection.password_modify(dn:, new_password:, old_password: current_password).assert
   end
 
   def dn

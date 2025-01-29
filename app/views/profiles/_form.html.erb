@@ -2,48 +2,48 @@
 
 <% account = form.object %>
 
-<%= form.text_field :username, required: true, disabled: account.persisted? %>
+<%= form.text_field :username, required: true, disabled: account.persisted?, autocomplete: "username" %>
 
 <% if account.new_record? %>
-  <%= form.password_field :password, required: true %>
-  <%= form.password_field :password_confirmation, required: true %>
+  <%= form.password_field :password,              required: true, autocomplete: "new-password" %>
+  <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
 <% end %>
 
-<%= form.email_field :email, required: true %>
+<%= form.email_field :email, required: true, autocomplete: "work email" %>
 
 <div class="row row-cols-2">
-  <%= form.text_field :first_name, required: true %>
-  <%= form.text_field :first_name_japanese, label: "First name in Japanese" %>
+  <%= form.text_field :first_name, required: true, autocomplete: "given-name" %>
+  <%= form.text_field :first_name_japanese, autocomplete: "given-name" %>
 </div>
 
-<%= form.text_field :middle_name %>
+<%= form.text_field :middle_name, autocomplete: "additional-name" %>
 
 <div class="row row-cols-2">
-  <%= form.text_field :last_name, required: true %>
-  <%= form.text_field :last_name_japanese, label: "Last name in Japanese" %>
+  <%= form.text_field :last_name, required: true, autocomplete: "family-name" %>
+  <%= form.text_field :last_name_japanese, autocomplete: "family-name" %>
 </div>
 
 <div class="row row-cols-2">
-  <%= form.text_field :job_title %>
-  <%= form.text_field :job_title_japanese, label: "Job title in Japanese" %>
+  <%= form.text_field :job_title, autocomplete: "organization-title" %>
+  <%= form.text_field :job_title_japanese, autocomplete: "organization-title" %>
 </div>
 
-<%= form.text_field :orcid, label: "ORCID" %>
-<%= form.text_field :erad_id, label: "e-Rad Researcher number" %>
+<%= form.text_field :orcid %>
+<%= form.text_field :erad_id %>
 
 <hr>
 
 <div class="row row-cols-2">
-  <%= form.text_field :organization, label: "Organization", required: true %>
-  <%= form.text_field :organization_japanese, label: "Organization in Japanese" %>
+  <%= form.text_field :organization, required: true, autocomplete: "organization" %>
+  <%= form.text_field :organization_japanese, autocomplete: "organization" %>
 </div>
 
 <div class="row row-cols-2">
-  <%= form.text_field :lab_fac_dep, label: "Laboratory, Faculty, Department" %>
-  <%= form.text_field :lab_fac_dep_japanese, label: "Laboratory, Faculty, Department in Japanese" %>
+  <%= form.text_field :lab_fac_dep %>
+  <%= form.text_field :lab_fac_dep_japanese %>
 </div>
 
-<%= form.url_field :organization_url, label: "Organization URL" %>
+<%= form.url_field :organization_url, autocomplete: "url" %>
 
 <%
   opts = safe_join([
@@ -63,10 +63,10 @@
   ])
 %>
 
-<%= form.select :country, opts, include_blank: true, required: true %>
+<%= form.select :country, opts, include_blank: true, required: true, autocomplete: "country" %>
 
-<%= form.text_field :postal_code, label: "Postal code/Zip code" %>
-<%= form.text_field :prefecture, label: "State/Prefecture" %>
-<%= form.text_field :city, required: true %>
-<%= form.text_field :street %>
-<%= form.telephone_field :phone %>
+<%= form.text_field :postal_code, autocomplete: "postal-code" %>
+<%= form.text_field :prefecture, autocomplete: "address-level1" %>
+<%= form.text_field :city, required: true, autocomplete: "address-level2" %>
+<%= form.text_field :street, autocomplete: "street-address" %>
+<%= form.telephone_field :phone, autocomplete: "work tel" %>

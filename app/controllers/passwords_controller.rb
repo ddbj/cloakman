@@ -5,12 +5,12 @@ class PasswordsController < ApplicationController
     include ActiveModel::Model
     include ActiveModel::Attributes
 
-    attribute :old_password,              :string
+    attribute :current_password,          :string
     attribute :new_password,              :string
     attribute :new_password_confirmation, :string
 
-    validates :old_password, presence: true
-    validates :new_password, presence: true, confirmation: true
+    validates :current_password, presence: true
+    validates :new_password,     presence: true, confirmation: true
 
     def persisted? = true
   end
@@ -23,14 +23,14 @@ class PasswordsController < ApplicationController
     @form = Form.new(form_params)
 
     if @form.valid?
-      current_user.update_password new_password: @form.new_password, old_password: @form.old_password
+      current_user.update_password new_password: @form.new_password, current_password: @form.current_password
 
       redirect_to edit_password_path, notice: "Password updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
   rescue LDAPError::UnwillingToPerform
-    @form.errors.add :old_password, "is incorrect"
+    @form.errors.add :current_password, "is incorrect"
 
     render :edit, status: :unprocessable_entity
   end
@@ -39,7 +39,7 @@ class PasswordsController < ApplicationController
 
   def form_params
     params.expect(form: [
-      :old_password,
+      :current_password,
       :new_password,
       :new_password_confirmation
     ])
