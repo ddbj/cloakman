@@ -1,3 +1,7 @@
+<div class="mb-3">
+  <%= link_to "« Back", ssh_keys_path %>
+</div>
+
 <h1 class="mb-3">Add new SSH key</h1>
 
 <%= bootstrap_form_with model: @form, scope: :form, url: ssh_keys_path do |f| %>
