@@ -12,12 +12,12 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   test "profile updated successfully" do
     patch profile_path, params: {
       user: {
-        email:        "bob@example.com",
-        first_name:   "Bob",
-        last_name:    "Martin",
-        organization: "ACME",
-        country:      "US",
-        city:         "Springfield"
+        email:        "alice@example.com",
+        first_name:   "Alice",
+        last_name:    "Liddell",
+        organization: "Wonderland",
+        country:      "GB",
+        city:         "Daresbury"
       }
     }
 
@@ -28,11 +28,11 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     patch profile_path, params: {
       user: {
         email:        "",
-        first_name:   "Bob",
-        last_name:    "Martin",
-        organization: "ACME",
-        country:      "US",
-        city:         "Springfield"
+        first_name:   "Alice",
+        last_name:    "Liddell",
+        organization: "Wonderland",
+        country:      "GB",
+        city:         "Daresbury"
       }
     }
 
@@ -42,11 +42,11 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "duplicate emails are not allowed" do
-    FactoryBot.create :user, username: "bob", email: "bob@example.com"
+    FactoryBot.create :user, email: "alice@example.com"
 
     patch profile_path, params: {
       user: {
-        email:        "bob@example.com",
+        email:        "alice@example.com",
         first_name:   "Alice",
         last_name:    "Liddell",
         organization: "Wonderland",

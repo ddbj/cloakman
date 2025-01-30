@@ -1,0 +1,10 @@
+<%# locals: (form:) %>
+
+<%= form.form_group :account_type_number, label: { text: "Account type" } do %>
+  <%= form.radio_button :account_type_number, 1, label: "Normal" %>
+  <%= form.radio_button :account_type_number, 3, label: "Admin" %>
+<% end %>
+
+<hr>
+
+<%= render "profiles/form", form: form %>

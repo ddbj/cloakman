@@ -1,7 +1,11 @@
+<div class="mb-3">
+  <%= link_to "« Back", admin_users_path %>
+</div>
+
 <h1 class="mb-3">New User</h1>
 
 <%= bootstrap_form_with model: @user, url: admin_users_path do |form| %>
-  <%= render "profiles/form", form: %>
+  <%= render "form", form: form %>
 
   <%= form.primary "Create User" %>
 <% end %>

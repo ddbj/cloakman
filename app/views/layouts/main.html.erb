@@ -19,7 +19,7 @@
         <b class="d-block mt-3 mb-1 px-1">Administration</b>
 
         <div class="list-group">
-          <%= link_to "Users", new_admin_user_path, **{
+          <%= link_to "Users", admin_users_path, **{
             class: ["list-group-item", "list-group-item-action", active: controller_path == "admin/users"]
           } %>
         </div>

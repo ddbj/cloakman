@@ -41,13 +41,31 @@ class User
   validates :country,      presence: true
   validates :city,         presence: true
 
+  def self.search(query)
+    filter = if query.present?
+      Net::LDAP::Filter.eq("objectClass", "ddbjUser") & (
+        %w[cn mail givenName middleName sn o].map { Net::LDAP::Filter.contains(it, query) }.inject(:|)
+      )
+    else
+      Net::LDAP::Filter.eq("objectClass", "ddbjUser")
+    end
+
+    LDAP.connection.search(
+      base:   LDAP.users_dn,
+      filter:,
+      size:   100
+    ).map { from_entry(it) }
+  end
+
   def self.find(username)
     entries = LDAP.connection.search(base: "cn=#{username},#{LDAP.users_dn}")
 
     raise ActiveRecord::RecordNotFound unless entries
 
-    entry = entries.first
+    from_entry(entries.first)
+  end
 
+  def self.from_entry(entry)
     new(
       persisted?:            true,
       username:              entry.first(:cn),
@@ -78,6 +96,10 @@ class User
   end
 
   def new_record? = !persisted?
+
+  def to_param
+    username
+  end
 
   def save
     update
