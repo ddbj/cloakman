@@ -27,12 +27,12 @@ class PasswordsController < ApplicationController
 
       redirect_to edit_password_path, notice: "Password updated successfully."
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   rescue LDAPError::UnwillingToPerform
     @form.errors.add :current_password, "is incorrect"
 
-    render :edit, status: :unprocessable_entity
+    render :edit, status: :unprocessable_content
   end
 
   private

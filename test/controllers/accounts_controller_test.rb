@@ -50,7 +50,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     assert_select ".invalid-feedback", text: "doesn't match Password"
   end
@@ -70,7 +70,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     assert_select ".invalid-feedback", text: "has already been taken"
   end
@@ -92,7 +92,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     assert_select ".invalid-feedback", text: "has already been taken"
   end

@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_admin!
-    redirect_to root_path, alert: "You must be signed in as administrator." unless current_user&.admin?
+    head :forbidden unless current_user.admin?
   end
 
   def current_user

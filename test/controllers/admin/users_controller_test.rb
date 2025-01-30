@@ -5,11 +5,11 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     reset_data
-
-    sign_in FactoryBot.create(:user, :admin)
   end
 
   test "user created successfully" do
+    sign_in FactoryBot.create(:user, :admin)
+
     post admin_users_path, params: {
       user: {
         username:              "bob",
@@ -28,6 +28,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "user creation failed" do
+    sign_in FactoryBot.create(:user, :admin)
+
     post admin_users_path, params: {
       user: {
         username:              "bob",
@@ -42,8 +44,16 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     assert_select ".invalid-feedback", text: "doesn't match Password"
+  end
+
+  test "can not access as normal user" do
+    sign_in FactoryBot.create(:user)
+
+    get new_admin_user_path
+
+    assert_response :forbidden
   end
 end
