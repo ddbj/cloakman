@@ -1,3 +1,9 @@
+<h1 class="mb-3">Users</h1>
+
+<div class="mb-3">
+  <%= link_to "New User", new_admin_user_path, class: "btn btn-primary" %>
+</div>
+
 <table class="table">
   <thead>
     <tr>
@@ -5,6 +11,7 @@
       <th>Email</th>
       <th>Name</th>
       <th>Organization</th>
+      <th>Account type</th>
     </tr>
   </thead>
 
@@ -15,6 +22,17 @@
         <td><%= user.email %></td>
         <td><%= [ user.first_name, user.middle_name, user.last_name ].compact_blank.join(" ") %></td>
         <td><%= user.organization %></td>
+
+        <td>
+          <% case user.account_type_number %>
+          <% when 1 %>
+            Normal
+          <% when 3 %>
+            Admin
+          <% else %>
+            <%= user.account_type_number %>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>

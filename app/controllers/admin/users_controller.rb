@@ -15,7 +15,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      redirect_to new_admin_user_path, notice: "User has been successfully creted."
+      redirect_to admin_users_path, notice: "User has been successfully creted."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 
@@ -23,10 +23,27 @@ class Admin::UsersController < ApplicationController
     end
   end
 
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+    @user = User.find(params[:id])
+
+    if @user.update(user_params)
+      redirect_to admin_users_path, notice: "User has been successfully updated."
+    else
+      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
+
+      render :edit, status: :unprocessable_content
+    end
+  end
+
   private
 
   def user_params
     params.expect(user: [
+      :account_type_number,
       :username,
       :password,
       :password_confirmation,

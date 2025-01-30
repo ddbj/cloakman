@@ -1,0 +1,7 @@
+<h1 class="mb-3">Edit User</h1>
+
+<%= bootstrap_form_with model: @user, url: admin_user_path(@user) do |form| %>
+  <%= render "form", form: form %>
+
+  <%= form.primary "Update User" %>
+<% end %>
