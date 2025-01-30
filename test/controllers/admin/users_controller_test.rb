@@ -10,7 +10,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "search user" do
-    FactoryBot.create(:user, username: "alice")
+    FactoryBot.create :user, username: "alice"
 
     get admin_users_path, params: {
       query: "alice"
