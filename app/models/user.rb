@@ -41,10 +41,19 @@ class User
   validates :country,      presence: true
   validates :city,         presence: true
 
-  def self.all
+  def self.search(query)
+    filter = if query.present?
+      Net::LDAP::Filter.eq("objectClass", "ddbjUser") & (
+        %w[cn mail givenName middleName sn o].map { Net::LDAP::Filter.contains(it, query) }.inject(:|)
+      )
+    else
+      Net::LDAP::Filter.eq("objectClass", "ddbjUser")
+    end
+
     LDAP.connection.search(
       base:   LDAP.users_dn,
-      filter: Net::LDAP::Filter.eq("objectClass", "ddbjUser")
+      filter:,
+      size:   100
     ).map { from_entry(it) }
   end
 

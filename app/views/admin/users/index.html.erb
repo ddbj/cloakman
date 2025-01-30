@@ -4,6 +4,12 @@
   <%= link_to "New User", new_admin_user_path, class: "btn btn-primary" %>
 </div>
 
+<%= bootstrap_form_with method: :get do |f| %>
+  <%= f.search_field :query, hide_label: true, placeholder: "Search by username, email, name, or organization", append: f.primary("Search") %>
+<% end %>
+
+<p>Displaying the first 100 users from your search.</p>
+
 <table class="table">
   <thead>
     <tr>
