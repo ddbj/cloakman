@@ -36,7 +36,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     assert_select ".invalid-feedback", text: "can't be blank"
   end
@@ -55,7 +55,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
 
     assert_select ".invalid-feedback", text: "has already been taken"
   end

@@ -8,6 +8,10 @@ class ApplicationController < ActionController::Base
     redirect_to root_path, alert: "You must be signed in to access this page." unless signed_in?
   end
 
+  def authenticate_admin!
+    head :forbidden unless current_user.admin?
+  end
+
   def current_user
     return @current_user if defined?(@current_user)
 

@@ -9,5 +9,9 @@ FactoryBot.define do
     organization          { "Wonderland" }
     country               { "GB" }
     city                  { "Daresbury" }
+
+    trait :admin do
+      account_type_number { 3 }
+    end
   end
 end

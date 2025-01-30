@@ -3,17 +3,27 @@
     <div class="col-3">
       <div class="list-group">
         <%= link_to "Profile", edit_profile_path, **{
-          class: ["list-group-item", "list-group-item-action", active: current_page?(edit_profile_path)]
+          class: ["list-group-item", "list-group-item-action", active: controller_path == "profiles"]
         } %>
 
         <%= link_to "Password", edit_password_path, **{
-          class: ["list-group-item", "list-group-item-action", active: current_page?(edit_password_path)]
+          class: ["list-group-item", "list-group-item-action", active: controller_path == "passwords"]
         } %>
 
         <%= link_to "SSH keys", ssh_keys_path, **{
-          class: ["list-group-item", "list-group-item-action", active: current_page?(ssh_keys_path)]
+          class: ["list-group-item", "list-group-item-action", active: controller_path == "ssh_keys"]
         } %>
       </div>
+
+      <% if current_user.admin? %>
+        <b class="d-block mt-3 mb-1 px-1">Administration</b>
+
+        <div class="list-group">
+          <%= link_to "Users", new_admin_user_path, **{
+            class: ["list-group-item", "list-group-item-action", active: controller_path == "admin/users"]
+          } %>
+        </div>
+      <% end %>
     </div>
 
     <div class="col-9">

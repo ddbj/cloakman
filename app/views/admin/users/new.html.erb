@@ -1,0 +1,7 @@
+<h1 class="mb-3">New User</h1>
+
+<%= bootstrap_form_with model: @user, url: admin_users_path do |form| %>
+  <%= render "profiles/form", form: %>
+
+  <%= form.primary "Create User" %>
+<% end %>

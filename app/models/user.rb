@@ -30,6 +30,7 @@ class User
   attribute :street,                :string
   attribute :phone,                 :string
   attribute :ssh_keys,              default: -> { [] }
+  attribute :account_type_number,   :integer, default: 1
 
   validates :username,     presence: true
   validates :password,     presence: true, confirmation: true, on: :create
@@ -71,7 +72,8 @@ class User
       job_title_japanese:    entry.first("title;lang-ja"),
       orcid:                 entry.first(:orcid),
       erad_id:               entry.first(:eradID),
-      ssh_keys:              entry[:sshPublicKey]
+      ssh_keys:              entry[:sshPublicKey],
+      account_type_number:   entry.first(:accountTypeNumber)
     )
   end
 
@@ -121,10 +123,11 @@ class User
         city:                  :localityName,
         street:                :streetAddress,
         phone:                 :telephoneNumber,
-        ssh_keys:              :sshPublicKey
+        ssh_keys:              :sshPublicKey,
+        account_type_number:   :accountTypeNumber
       }.each do |model_key, ldap_key|
         if val = public_send(model_key).presence
-          LDAP.connection.replace_attribute(dn, ldap_key, val).assert
+          LDAP.connection.replace_attribute(dn, ldap_key, val.to_s).assert
         else
           begin
             LDAP.connection.delete_attribute(dn, ldap_key).assert
@@ -146,6 +149,10 @@ class User
 
   def dn
     "cn=#{username},#{LDAP.users_dn}"
+  end
+
+  def admin?
+    account_type_number == 3
   end
 
   private
@@ -203,6 +210,7 @@ class User
             streetAddress:                    street,
             telephoneNumber:                  phone,
             sshPublicKey:                     ssh_keys,
+            accountTypeNumber:                account_type_number.to_s,
             uid:                              username,
             uidNumber:                        uid_number.to_s,
             gidNumber:                        "61000",
@@ -232,17 +240,17 @@ class User
   end
 
   def user_exists_in_ext_ldap?
-    !!ExtLDAP.connection.search(
+    ExtLDAP.connection.search(
       base:  "cn=#{username},#{ExtLDAP.users_dn}",
       scope: Net::LDAP::SearchScope_BaseObject
-    )
+    ).present?
   end
 
   def email_exists?
-    !LDAP.connection.search(
+    LDAP.connection.search(
       base:   LDAP.users_dn,
       filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("cn", username),
       scope:  Net::LDAP::SearchScope_SingleLevel
-    ).empty?
+    ).present?
   end
 end
