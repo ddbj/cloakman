@@ -43,9 +43,9 @@ class User
 
   def self.search(query)
     filter = if query.present?
-      Net::LDAP::Filter.eq("objectClass", "ddbjUser") & (
-        %w[cn mail givenName middleName sn o].map { Net::LDAP::Filter.contains(it, query) }.inject(:|)
-      )
+      Net::LDAP::Filter.eq("objectClass", "ddbjUser") & %w[cn mail givenName middleName sn o].map { |attr|
+        Net::LDAP::Filter.contains(attr, query)
+      }.inject(:|)
     else
       Net::LDAP::Filter.eq("objectClass", "ddbjUser")
     end
