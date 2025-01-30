@@ -5,13 +5,27 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     reset_data
+
+    sign_in FactoryBot.create(:user, :admin)
+  end
+
+  test "search user" do
+    FactoryBot.create(:user, username: "alice")
+
+    get admin_users_path, params: {
+      query: "alice"
+    }
+
+    assert_response :ok
+
+    assert_select "tbody > tr", count: 1
+    assert_select "a", text: "alice"
   end
 
   test "user created successfully" do
-    sign_in FactoryBot.create(:user, :admin)
-
     post admin_users_path, params: {
       user: {
+        account_type_number:   1,
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
@@ -24,14 +38,13 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to new_admin_user_path
+    assert_redirected_to admin_users_path
   end
 
   test "user creation failed" do
-    sign_in FactoryBot.create(:user, :admin)
-
     post admin_users_path, params: {
       user: {
+        account_type_number:   1,
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
@@ -49,11 +62,39 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_select ".invalid-feedback", text: "doesn't match Password"
   end
 
-  test "can not access as normal user" do
-    sign_in FactoryBot.create(:user)
+  test "user updated successfully" do
+    user = FactoryBot.create(:user)
 
-    get new_admin_user_path
+    patch admin_user_path(user), params: {
+      user: {
+        account_type_number: 3,
+        email:               "alice@example.com",
+        first_name:          "Alice",
+        last_name:           "Liddell",
+        organization:        "Wonderland",
+        country:             "GB",
+        city:                "Daresbury"
+      }
+    }
 
-    assert_response :forbidden
+    assert_redirected_to admin_users_path
+  end
+
+  test "user update failed" do
+    user = FactoryBot.create(:user)
+
+    patch admin_user_path(user), params: {
+      user: {
+        account_type_number: 3,
+        email:               "",
+        first_name:          "Alice",
+        last_name:           "Liddell",
+        organization:        "Wonderland",
+        country:             "GB",
+        city:                "Daresbury"
+      }
+    }
+
+    assert_response :unprocessable_content
   end
 end
