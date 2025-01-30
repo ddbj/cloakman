@@ -1,0 +1,21 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Name</th>
+      <th>Organization</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.username, edit_admin_user_path(user) %></td>
+        <td><%= user.email %></td>
+        <td><%= [ user.first_name, user.middle_name, user.last_name ].compact_blank.join(" ") %></td>
+        <td><%= user.organization %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
