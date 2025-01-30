@@ -12,15 +12,15 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     post admin_users_path, params: {
       user: {
-        username:              "bob",
+        username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
-        email:                 "bob@example.com",
-        first_name:            "Bob",
-        last_name:             "Martin",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        email:                 "alice@example.com",
+        first_name:            "Alice",
+        last_name:             "Liddell",
+        organization:          "Wonderland",
+        country:               "GB",
+        city:                  "Daresbury"
       }
     }
 
@@ -32,15 +32,15 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     post admin_users_path, params: {
       user: {
-        username:              "bob",
+        username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
-        email:                 "bob@example.com",
-        first_name:            "Bob",
-        last_name:             "Martin",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        email:                 "alice@example.com",
+        first_name:            "Alice",
+        last_name:             "Liddell",
+        organization:          "Wonderland",
+        country:               "GB",
+        city:                  "Daresbury"
       }
     }
 

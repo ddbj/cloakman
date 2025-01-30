@@ -16,9 +16,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         email:                 "alice@example.com",
         first_name:            "Alice",
         last_name:             "Liddell",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        organization:          "Wonderland",
+        country:               "GB",
+        city:                  "Daresbury"
       }
     }
 
@@ -30,9 +30,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "alice@example.com", user.email
     assert_equal "Alice",             user.first_name
     assert_equal "Liddell",           user.last_name
-    assert_equal "ACME",              user.organization
-    assert_equal "US",                user.country
-    assert_equal "Springfield",       user.city
+    assert_equal "Wonderland",        user.organization
+    assert_equal "GB",                user.country
+    assert_equal "Daresbury",         user.city
   end
 
   test "account creation failed" do
@@ -44,9 +44,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         email:                 "alice@example.com",
         first_name:            "Alice",
         last_name:             "Liddell",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        organization:          "Wonderland",
+        country:               "GB",
+        city:                  "Daresbury"
       }
     }
 
@@ -64,9 +64,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
         email:                 "alice@example.com",
         first_name:            "Alice",
         last_name:             "Liddell",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        organization:          "Wonderland",
+        country:               "GB",
+        city:                  "Daresbury"
       }
     }
 
@@ -76,19 +76,19 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "duplicate emails are not allowed" do
-    FactoryBot.create :user, username: "bob", email: "bob@example.com"
+    FactoryBot.create :user, email: "alice@example.com"
 
     post account_path, params: {
       user: {
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
-        email:                 "bob@example.com",
+        email:                 "alice@example.com",
         first_name:            "Alice",
         last_name:             "Liddell",
-        organization:          "ACME",
-        country:               "US",
-        city:                  "Springfield"
+        organization:          "Wonderland",
+        country:               "GB",
+        city:                  "Daresbury"
       }
     }
 
