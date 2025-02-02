@@ -1,5 +1,7 @@
 module LDAP
-  def self.connection
+  module_function
+
+  def connection
     if conn = Thread.current.thread_variable_get(:ldap_connection)
       conn
     else
@@ -18,7 +20,7 @@ module LDAP
     end
   end
 
-  def self.users_dn
+  def users_dn
     ENV.fetch("LDAP_USERS_DN", "ou=users,dc=example,dc=org")
   end
 end
