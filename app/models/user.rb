@@ -42,23 +42,21 @@ class User
   validates :city,         presence: true
 
   def self.search(query)
-    filter = if query.present?
-      Net::LDAP::Filter.eq("objectClass", "ddbjUser") & %w[cn mail givenName middleName sn o].map { |attr|
-        Net::LDAP::Filter.contains(attr, query)
-      }.inject(:|)
-    else
-      Net::LDAP::Filter.eq("objectClass", "ddbjUser")
-    end
+    filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
 
-    LDAP.connection.search(
+    filter = filter & %w[cn mail givenName middleName sn o].map { |attr|
+      Net::LDAP::Filter.contains(attr, query)
+    }.inject(:|) if query.present?
+
+    LDAP.connection.assert_call(:search, **{
       base:   LDAP.users_dn,
       filter:,
       size:   100
-    ).map { from_entry(it) }
+    }).map { from_entry(it) }
   end
 
   def self.find(username)
-    entries = LDAP.connection.search(base: "cn=#{username},#{LDAP.users_dn}")
+    entries = LDAP.connection.assert_call(:search, base: "cn=#{username},#{LDAP.users_dn}")
 
     raise ActiveRecord::RecordNotFound unless entries
 
@@ -149,10 +147,10 @@ class User
         account_type_number:   :accountTypeNumber
       }.each do |model_key, ldap_key|
         if val = public_send(model_key).presence
-          LDAP.connection.replace_attribute(dn, ldap_key, val.to_s).assert
+          LDAP.connection.assert_call(:replace_attribute, dn, ldap_key, val.to_s)
         else
           begin
-            LDAP.connection.delete_attribute(dn, ldap_key).assert
+            LDAP.connection.assert_call(:delete_attribute, dn, ldap_key)
           rescue LDAPError::NoSuchAttribute
             # do nothing
           end
@@ -166,7 +164,7 @@ class User
   end
 
   def update_password(new_password:, current_password: nil)
-    LDAP.connection.password_modify(dn:, new_password:, old_password: current_password).assert
+    LDAP.connection.assert_call(:password_modify,  dn:, new_password:, old_password: current_password)
   end
 
   def dn
@@ -198,7 +196,7 @@ class User
       uid_number = REDIS.call(:incr, "uid_number")
 
       begin
-        LDAP.connection.add(
+        LDAP.connection.assert_call(:add, **{
           dn:,
 
           attributes: {
@@ -240,7 +238,7 @@ class User
             loginShell:                       "/bin/bash",
             inetUserStatus:                   "active"
           }.compact_blank
-        ).assert
+        })
       rescue LDAPError => e
         errors.add :base, e.message
 
@@ -262,17 +260,20 @@ class User
   end
 
   def user_exists_in_ext_ldap?
-    ExtLDAP.connection.search(
+    ExtLDAP.connection.assert_call(:search, **{
       base:  "cn=#{username},#{ExtLDAP.users_dn}",
       scope: Net::LDAP::SearchScope_BaseObject
-    ).present?
+    })
+
+    true
+  rescue LDAPError::NoSuchObject
+    false
   end
 
   def email_exists?
-    LDAP.connection.search(
+    !LDAP.connection.assert_call(:search, **{
       base:   LDAP.users_dn,
-      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("cn", username),
-      scope:  Net::LDAP::SearchScope_SingleLevel
-    ).present?
+      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("cn", username)
+    }).empty?
   end
 end
