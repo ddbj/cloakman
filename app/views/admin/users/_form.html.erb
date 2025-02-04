@@ -5,6 +5,8 @@
   <%= form.radio_button :account_type_number, 3, label: "Admin" %>
 <% end %>
 
+<%= form.select :inet_user_status, [["Active", "active"], ["Inactive", "inactive"], ["Deleted", "deleted"]] %>
+
 <hr>
 
 <%= render "profiles/form", form: form %>

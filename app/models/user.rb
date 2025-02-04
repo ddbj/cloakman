@@ -31,6 +31,7 @@ class User
   attribute :phone,                 :string
   attribute :ssh_keys,              default: -> { [] }
   attribute :account_type_number,   :integer, default: 1
+  attribute :inet_user_status,      :string, default: "active"
 
   validates :username,     presence: true
   validates :password,     presence: true, confirmation: true, on: :create
@@ -89,7 +90,8 @@ class User
       orcid:                 entry.first(:orcid),
       erad_id:               entry.first(:eradID),
       ssh_keys:              entry[:sshPublicKey],
-      account_type_number:   entry.first(:accountTypeNumber)
+      account_type_number:   entry.first(:accountTypeNumber),
+      inet_user_status:      entry.first(:inetUserStatus)
     )
   end
 
@@ -144,7 +146,8 @@ class User
         street:                :streetAddress,
         phone:                 :telephoneNumber,
         ssh_keys:              :sshPublicKey,
-        account_type_number:   :accountTypeNumber
+        account_type_number:   :accountTypeNumber,
+        inet_user_status:      :inetUserStatus
       }.each do |model_key, ldap_key|
         if val = public_send(model_key).presence
           LDAP.connection.assert_call(:replace_attribute, dn, ldap_key, val.to_s)
@@ -236,7 +239,7 @@ class User
             gidNumber:                        "61000",
             homeDirectory:                    "/submission/#{username}",
             loginShell:                       "/bin/bash",
-            inetUserStatus:                   "active"
+            inetUserStatus:                   inet_user_status
           }.compact_blank
         })
       rescue LDAPError => e
