@@ -26,7 +26,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     post admin_users_path, params: {
       user: {
         inet_user_status:      "active",
-        account_type_number:   1,
+        account_type_number:   "general",
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
@@ -44,7 +44,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     user = User.find("alice")
 
     assert_equal "active",            user.inet_user_status
-    assert_equal 1,                   user.account_type_number
+    assert_equal "general",           user.account_type_number
     assert_equal "alice@example.com", user.email
     assert_equal "Alice",             user.first_name
     assert_equal "Liddell",           user.last_name
@@ -57,7 +57,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     post admin_users_path, params: {
       user: {
         inet_user_status:      "active",
-        account_type_number:   1,
+        account_type_number:   "general",
         username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
@@ -81,7 +81,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     patch admin_user_path(user), params: {
       user: {
         inet_user_status:    "inactive",
-        account_type_number: 3,
+        account_type_number: "ddbj",
         email:               "alice@example.com",
         first_name:          "Alice",
         last_name:           "Liddell",
@@ -96,7 +96,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     user.reload
 
     assert_equal "inactive",          user.inet_user_status
-    assert_equal 3,                   user.account_type_number
+    assert_equal "ddbj",              user.account_type_number
     assert_equal "alice@example.com", user.email
     assert_equal "Alice",             user.first_name
     assert_equal "Liddell",           user.last_name
@@ -111,7 +111,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     patch admin_user_path(user), params: {
       user: {
         inet_user_status:    "inactive",
-        account_type_number: 3,
+        account_type_number: "ddbj",
         email:               "",
         first_name:          "Alice",
         last_name:           "Liddell",

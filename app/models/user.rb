@@ -4,6 +4,8 @@ class User
   include ActiveModel::Model
   include ActiveModel::Attributes
 
+  extend Enumerize
+
   attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
   attribute :password,              :string
@@ -29,9 +31,19 @@ class User
   attribute :city,                  :string
   attribute :street,                :string
   attribute :phone,                 :string
-  attribute :ssh_keys,              default: -> { [] }
+  attribute :ssh_keys,                        default: -> { [] }
+  attribute :inet_user_status,      :string,  default: "active"
   attribute :account_type_number,   :integer, default: 1
-  attribute :inet_user_status,      :string, default: "active"
+
+  enumerize :inet_user_status, in: %i[active inactive deleted]
+
+  enumerize :account_type_number, in: {
+    general:          1,
+    nbdc:             2,
+    ddbj:             3,
+    administrator:    4,
+    system_reference: 5
+  }
 
   validates :username,     presence: true
   validates :password,     presence: true, confirmation: true, on: :create
@@ -134,30 +146,30 @@ class User
       end
 
       {
-        email:                 :mail,
-        first_name:            :givenName,
-        first_name_japanese:   "givenName;lang-ja",
-        middle_name:           :middleName,
-        last_name:             :surname,
-        last_name_japanese:    "surname;lang-ja",
-        job_title:             :title,
-        job_title_japanese:    "title;lang-ja",
-        orcid:                 :orcid,
-        erad_id:               :eradID,
-        organization:          :organizationName,
-        organization_japanese: "organizationName;lang-ja",
-        lab_fac_dep:           :organizationalUnitName,
-        lab_fac_dep_japanese:  "organizationalUnitName;lang-ja",
-        organization_url:      :organizationURL,
-        country:               :countryName,
-        postal_code:           :postalCode,
-        prefecture:            :stateOrProvinceName,
-        city:                  :localityName,
-        street:                :streetAddress,
-        phone:                 :telephoneNumber,
-        ssh_keys:              :sshPublicKey,
-        account_type_number:   :accountTypeNumber,
-        inet_user_status:      :inetUserStatus
+        email:                     :mail,
+        first_name:                :givenName,
+        first_name_japanese:       "givenName;lang-ja",
+        middle_name:               :middleName,
+        last_name:                 :surname,
+        last_name_japanese:        "surname;lang-ja",
+        job_title:                 :title,
+        job_title_japanese:        "title;lang-ja",
+        orcid:                     :orcid,
+        erad_id:                   :eradID,
+        organization:              :organizationName,
+        organization_japanese:     "organizationName;lang-ja",
+        lab_fac_dep:               :organizationalUnitName,
+        lab_fac_dep_japanese:      "organizationalUnitName;lang-ja",
+        organization_url:          :organizationURL,
+        country:                   :countryName,
+        postal_code:               :postalCode,
+        prefecture:                :stateOrProvinceName,
+        city:                      :localityName,
+        street:                    :streetAddress,
+        phone:                     :telephoneNumber,
+        ssh_keys:                  :sshPublicKey,
+        account_type_number_value: :accountTypeNumber,
+        inet_user_status:          :inetUserStatus
       }.each do |model_key, ldap_key|
         if val = public_send(model_key).presence
           LDAP.connection.assert_call(:replace_attribute, dn, ldap_key, val.to_s)
@@ -182,10 +194,6 @@ class User
 
   def dn
     "cn=#{username},#{LDAP.users_dn}"
-  end
-
-  def admin?
-    account_type_number == 3
   end
 
   private
@@ -243,7 +251,7 @@ class User
             streetAddress:                    street,
             telephoneNumber:                  phone,
             sshPublicKey:                     ssh_keys,
-            accountTypeNumber:                account_type_number.to_s,
+            accountTypeNumber:                account_type_number_value.to_s,
             uid:                              username,
             uidNumber:                        uid_number.to_s,
             gidNumber:                        "61000",

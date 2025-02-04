@@ -1,11 +1,7 @@
 <%# locals: (form:) %>
 
-<%= form.form_group :account_type_number, label: { text: "Account type" } do %>
-  <%= form.radio_button :account_type_number, 1, label: "Normal" %>
-  <%= form.radio_button :account_type_number, 3, label: "Admin" %>
-<% end %>
-
-<%= form.select :inet_user_status, [["Active", "active"], ["Inactive", "inactive"], ["Deleted", "deleted"]] %>
+<%= form.select :inet_user_status,    User.inet_user_status.options %>
+<%= form.select :account_type_number, User.account_type_number.options %>
 
 <hr>
 

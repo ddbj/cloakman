@@ -11,7 +11,7 @@ FactoryBot.define do
     city                  { "Anytown" }
 
     trait :admin do
-      account_type_number { 3 }
+      account_type_number { :ddbj }
     end
   end
 end

@@ -17,6 +17,7 @@
       <th>Email</th>
       <th>Name</th>
       <th>Organization</th>
+      <th>Status</th>
       <th>Account type</th>
     </tr>
   </thead>
@@ -28,17 +29,8 @@
         <td><%= user.email %></td>
         <td><%= [ user.first_name, user.middle_name, user.last_name ].compact_blank.join(" ") %></td>
         <td><%= user.organization %></td>
-
-        <td>
-          <% case user.account_type_number %>
-          <% when 1 %>
-            Normal
-          <% when 3 %>
-            Admin
-          <% else %>
-            <%= user.account_type_number %>
-          <% end %>
-        </td>
+        <td><%= user.inet_user_status_text %></td>
+        <td><%= user.account_type_number_text %></td>
       </tr>
     <% end %>
   </tbody>

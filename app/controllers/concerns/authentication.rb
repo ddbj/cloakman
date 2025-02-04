@@ -10,7 +10,7 @@ module Authentication
   end
 
   def authenticate_admin!
-    head :forbidden unless current_user.admin?
+    head :forbidden unless current_user.account_type_number.ddbj?
   end
 
   def current_user
@@ -20,7 +20,7 @@ module Authentication
       begin
         user = User.find(username)
 
-        if user.inet_user_status == "active"
+        if user.inet_user_status.active?
           @current_user = user
         else
           session.delete :username

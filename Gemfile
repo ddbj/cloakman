@@ -7,6 +7,7 @@ gem "bootstrap"
 gem "bootstrap_form"
 gem "countries"
 gem "dartsass-rails"
+gem "enumerize"
 gem "importmap-rails"
 gem "kamal", require: false
 gem "net-ldap"
