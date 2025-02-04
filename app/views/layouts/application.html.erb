@@ -28,9 +28,9 @@
       <div class="container">
         <%= link_to "DDBJ Account", root_path, class: "navbar-brand" %>
 
-        <% if signed_in? %>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <% if signed_in? %>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <%= current_user.username %>
@@ -42,9 +42,13 @@
                   </li>
                 </ul>
               </li>
-            </ul>
-          </div>
-        <% end %>
+            <% end %>
+
+            <li class="nav-item">
+              <%= link_to "Help", @help_url || "https://www.ddbj.nig.ac.jp/ddbj-account", class: "nav-link", target: "_blank" %>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
