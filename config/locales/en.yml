@@ -13,3 +13,5 @@ en:
         organization_url: Organization URL
         postal_code: Postal code/Zip code
         prefecture: State/Prefecture
+        account_type_number: Account type
+        inet_user_status: Status

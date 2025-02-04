@@ -43,6 +43,7 @@ class Admin::UsersController < ApplicationController
 
   def user_params
     params.expect(user: [
+      :inet_user_status,
       :account_type_number,
       :username,
       :password,
