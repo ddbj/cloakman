@@ -53,7 +53,7 @@ class User
       base:   LDAP.users_dn,
       filter:,
       size:   100
-    }).map { from_entry(it) }
+    }).map { new(from_entry(it)) }
   end
 
   def self.find(username)
@@ -61,11 +61,11 @@ class User
 
     raise ActiveRecord::RecordNotFound unless entries
 
-    from_entry(entries.first)
+    new(from_entry(entries.first))
   end
 
   def self.from_entry(entry)
-    new(
+    {
       persisted?:            true,
       username:              entry.first(:cn),
       email:                 entry.first(:mail),
@@ -92,13 +92,21 @@ class User
       ssh_keys:              entry[:sshPublicKey],
       account_type_number:   entry.first(:accountTypeNumber),
       inet_user_status:      entry.first(:inetUserStatus)
-    )
+    }
   end
 
   def new_record? = !persisted?
 
   def to_param
     username
+  end
+
+  def reload
+    entries = LDAP.connection.assert_call(:search, base: "cn=#{username},#{LDAP.users_dn}")
+
+    raise ActiveRecord::RecordNotFound unless entries
+
+    assign_attributes self.class.from_entry(entries.first)
   end
 
   def save

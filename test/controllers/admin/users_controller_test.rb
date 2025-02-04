@@ -25,6 +25,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   test "user created successfully" do
     post admin_users_path, params: {
       user: {
+        inet_user_status:      "active",
         account_type_number:   1,
         username:              "alice",
         password:              "P@ssw0rd",
@@ -39,11 +40,23 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to admin_users_path
+
+    user = User.find("alice")
+
+    assert_equal "active",            user.inet_user_status
+    assert_equal 1,                   user.account_type_number
+    assert_equal "alice@example.com", user.email
+    assert_equal "Alice",             user.first_name
+    assert_equal "Liddell",           user.last_name
+    assert_equal "Wonderland",        user.organization
+    assert_equal "GB",                user.country
+    assert_equal "Daresbury",         user.city
   end
 
   test "user creation failed" do
     post admin_users_path, params: {
       user: {
+        inet_user_status:      "active",
         account_type_number:   1,
         username:              "alice",
         password:              "P@ssw0rd",
@@ -67,6 +80,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     patch admin_user_path(user), params: {
       user: {
+        inet_user_status:    "inactive",
         account_type_number: 3,
         email:               "alice@example.com",
         first_name:          "Alice",
@@ -78,6 +92,17 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to admin_users_path
+
+    user.reload
+
+    assert_equal "inactive",          user.inet_user_status
+    assert_equal 3,                   user.account_type_number
+    assert_equal "alice@example.com", user.email
+    assert_equal "Alice",             user.first_name
+    assert_equal "Liddell",           user.last_name
+    assert_equal "Wonderland",        user.organization
+    assert_equal "GB",                user.country
+    assert_equal "Daresbury",         user.city
   end
 
   test "user update failed" do
@@ -85,6 +110,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     patch admin_user_path(user), params: {
       user: {
+        inet_user_status:    "inactive",
         account_type_number: 3,
         email:               "",
         first_name:          "Alice",
