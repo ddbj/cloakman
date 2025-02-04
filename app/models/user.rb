@@ -32,8 +32,10 @@ class User
   attribute :street,                :string
   attribute :phone,                 :string
   attribute :ssh_keys,                        default: -> { [] }
-  attribute :account_type_number,   :integer, default: 1
   attribute :inet_user_status,      :string,  default: "active"
+  attribute :account_type_number,   :integer, default: 1
+
+  enumerize :inet_user_status, in: %i[active inactive deleted]
 
   enumerize :account_type_number, in: {
     general:          1,

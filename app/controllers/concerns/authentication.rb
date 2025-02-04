@@ -20,7 +20,7 @@ module Authentication
       begin
         user = User.find(username)
 
-        if user.inet_user_status == "active"
+        if user.inet_user_status.active?
           @current_user = user
         else
           session.delete :username
