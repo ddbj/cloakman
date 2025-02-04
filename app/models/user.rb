@@ -62,6 +62,8 @@ class User
     raise ActiveRecord::RecordNotFound unless entries
 
     new(from_entry(entries.first))
+  rescue LDAPError::NoSuchObject
+    raise ActiveRecord::RecordNotFound
   end
 
   def self.from_entry(entry)
