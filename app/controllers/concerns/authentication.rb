@@ -10,7 +10,7 @@ module Authentication
   end
 
   def authenticate_admin!
-    head :forbidden unless current_user.admin?
+    head :forbidden unless current_user.account_type_number.ddbj?
   end
 
   def current_user

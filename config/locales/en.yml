@@ -15,3 +15,12 @@ en:
         prefecture: State/Prefecture
         account_type_number: Account type
         inet_user_status: Status
+
+  enumerize:
+    user:
+      account_type_number:
+        general: General
+        nbdc: NBDC
+        ddbj: DDBJ
+        administrator: Administrator
+        system_reference: System reference
