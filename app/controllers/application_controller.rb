@@ -17,7 +17,15 @@ class ApplicationController < ActionController::Base
 
     if username = session[:username]
       begin
-        @current_user = User.find(username)
+        user = User.find(username)
+
+        if user.inet_user_status == "active"
+          @current_user = user
+        else
+          session.delete :username
+
+          @current_user = nil
+        end
       rescue ActiveRecord::RecordNotFound
         session.delete :username
 
