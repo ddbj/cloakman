@@ -41,7 +41,7 @@
     </head>
 
     <body class="${properties.kcBodyClass!}">
-      <script src="https://www.ddbj.nig.ac.jp/assets/js/ddbj_common_framework.js" id="DDBJ_common_framework" style=""></script>
+      <script src="https://www.ddbj.nig.ac.jp/assets/js/ddbj_common_framework.js" id="DDBJ_common_framework" data-bottom-menu="false" data-footer="false"></script>
 
       <div class="${properties.kcLoginClass!}">
         <div id="kc-header" class="${properties.kcHeaderClass!}">
