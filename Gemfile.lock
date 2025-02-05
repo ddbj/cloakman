@@ -111,6 +111,7 @@ GEM
     countries (7.1.0)
       unaccent (~> 0.3)
     crass (1.0.6)
+    csv (3.3.2)
     dartsass-rails (0.5.1)
       railties (>= 6.0.0)
       sass-embedded (~> 1.63)
@@ -514,6 +515,7 @@ DEPENDENCIES
   brakeman
   capybara
   countries
+  csv
   dartsass-rails
   debug
   enumerize

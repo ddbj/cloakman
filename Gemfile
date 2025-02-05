@@ -7,6 +7,7 @@ gem "bootsnap", require: false
 gem "bootstrap"
 gem "bootstrap_form"
 gem "countries"
+gem "csv"
 gem "dartsass-rails"
 gem "enumerize"
 gem "importmap-rails"
