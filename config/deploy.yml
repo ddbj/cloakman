@@ -1,29 +1,36 @@
 service: cloakman
-image: ursm/cloakman
+image: w3const/cloakman
 require_destination: true
+deploy_timeout: 120
 
 registry:
-  username: ursm
+  username: w3const
 
   password:
     - KAMAL_REGISTRY_PASSWORD
 
 env:
   secret:
+    - EXT_LDAP_BIND_DN
+    - EXT_LDAP_PASSWORD
+    - KEYCLOAK_CLIENT_ID
     - KEYCLOAK_CLIENT_SECRET
     - LDAP_ADMIN_BIND_DN
     - LDAP_ADMIN_PASSWORD
-    - RAILS_MASTER_KEY
+    - SECRET_KEY_BASE
     - SENTRY_DSN
 
   clear:
-    KEYCLOAK_CLIENT_ID: cloakman
+    EXT_LDAP_BASE_DN: dc=nig,dc=ac,dc=jp
+    EXT_LDAP_HOST: 172.19.25.251
+    EXT_LDAP_PORT: 636
     KEYCLOAK_REALM: master
     LDAP_BASE_DN: dc=ddbj,dc=nig,dc=ac,dc=jp
     LDAP_HOST: cloakman-openldap
     LDAP_PORT: 1389
-    REDIS_URL: redis://redis:6379
+    REDIS_URL: redis://cloakman-redis:6379
     SOLID_QUEUE_IN_PUMA: true
+    TZ: Asia/Tokyo
 
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
@@ -31,18 +38,13 @@ aliases:
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
 
-volumes:
-  - "cloakman_storage:/rails/storage"
-
 asset_path: /rails/public/assets
 
 builder:
   arch: amd64
 
 ssh:
-  user: ursm
-
-deploy_timeout: 120
+  user: w3const
 
 accessories:
   keycloak:
@@ -60,36 +62,79 @@ accessories:
         - KEYCLOAK_ADMIN
         - KEYCLOAK_ADMIN_PASSWORD
 
-    volumes:
-      - cloakman_keycloak:/opt/keycloak/data
+      clear:
+        TZ: Asia/Tokyo
 
     files:
       - keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
+      - keycloak/themes/ddbj/login/login-oauth-grant.ftl:/opt/keycloak/themes/ddbj/login/login-oauth-grant.ftl
+      - keycloak/themes/ddbj/login/login.ftl:/opt/keycloak/themes/ddbj/login/login.ftl
+      - keycloak/themes/ddbj/login/messages/messages_en.properties:/opt/keycloak/themes/ddbj/login/messages/messages_en.properties
+      - keycloak/themes/ddbj/login/resources/css/login.css:/opt/keycloak/themes/ddbj/login/resources/css/login.css
+      - keycloak/themes/ddbj/login/resources/css/tile.css:/opt/keycloak/themes/ddbj/login/resources/css/tile.css
+      - keycloak/themes/ddbj/login/resources/img/DDBJ_logo-large.png:/opt/keycloak/themes/ddbj/login/resources/img/DDBJ_logo-large.png
+      - keycloak/themes/ddbj/login/resources/img/favicon.ico:/opt/keycloak/themes/ddbj/login/resources/img/favicon.ico
+      - keycloak/themes/ddbj/login/resources/img/feedback-error-arrow-down.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-error-arrow-down.png
+      - keycloak/themes/ddbj/login/resources/img/feedback-error-sign.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-error-sign.png
+      - keycloak/themes/ddbj/login/resources/img/feedback-success-arrow-down.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-success-arrow-down.png
+      - keycloak/themes/ddbj/login/resources/img/feedback-success-sign.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-success-sign.png
+      - keycloak/themes/ddbj/login/resources/img/feedback-warning-arrow-down.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-warning-arrow-down.png
+      - keycloak/themes/ddbj/login/resources/img/feedback-warning-sign.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-warning-sign.png
+      - keycloak/themes/ddbj/login/resources/img/keycloak-bg.png:/opt/keycloak/themes/ddbj/login/resources/img/keycloak-bg.png
+      - keycloak/themes/ddbj/login/resources/img/keycloak-logo-text.png:/opt/keycloak/themes/ddbj/login/resources/img/keycloak-logo-text.png
+      - keycloak/themes/ddbj/login/resources/img/keycloak-logo.png:/opt/keycloak/themes/ddbj/login/resources/img/keycloak-logo.png
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/app.css:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/app.css
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.ttf
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff2
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.ttf
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff2
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff
+      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/base.css:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/base.css
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/css/patternfly.min.css:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/css/patternfly.min.css
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.ttf
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff2
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.ttf
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff2
+      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff
+      - keycloak/themes/ddbj/login/resources/lib/pficon/pficon.css:/opt/keycloak/themes/ddbj/login/resources/lib/pficon/pficon.css
+      - keycloak/themes/ddbj/login/template.ftl:/opt/keycloak/themes/ddbj/login/template.ftl
+      - keycloak/themes/ddbj/login/theme.properties:/opt/keycloak/themes/ddbj/login/theme.properties
 
   openldap:
     image: bitnami/openldap:2.6
+    port: 636:1636
 
     env:
       secret:
-        - LDAP_ADMIN_USERNAME
         - LDAP_ADMIN_PASSWORD
+        - LDAP_ADMIN_USERNAME
+        - LDAP_CONFIG_ADMIN_PASSWORD
+        - LDAP_CONFIG_ADMIN_USERNAME
 
       clear:
         LDAP_ALLOW_ANON_BINDING: 'no'
+        LDAP_CONFIG_ADMIN_ENABLED: 'yes'
+        LDAP_ENABLE_TLS: 'yes'
         LDAP_ROOT: dc=ddbj,dc=nig,dc=ac,dc=jp
         LDAP_SKIP_DEFAULT_TREE: 'yes'
-
-    volumes:
-      - cloakman_openldap:/bitnami/openldap
+        LDAP_TLS_CA_FILE: /certs/ca.crt
+        LDAP_TLS_CERT_FILE: /certs/server.crt
+        LDAP_TLS_KEY_FILE: /certs/server.key
+        TZ: Asia/Tokyo
 
     files:
       - openldap/docker-entrypoint-initdb.d/acl.sh:/docker-entrypoint-initdb.d/acl.sh
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
       - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif
+      - openldap/schemas/inetuser.ldif:/schemas/inetuser.ldif
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
 
   redis:
     image: redis:7.4
+    cmd: redis-server --appendonly yes
 
-    volumes:
-      - cloakman_redis:/data
+    env:
+      clear:
+        TZ: Asia/Tokyo
