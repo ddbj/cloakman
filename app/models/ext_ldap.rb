@@ -7,13 +7,15 @@ module ExtLDAP
     else
       conn = Net::LDAP.new(
         host: ENV.fetch("EXT_LDAP_HOST", "localhost"),
-        port: ENV.fetch("EXT_LDAP_PORT", 3389),
+        port: ENV.fetch("EXT_LDAP_PORT", 3636),
 
         auth: {
           method:   :simple,
           username: ENV.fetch("EXT_LDAP_ADMIN_DN",       "cn=admin,dc=example,dc=org"),
           password: ENV.fetch("EXT_LDAP_ADMIN_PASSWORD", "adminpassword")
-        }
+        },
+
+        encryption: :simple_tls
       )
 
       Thread.current.thread_variable_set(:ext_ldap_connection, conn)

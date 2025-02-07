@@ -20,7 +20,7 @@ env:
     KEYCLOAK_CLIENT_ID: cloakman
     KEYCLOAK_REALM: master
     LDAP_HOST: cloakman-openldap
-    LDAP_PORT: 1389
+    LDAP_PORT: 1636
     LDAP_USERS_DN: ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp
     REDIS_URL: redis://redis:6379
     SOLID_QUEUE_IN_PUMA: true

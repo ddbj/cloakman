@@ -60,14 +60,29 @@ jobs:
       openldap:
         image: bitnami/openldap
         ports:
-          - 2389:1389
+          - 2636:1636
         env:
           LDAP_CONFIG_ADMIN_ENABLED: "yes"
+          LDAP_ENABLE_TLS: "yes"
+          LDAP_REQUIRE_TLS: "yes"
+          LDAP_TLS_CERT_FILE: /certs/server.crt
+          LDAP_TLS_KEY_FILE: /certs/server.key
+          LDAP_TLS_CA_FILE: /certs/ca.crt
+        volumes:
+          - ${{ github.workspace }}/openldap/certs:/certs
 
       ext-openldap:
         image: bitnami/openldap
         ports:
-          - 3389:1389
+          - 3636:1636
+        env:
+          LDAP_ENABLE_TLS: "yes"
+          LDAP_REQUIRE_TLS: "yes"
+          LDAP_TLS_CERT_FILE: /certs/server.crt
+          LDAP_TLS_KEY_FILE: /certs/server.key
+          LDAP_TLS_CA_FILE: /certs/ca.crt
+        volumes:
+          - ${{ github.workspace }}/openldap/certs:/certs
 
       redis:
         image: redis
@@ -82,9 +97,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/ddbj.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/inetuser.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/openssh-lpk.ldif
+      - run: ldapadd -H ldaps://localhost:2636 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/ddbj.ldif
+      - run: ldapadd -H ldaps://localhost:2636 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/inetuser.ldif
+      - run: ldapadd -H ldaps://localhost:2636 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/openssh-lpk.ldif
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
