@@ -11,10 +11,3 @@ ou: users
 dn: ou=services,dc=ddbj,dc=nig,dc=ac,dc=jp
 objectClass: organizationalUnit
 ou: services
-
-dn: olcDatabase={1}mdb,cn=config
-changetype: modify
-add: olcAccess
-olcAccess: {0}to dn.children="ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
-  by dn.children="ou=services,dc=ddbj,dc=nig,dc=ac,dc=jp" read
-  by * none
