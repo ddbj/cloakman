@@ -13,7 +13,9 @@ module ExtLDAP
           method:   :simple,
           username: ENV.fetch("EXT_LDAP_ADMIN_DN",       "cn=admin,dc=example,dc=org"),
           password: ENV.fetch("EXT_LDAP_ADMIN_PASSWORD", "adminpassword")
-        }
+        },
+
+        encryption: Rails.env.production? ? :simple_tls : nil
       )
 
       Thread.current.thread_variable_set(:ext_ldap_connection, conn)
