@@ -21,6 +21,10 @@ module LDAP
   end
 
   def users_dn
-    ENV.fetch("LDAP_USERS_DN", "ou=users,dc=example,dc=org")
+    "ou=users,#{base_dn}"
+  end
+
+  def base_dn
+    ENV.fetch("LDAP_BASE_DN", "dc=example,dc=org")
   end
 end
