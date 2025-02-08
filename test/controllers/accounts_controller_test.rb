@@ -1,5 +1,7 @@
 require "test_helper"
 
+using LDAPAssertion
+
 class AccountsControllerTest < ActionDispatch::IntegrationTest
   include TestHelper
 
@@ -56,9 +58,22 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "duplicate usernames with external LDAP are not allowed" do
+    ExtLDAP.connection.assert_call :add, **{
+      dn: "uid=alice,ou=people,#{ExtLDAP.base_dn}",
+
+      attributes: {
+        objectClass:   %w[account posixAccount],
+        uid:           "alice",
+        cn:            "Alice Liddell",
+        uidNumber:     "1000",
+        gidNumber:     "1000",
+        homeDirectory: "/home/alice"
+      }
+    }
+
     post account_path, params: {
       user: {
-        username:              "user01",
+        username:              "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",

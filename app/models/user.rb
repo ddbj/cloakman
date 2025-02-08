@@ -69,11 +69,12 @@ class User
   end
 
   def self.find(username)
-    entries = LDAP.connection.assert_call(:search, base: "cn=#{username},#{LDAP.users_dn}")
+    entry = LDAP.connection.assert_call(:search, **{
+      base:  "cn=#{username},#{LDAP.users_dn}",
+      scope: Net::LDAP::SearchScope_BaseObject
+    }).first
 
-    raise ActiveRecord::RecordNotFound unless entries
-
-    new(from_entry(entries.first))
+    new(from_entry(entry))
   rescue LDAPError::NoSuchObject
     raise ActiveRecord::RecordNotFound
   end
@@ -116,11 +117,12 @@ class User
   end
 
   def reload
-    entries = LDAP.connection.assert_call(:search, base: "cn=#{username},#{LDAP.users_dn}")
+    entry = LDAP.connection.assert_call(:search, **{
+      base:  "cn=#{username},#{LDAP.users_dn}",
+      scope: Net::LDAP::SearchScope_BaseObject
+    }).first
 
-    raise ActiveRecord::RecordNotFound unless entries
-
-    assign_attributes self.class.from_entry(entries.first)
+    assign_attributes self.class.from_entry(entry)
   end
 
   def save
@@ -281,14 +283,10 @@ class User
   end
 
   def user_exists_in_ext_ldap?
-    ExtLDAP.connection.assert_call(:search, **{
-      base:  "cn=#{username},#{ExtLDAP.users_dn}",
-      scope: Net::LDAP::SearchScope_BaseObject
-    })
-
-    true
-  rescue LDAPError::NoSuchObject
-    false
+    !ExtLDAP.connection.assert_call(:search, **{
+      base:   ExtLDAP.base_dn,
+      filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", username)
+    }).empty?
   end
 
   def email_exists?

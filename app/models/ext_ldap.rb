@@ -22,7 +22,7 @@ module ExtLDAP
     end
   end
 
-  def users_dn
-    ENV.fetch("EXT_LDAP_USERS_DN", "ou=users,dc=example,dc=org")
+  def base_dn
+    ENV.fetch("EXT_LDAP_BASE_DN", "dc=example,dc=org")
   end
 end
