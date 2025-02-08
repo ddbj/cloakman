@@ -57,7 +57,7 @@ class User
   def self.search(query)
     filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
 
-    filter = filter & %w[cn mail givenName middleName sn o].map { |attr|
+    filter = filter & %w[uid mail commonName organizationName].map { |attr|
       Net::LDAP::Filter.contains(attr, query)
     }.inject(:|) if query.present?
 
@@ -70,7 +70,7 @@ class User
 
   def self.find(username)
     entry = LDAP.connection.assert_call(:search, **{
-      base:  "cn=#{username},#{LDAP.users_dn}",
+      base:  "uid=#{username},#{LDAP.users_dn}",
       scope: Net::LDAP::SearchScope_BaseObject
     }).first
 
@@ -82,7 +82,7 @@ class User
   def self.from_entry(entry)
     {
       persisted?:            true,
-      username:              entry.first(:cn),
+      username:              entry.first(:uid),
       email:                 entry.first(:mail),
       first_name:            entry.first(:givenName),
       middle_name:           entry.first(:middleName),
@@ -110,15 +110,13 @@ class User
     }
   end
 
+  def full_name   = [ first_name, middle_name, last_name ].compact_blank.join(" ")
   def new_record? = !persisted?
-
-  def to_param
-    username
-  end
+  def to_param    = username
 
   def reload
     entry = LDAP.connection.assert_call(:search, **{
-      base:  "cn=#{username},#{LDAP.users_dn}",
+      base:  "uid=#{username},#{LDAP.users_dn}",
       scope: Net::LDAP::SearchScope_BaseObject
     }).first
 
@@ -148,6 +146,7 @@ class User
       end
 
       {
+        full_name:                 :commonName,
         email:                     :mail,
         first_name:                :givenName,
         first_name_japanese:       "givenName;lang-ja",
@@ -195,7 +194,7 @@ class User
   end
 
   def dn
-    "cn=#{username},#{LDAP.users_dn}"
+    "uid=#{username},#{LDAP.users_dn}"
   end
 
   private
@@ -230,7 +229,8 @@ class User
               inetUser
             ],
 
-            cn:                               username,
+            uid:                              username,
+            commonName:                       full_name,
             mail:                             email,
             givenName:                        first_name,
             "givenName;lang-ja":              first_name_japanese,
@@ -254,7 +254,6 @@ class User
             telephoneNumber:                  phone,
             sshPublicKey:                     ssh_keys,
             accountTypeNumber:                account_type_number_value.to_s,
-            uid:                              username,
             uidNumber:                        uid_number.to_s,
             gidNumber:                        "61000",
             homeDirectory:                    "/submission/#{username}",
@@ -292,7 +291,7 @@ class User
   def email_exists?
     !LDAP.connection.assert_call(:search, **{
       base:   LDAP.users_dn,
-      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("cn", username)
+      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
     }).empty?
   end
 end
