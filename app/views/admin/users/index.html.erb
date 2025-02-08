@@ -5,7 +5,7 @@
 </div>
 
 <%= bootstrap_form_with method: :get do |f| %>
-  <%= f.search_field :query, hide_label: true, placeholder: "Search by username, email, name, or organization", append: f.primary("Search") %>
+  <%= f.search_field :query, value: params[:query], hide_label: true, placeholder: "Search by username, email, name, or organization", append: f.primary("Search") %>
 <% end %>
 
 <p>Displaying the first 100 users from your search.</p>
@@ -27,7 +27,7 @@
       <tr>
         <td><%= link_to user.username, edit_admin_user_path(user) %></td>
         <td><%= user.email %></td>
-        <td><%= [ user.first_name, user.middle_name, user.last_name ].compact_blank.join(" ") %></td>
+        <td><%= user.full_name %></td>
         <td><%= user.organization %></td>
         <td><%= user.inet_user_status_text %></td>
         <td><%= user.account_type_number_text %></td>
