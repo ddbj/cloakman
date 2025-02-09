@@ -6,6 +6,67 @@ class User
 
   extend Enumerize
 
+  class << self
+    def users_dn = "ou=users,#{LDAP.base_dn}"
+
+    def search(query)
+      filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
+
+      filter = filter & %w[uid mail commonName organizationName].map { |attr|
+        Net::LDAP::Filter.contains(attr, query)
+      }.inject(:|) if query.present?
+
+      LDAP.connection.assert_call(:search, **{
+        base:   users_dn,
+        scope:  Net::LDAP::SearchScope_SingleLevel,
+        filter:,
+        size:   100
+      }).map { from_entry(it) }
+    end
+
+    def find(username)
+      entry = LDAP.connection.assert_call(:search, **{
+        base:  "uid=#{username},#{users_dn}",
+        scope: Net::LDAP::SearchScope_BaseObject
+      }).first
+
+      from_entry(entry)
+    rescue LDAPError::NoSuchObject
+      raise ActiveRecord::RecordNotFound
+    end
+
+    def from_entry(entry)
+      new(
+        persisted?:            true,
+        username:              entry.first(:uid),
+        email:                 entry.first(:mail),
+        first_name:            entry.first(:givenName),
+        middle_name:           entry.first(:middleName),
+        last_name:             entry.first(:sn),
+        first_name_japanese:   entry.first("givenName;lang-ja"),
+        last_name_japanese:    entry.first("sn;lang-ja"),
+        organization:          entry.first(:o),
+        organization_japanese: entry.first("o;lang-ja"),
+        lab_fac_dep:           entry.first(:ou),
+        lab_fac_dep_japanese:  entry.first("ou;lang-ja"),
+        organization_url:      entry.first(:organizationURL),
+        country:               entry.first(:c),
+        postal_code:           entry.first(:postalCode),
+        prefecture:            entry.first(:st),
+        city:                  entry.first(:l),
+        street:                entry.first(:street),
+        phone:                 entry.first(:telephoneNumber),
+        job_title:             entry.first(:title),
+        job_title_japanese:    entry.first("title;lang-ja"),
+        orcid:                 entry.first(:orcid),
+        erad_id:               entry.first(:eradID),
+        ssh_keys:              entry[:sshPublicKey],
+        account_type_number:   entry.first(:accountTypeNumber),
+        inet_user_status:      entry.first(:inetUserStatus)
+      )
+    end
+  end
+
   attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
   attribute :password,              :string
@@ -54,74 +115,12 @@ class User
   validates :country,      presence: true
   validates :city,         presence: true
 
-  def self.search(query)
-    filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
+  delegate :users_dn, to: :class
 
-    filter = filter & %w[uid mail commonName organizationName].map { |attr|
-      Net::LDAP::Filter.contains(attr, query)
-    }.inject(:|) if query.present?
-
-    LDAP.connection.assert_call(:search, **{
-      base:   LDAP.users_dn,
-      filter:,
-      size:   100
-    }).map { new(from_entry(it)) }
-  end
-
-  def self.find(username)
-    entry = LDAP.connection.assert_call(:search, **{
-      base:  "uid=#{username},#{LDAP.users_dn}",
-      scope: Net::LDAP::SearchScope_BaseObject
-    }).first
-
-    new(from_entry(entry))
-  rescue LDAPError::NoSuchObject
-    raise ActiveRecord::RecordNotFound
-  end
-
-  def self.from_entry(entry)
-    {
-      persisted?:            true,
-      username:              entry.first(:uid),
-      email:                 entry.first(:mail),
-      first_name:            entry.first(:givenName),
-      middle_name:           entry.first(:middleName),
-      last_name:             entry.first(:sn),
-      first_name_japanese:   entry.first("givenName;lang-ja"),
-      last_name_japanese:    entry.first("sn;lang-ja"),
-      organization:          entry.first(:o),
-      organization_japanese: entry.first("o;lang-ja"),
-      lab_fac_dep:           entry.first(:ou),
-      lab_fac_dep_japanese:  entry.first("ou;lang-ja"),
-      organization_url:      entry.first(:organizationURL),
-      country:               entry.first(:c),
-      postal_code:           entry.first(:postalCode),
-      prefecture:            entry.first(:st),
-      city:                  entry.first(:l),
-      street:                entry.first(:street),
-      phone:                 entry.first(:telephoneNumber),
-      job_title:             entry.first(:title),
-      job_title_japanese:    entry.first("title;lang-ja"),
-      orcid:                 entry.first(:orcid),
-      erad_id:               entry.first(:eradID),
-      ssh_keys:              entry[:sshPublicKey],
-      account_type_number:   entry.first(:accountTypeNumber),
-      inet_user_status:      entry.first(:inetUserStatus)
-    }
-  end
-
-  def full_name   = [ first_name, middle_name, last_name ].compact_blank.join(" ")
   def new_record? = !persisted?
   def to_param    = username
-
-  def reload
-    entry = LDAP.connection.assert_call(:search, **{
-      base:  "uid=#{username},#{LDAP.users_dn}",
-      scope: Net::LDAP::SearchScope_BaseObject
-    }).first
-
-    assign_attributes self.class.from_entry(entry)
-  end
+  def dn          = "uid=#{username},#{users_dn}"
+  def full_name   = [ first_name, middle_name, last_name ].compact_blank.join(" ")
 
   def save
     update
@@ -173,10 +172,10 @@ class User
         inet_user_status:          :inetUserStatus
       }.each do |model_key, ldap_key|
         if val = public_send(model_key).presence
-          LDAP.connection.assert_call(:replace_attribute, dn, ldap_key, val.to_s)
+          LDAP.connection.assert_call :replace_attribute, dn, ldap_key, val.to_s
         else
           begin
-            LDAP.connection.assert_call(:delete_attribute, dn, ldap_key)
+            LDAP.connection.assert_call :delete_attribute, dn, ldap_key
           rescue LDAPError::NoSuchAttribute
             # do nothing
           end
@@ -189,12 +188,12 @@ class User
     errors.empty?
   end
 
-  def update_password(new_password:, current_password: nil)
-    LDAP.connection.assert_call(:password_modify,  dn:, new_password:, old_password: current_password)
+  def destroy!
+    LDAP.connection.assert_call(:delete, dn:)
   end
 
-  def dn
-    "uid=#{username},#{LDAP.users_dn}"
+  def update_password(new_password:, current_password: nil)
+    LDAP.connection.assert_call(:password_modify,  dn:, new_password:, old_password: current_password)
   end
 
   private
@@ -222,7 +221,7 @@ class User
           dn:,
 
           attributes: {
-            objectclass: %w[
+            objectClass: %w[
               ddbjUser
               ldapPublicKey
               posixAccount
@@ -290,7 +289,7 @@ class User
 
   def email_exists?
     !LDAP.connection.assert_call(:search, **{
-      base:   LDAP.users_dn,
+      base:   users_dn,
       filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
     }).empty?
   end

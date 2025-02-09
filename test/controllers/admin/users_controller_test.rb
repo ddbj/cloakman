@@ -93,7 +93,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_users_path
 
-    user.reload
+    user = User.find(user.username)
 
     assert_equal "inactive",          user.inet_user_status
     assert_equal "ddbj",              user.account_type_number
