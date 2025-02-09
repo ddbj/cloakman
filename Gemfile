@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "rails", "~> 8.0.0"
 
+gem "base58"
 gem "bootsnap", require: false
 gem "bootstrap"
 gem "bootstrap_form"

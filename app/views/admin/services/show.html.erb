@@ -1,0 +1,20 @@
+<div class="mb-3">
+  <%= link_to "« Back", admin_services_path %>
+</div>
+
+<h1 class="mb-3"><%= @service.username %></h1>
+
+<dl>
+  <dt>Base DN</dt>
+  <dd><code><%= LDAP.users_dn %></code></dd>
+
+  <dt>Bind DN</dt>
+  <dd><code><%= @service.dn %></code></dd>
+
+  <dt>Password</dt>
+  <dd><code><%= @service.password %></code></dd>
+</dl>
+
+<hr>
+
+<%= button_to "Delete Service", admin_service_path(@service), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
