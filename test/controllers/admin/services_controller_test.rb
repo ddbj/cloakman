@@ -9,7 +9,19 @@ class Admin::ServicesControllerTest < ActionDispatch::IntegrationTest
     sign_in FactoryBot.create(:user, :admin)
   end
 
-  test "listing service" do
+  test "service details" do
+    Base58.stub :binary_to_base58, "notasecret" do
+      FactoryBot.create :service, username: "example"
+    end
+
+    get admin_service_path("example")
+
+    assert_select "dd", text: "ou=users,dc=example,dc=org"
+    assert_select "dd", text: "uid=example,ou=services,dc=example,dc=org"
+    assert_select "dd", text: "notasecret"
+  end
+
+  test "listing services" do
     FactoryBot.create :service, username: "example"
 
     get admin_services_path
