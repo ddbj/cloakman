@@ -83,6 +83,7 @@ accessories:
       - cloakman_openldap:/bitnami/openldap
 
     files:
+      - openldap/docker-entrypoint-initdb.d/acl.sh:/docker-entrypoint-initdb.d/acl.sh
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
       - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
