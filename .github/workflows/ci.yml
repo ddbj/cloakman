@@ -62,6 +62,7 @@ jobs:
         ports:
           - 2389:1389
         env:
+          LDAP_ALLOW_ANON_BINDING: "no"
           LDAP_CONFIG_ADMIN_ENABLED: "yes"
           LDAP_SKIP_DEFAULT_TREE: "yes"
 
@@ -70,6 +71,7 @@ jobs:
         ports:
           - 3389:1389
         env:
+          LDAP_ALLOW_ANON_BINDING: "no"
           LDAP_SKIP_DEFAULT_TREE: "yes"
 
       redis:
