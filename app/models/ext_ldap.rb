@@ -11,8 +11,8 @@ module ExtLDAP
 
         auth: {
           method:   :simple,
-          username: ENV.fetch("EXT_LDAP_ADMIN_USERNAME", "cn=admin,dc=example,dc=org"),
-          password: ENV.fetch("EXT_LDAP_ADMIN_PASSWORD", "adminpassword")
+          username: ENV.fetch("EXT_LDAP_USERNAME", "cn=admin,dc=example,dc=org"),
+          password: ENV.fetch("EXT_LDAP_PASSWORD", "adminpassword")
         },
 
         encryption: Rails.env.production? ? :simple_tls : nil
