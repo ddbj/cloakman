@@ -11,7 +11,7 @@ module LDAP
 
         auth: {
           method:   :simple,
-          username: ENV.fetch("LDAP_ADMIN_DN",       "cn=admin,dc=example,dc=org"),
+          username: ENV.fetch("LDAP_ADMIN_USERNAME", "cn=admin,dc=example,dc=org"),
           password: ENV.fetch("LDAP_ADMIN_PASSWORD", "adminpassword")
         }
       )
