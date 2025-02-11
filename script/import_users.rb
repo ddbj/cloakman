@@ -2,10 +2,15 @@ require_relative "../config/environment"
 
 using LDAPAssertion
 
+max_uid_number = -1
+
 $stdin.each do |line|
   next if line.blank?
 
-  user = JSON.parse(line, symbolize_names: true)
+  user       = JSON.parse(line, symbolize_names: true)
+  uid_number = user[:uid_number].to_i
+
+  max_uid_number = uid_number if uid_number > max_uid_number
 
   LDAP.connection.assert_call :add, **{
     dn: "uid=#{user[:username]},#{User.users_dn}",
@@ -56,3 +61,5 @@ $stdin.each do |line|
 rescue LDAPError::EntryAlreadyExists
   warn "User #{user[:username]} already exists"
 end
+
+REDIS.call :set, "uid_number", max_uid_number
