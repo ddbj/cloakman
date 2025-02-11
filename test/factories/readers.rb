@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :service do
+  factory :reader do
     sequence(:username) { "serivce#{it}" }
   end
 end

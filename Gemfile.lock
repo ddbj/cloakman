@@ -83,6 +83,13 @@ GEM
     base64 (0.2.0)
     bcrypt_pbkdf (1.1.1)
     benchmark (0.4.0)
+    better_html (2.1.1)
+      actionview (>= 6.0)
+      activesupport (>= 6.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      parser (>= 2.4)
+      smart_properties
     bigdecimal (3.1.9)
     bindata (2.5.0)
     bindex (0.8.1)
@@ -365,6 +372,9 @@ GEM
       unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.38.0)
       parser (>= 3.3.1.0)
+    rubocop-erb (0.5.5)
+      better_html
+      rubocop (~> 1.45)
     rubocop-minitest (0.36.0)
       rubocop (>= 1.61, < 2.0)
       rubocop-ast (>= 1.31.1, < 2.0)
@@ -415,6 +425,7 @@ GEM
     sentry-ruby (5.22.4)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+    smart_properties (1.17.0)
     solid_cache (1.0.7)
       activejob (>= 7.2)
       activerecord (>= 7.2)
@@ -530,6 +541,7 @@ DEPENDENCIES
   puma
   rails (~> 8.0.0)
   redis-client
+  rubocop-erb
   rubocop-rails-omakase
   selenium-webdriver
   sentry-rails

@@ -3,15 +3,15 @@
     <div class="col-3">
       <div class="list-group">
         <%= link_to "Profile", edit_profile_path, **{
-          class: ["list-group-item", "list-group-item-action", active: controller_path == "profiles"]
+          class: [ "list-group-item", "list-group-item-action", active: controller_path == "profiles" ]
         } %>
 
         <%= link_to "Password", edit_password_path, **{
-          class: ["list-group-item", "list-group-item-action", active: controller_path == "passwords"]
+          class: [ "list-group-item", "list-group-item-action", active: controller_path == "passwords" ]
         } %>
 
         <%= link_to "SSH keys", ssh_keys_path, **{
-          class: ["list-group-item", "list-group-item-action", active: controller_path == "ssh_keys"]
+          class: [ "list-group-item", "list-group-item-action", active: controller_path == "ssh_keys" ]
         } %>
       </div>
 
@@ -20,11 +20,11 @@
 
         <div class="list-group">
           <%= link_to "Users", admin_users_path, **{
-            class: ["list-group-item", "list-group-item-action", active: controller_path == "admin/users"]
+            class: [ "list-group-item", "list-group-item-action", active: controller_path == "admin/users" ]
           } %>
 
-          <%= link_to "Services", admin_services_path, **{
-            class: ["list-group-item", "list-group-item-action", active: controller_path == "admin/services"]
+          <%= link_to "Readers", admin_readers_path, **{
+            class: [ "list-group-item", "list-group-item-action", active: controller_path == "admin/readers" ]
           } %>
         </div>
       <% end %>

@@ -13,7 +13,7 @@ add: olcAccess
 olcAccess: {0}to * attrs=userPassword
   by * auth
 olcAccess: {1}to dn.subtree="ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
-  by dn.one="ou=services,dc=ddbj,dc=nig,dc=ac,dc=jp" read
+  by dn.one="ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp" read
 olcAccess: {2}to *
   by * none
 EOF

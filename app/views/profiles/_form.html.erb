@@ -2,9 +2,9 @@
 
 <% account = form.object %>
 
-<%= form.text_field :username, required: true, disabled: account.persisted?, autocomplete: "username" %>
-
 <% if account.new_record? %>
+  <%= form.text_field :username, required: true, autocomplete: "username" %>
+
   <%= form.password_field :password,              required: true, autocomplete: "new-password" %>
   <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
 <% end %>

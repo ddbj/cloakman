@@ -56,11 +56,11 @@ module TestHelper
     }
 
     LDAP.connection.assert_call :add, **{
-      dn: Service.services_dn,
+      dn: Reader.readers_dn,
 
       attributes: {
         objectClass: %w[organizationalUnit],
-        ou:          "services"
+        ou:          "readers"
       }
     }
   end
