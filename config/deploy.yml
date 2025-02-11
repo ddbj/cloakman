@@ -11,8 +11,8 @@ registry:
 env:
   secret:
     - KEYCLOAK_CLIENT_SECRET
+    - LDAP_ADMIN_BIND_DN
     - LDAP_ADMIN_PASSWORD
-    - LDAP_ADMIN_USERNAME
     - RAILS_MASTER_KEY
     - SENTRY_DSN
 

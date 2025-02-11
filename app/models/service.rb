@@ -5,6 +5,7 @@ class Service
   include ActiveModel::Attributes
 
   class << self
+    def endpoint    = ENV.fetch("LDAP_INTERNAL_ENDPOINT", "ldap://localhost:1389")
     def services_dn = "ou=services,#{LDAP.base_dn}"
 
     def all
