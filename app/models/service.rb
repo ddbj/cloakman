@@ -1,3 +1,4 @@
+using GenerateSSHA
 using LDAPAssertion
 
 class Service
@@ -30,8 +31,7 @@ class Service
     def from_entry(entry)
       new(
         persisted?: true,
-        username:   entry.first(:uid),
-        password:   entry.first(:userPassword)
+        username:   entry.first(:uid)
       )
     end
   end
@@ -93,7 +93,7 @@ class Service
   def create
     return false unless valid?(:create)
 
-    LDAP.connection.assert_call(:add, **{
+    LDAP.connection.assert_call :add, **{
       dn:,
 
       attributes: {
@@ -103,9 +103,9 @@ class Service
         ],
 
         uid:          username,
-        userPassword: password
+        userPassword: password.generate_ssha
       }.compact_blank
-    })
+    }
 
     true
   rescue LDAPError => e
