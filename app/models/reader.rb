@@ -1,17 +1,17 @@
 using GenerateSSHA
 using LDAPAssertion
 
-class Service
+class Reader
   include ActiveModel::Model
   include ActiveModel::Attributes
 
   class << self
-    def endpoint    = ENV.fetch("LDAP_INTERNAL_ENDPOINT", "ldap://localhost:1389")
-    def services_dn = "ou=services,#{LDAP.base_dn}"
+    def endpoint   = ENV.fetch("LDAP_INTERNAL_ENDPOINT", "ldap://localhost:1389")
+    def readers_dn = "ou=readers,#{LDAP.base_dn}"
 
     def all
       LDAP.connection.assert_call(:search, **{
-        base:   services_dn,
+        base:   readers_dn,
         scope:  Net::LDAP::SearchScope_SingleLevel,
         filter: Net::LDAP::Filter.eq("objectClass", "account")
       }).map { from_entry(it) }
@@ -19,7 +19,7 @@ class Service
 
     def find(username)
       entry = LDAP.connection.assert_call(:search, **{
-        base:  "uid=#{username},#{services_dn}",
+        base:  "uid=#{username},#{readers_dn}",
         scope: Net::LDAP::SearchScope_BaseObject
       }).first
 
@@ -43,11 +43,11 @@ class Service
   validates :username, presence: true
   validates :password, presence: true
 
-  delegate :services_dn, to: :class
+  delegate :readers_dn, to: :class
 
   def new_record? = !persisted?
   def to_param    = username
-  def dn          = "uid=#{username},#{services_dn}"
+  def dn          = "uid=#{username},#{readers_dn}"
 
   def save
     update

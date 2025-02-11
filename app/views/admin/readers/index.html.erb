@@ -1,0 +1,11 @@
+<h1 class="mb-3">Readers</h1>
+
+<div class="mb-3">
+  <%= link_to "New Reader", new_admin_reader_path, class: "btn btn-primary" %>
+</div>
+
+<div class="list-group">
+  <% @readers.each do |reader| %>
+    <%= link_to reader.username, admin_reader_path(reader), class: "list-group-item list-group-item-action" %>
+  <% end %>
+</div>

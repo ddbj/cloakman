@@ -8,6 +8,6 @@ dn: ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp
 objectClass: organizationalUnit
 ou: users
 
-dn: ou=services,dc=ddbj,dc=nig,dc=ac,dc=jp
+dn: ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp
 objectClass: organizationalUnit
-ou: services
+ou: readers

@@ -1,0 +1,29 @@
+<div class="mb-3">
+  <%= link_to "« Back", admin_readers_path %>
+</div>
+
+<% if flash[:password] %>
+  <div class="alert alert-danger">
+    <b>Important:</b> For security reasons, your password will not be displayed again after the reader is created. Please record it securely now, as it cannot be recovered later.
+  </div>
+<% end %>
+
+<h1 class="mb-3"><%= @reader.username %></h1>
+
+<dl>
+  <dt>Endpoint</dt>
+  <dd><code><%= Reader.endpoint %></code></dd>
+
+  <dt>Base DN</dt>
+  <dd><code><%= User.users_dn %></code></dd>
+
+  <dt>Bind DN</dt>
+  <dd><code><%= @reader.dn %></code></dd>
+
+  <dt>Password</dt>
+  <dd><code><%= flash[:password] || "********" %></code></dd>
+</dl>
+
+<hr>
+
+<%= button_to "Delete Reader", admin_reader_path(@reader), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
