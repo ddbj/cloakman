@@ -31,13 +31,13 @@ ldif.split("\n\n").map { |entry|
   it[:objectClass].include?('posixAccount')
 }.each do |entry|
   next unless entry[:userPassword]
-
-  row = csv.fetch(entry[:uid].first, {})
+  next unless row = csv[entry[:uid].first]
+  next unless row[:email]
 
   puts JSON.generate(
     username:              entry[:uid].first.required,
     password:              entry[:userPassword].first.required,
-    email:                 row[:email] || "nobody@nig.ac.jp",
+    email:                 row[:email].required,
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
@@ -59,7 +59,7 @@ ldif.split("\n\n").map { |entry|
     street:                row[:street],
     phone:                 row[:phone],
     ssh_keys:              entry[:sshPublicKey] || [],
-    account_type_number:   row[:account_type_number] || "1",
+    account_type_number:   row[:account_type_number].required,
     uid_number:            entry[:uidNumber].first.required,
     gid_number:            entry[:gidNumber].first.required,
     home_directory:        entry[:homeDirectory].first.required,
