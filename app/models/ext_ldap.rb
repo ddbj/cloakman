@@ -11,7 +11,7 @@ module ExtLDAP
 
         auth: {
           method:   :simple,
-          username: ENV.fetch("EXT_LDAP_USERNAME", "cn=admin,dc=example,dc=org"),
+          username: ENV.fetch("EXT_LDAP_BIND_DN",  "cn=admin,dc=example,dc=org"),
           password: ENV.fetch("EXT_LDAP_PASSWORD", "adminpassword")
         },
 
