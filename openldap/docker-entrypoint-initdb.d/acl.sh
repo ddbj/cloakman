@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -eu
 
@@ -11,6 +11,7 @@ dn: olcDatabase={2}mdb,cn=config
 changetype: modify
 add: olcAccess
 olcAccess: {0}to * attrs=userPassword
+  by dn.one="ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp" read
   by * auth
 olcAccess: {1}to dn.subtree="ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
   by dn.one="ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp" read
