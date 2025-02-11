@@ -23,7 +23,11 @@ class PasswordsController < ApplicationController
     @form = Form.new(form_params)
 
     if @form.valid?
-      current_user.update_password new_password: @form.new_password, current_password: @form.current_password
+      LDAP.connection.assert_call :password_modify, **{
+        dn:,
+        new_password: @form.new_password,
+        old_password: @form.current_password
+      }
 
       redirect_to edit_password_path, notice: "Password updated successfully."
     else

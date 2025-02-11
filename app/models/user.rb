@@ -1,3 +1,4 @@
+using GenerateSSHA
 using LDAPAssertion
 
 class User
@@ -192,10 +193,6 @@ class User
     LDAP.connection.assert_call(:delete, dn:)
   end
 
-  def update_password(new_password:, current_password: nil)
-    LDAP.connection.assert_call(:password_modify,  dn:, new_password:, old_password: current_password)
-  end
-
   private
 
   def create
@@ -217,7 +214,7 @@ class User
       uid_number = REDIS.call(:incr, "uid_number")
 
       begin
-        LDAP.connection.assert_call(:add, **{
+        LDAP.connection.assert_call :add, **{
           dn:,
 
           attributes: {
@@ -229,6 +226,7 @@ class User
             ],
 
             uid:                              username,
+            userPassword:                     password.generate_ssha,
             commonName:                       full_name,
             mail:                             email,
             givenName:                        first_name,
@@ -259,22 +257,12 @@ class User
             loginShell:                       "/bin/bash",
             inetUserStatus:                   inet_user_status
           }.compact_blank
-        })
+        }
       rescue LDAPError => e
         errors.add :base, e.message
 
         return false
       end
-    end
-
-    begin
-      update_password new_password: password
-    rescue LDAPError => e
-      LDAP.connection.delete dn
-
-      errors.add :password, e.message
-
-      return false
     end
 
     true

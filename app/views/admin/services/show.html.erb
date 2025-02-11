@@ -2,6 +2,12 @@
   <%= link_to "« Back", admin_services_path %>
 </div>
 
+<% if flash[:password] %>
+  <div class="alert alert-danger">
+    <b>Important:</b> For security reasons, your password will not be displayed again after the service is created. Please record it securely now, as it cannot be recovered later.
+  </div>
+<% end %>
+
 <h1 class="mb-3"><%= @service.username %></h1>
 
 <dl>
@@ -15,7 +21,7 @@
   <dd><code><%= @service.dn %></code></dd>
 
   <dt>Password</dt>
-  <dd><code><%= @service.password %></code></dd>
+  <dd><code><%= flash[:password] || "********" %></code></dd>
 </dl>
 
 <hr>

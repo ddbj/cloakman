@@ -19,6 +19,8 @@ class Admin::ServicesController < ApplicationController
     @service = Service.new(service_params)
 
     if @service.save
+      flash[:password] = @service.password
+
       redirect_to admin_service_path(@service), notice: "Service was successfully created."
     else
       flash.now[:alert] = @service.errors.full_messages_for(:base).join(" ")

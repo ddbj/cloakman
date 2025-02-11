@@ -10,15 +10,13 @@ class Admin::ServicesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "service details" do
-    Base58.stub :binary_to_base58, "notasecret" do
-      FactoryBot.create :service, username: "example"
-    end
+    FactoryBot.create :service, username: "example"
 
     get admin_service_path("example")
 
     assert_select "dd", text: "ou=users,dc=example,dc=org"
     assert_select "dd", text: "uid=example,ou=services,dc=example,dc=org"
-    assert_select "dd", text: "notasecret"
+    assert_select "dd", text: "********"
   end
 
   test "listing services" do
@@ -42,10 +40,10 @@ class Admin::ServicesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to admin_service_path("example")
 
-    service = Service.find("example")
+    follow_redirect!
 
-    assert_equal "example",    service.username
-    assert_equal "notasecret", service.password
+    assert_select "dd", text: "uid=example,ou=services,dc=example,dc=org"
+    assert_select "dd", text: "notasecret"
   end
 
   test "service creation failed" do
