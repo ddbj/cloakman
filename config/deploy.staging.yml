@@ -1,24 +1,39 @@
 servers:
   web:
-    - bastion
+    - cloakman-staging
 
 proxy:
-  ssl: false
-  host: cloakman.ursm.jp
+  host: accounts-dev.ddbj.nig.ac.jp
 
 env:
   clear:
-    APP_URL: https://cloakman.ursm.jp
-    KEYCLOAK_URL: https://keycloak.ursm.jp
+    APP_URL: https://accounts-dev.ddbj.nig.ac.jp
+    KEYCLOAK_URL: https://idp-dev.ddbj.nig.ac.jp
     LDAP_INTERNAL_ENDPOINT: ldaps://172.19.7.244:636
     SENTRY_CURRENT_ENV: staging
 
+volumes:
+  - ./volumes/cloakman-staging/storage:/rails/storage
+
 accessories:
   keycloak:
-    host: bastion
+    host: cloakman-staging
 
     proxy:
-      host: keycloak.ursm.jp
+      host: idp-dev.ddbj.nig.ac.jp
+
+    volumes:
+      - ./volumes/cloakman-staging/keycloak:/opt/keycloak/data
 
   openldap:
-    host: bastion
+    host: cloakman-staging
+
+    volumes:
+      - ./volumes/cloakman-staging/openldap:/bitnami/openldap
+      - ./volumes/cloakman-staging/openldap-certs:/certs
+
+  redis:
+    host: cloakman-staging
+
+    volumes:
+      - ./volumes/cloakman-staging/redis:/data
