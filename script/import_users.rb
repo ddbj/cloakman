@@ -12,6 +12,8 @@ $stdin.each do |line|
 
   max_uid_number = uid_number if uid_number > max_uid_number
 
+  next unless user[:username]
+
   LDAP.connection.assert_call :add, **{
     dn: "uid=#{user[:username]},#{User.users_dn}",
 
