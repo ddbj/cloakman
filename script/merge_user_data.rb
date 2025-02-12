@@ -14,27 +14,16 @@ using Module.new {
   end
 }
 
-csv = CSV.read("tmp/account.other_id.20250207-staging.csv", **{
-  headers:           true,
-  header_converters: :symbol
-}).index_by { it[:account_id] }
+def entry_to_json(entry, csv)
+  uid_number_only = {
+    uid_number: entry[:uidNumber].first.required
+  }
 
-ldif = File.read("tmp/userRoot.20250207-staging.ldif")
+  return uid_number_only unless entry[:userPassword]
+  return uid_number_only unless row = csv[entry[:uid].first]
+  return uid_number_only unless row[:email]
 
-ldif.split("\n\n").map { |entry|
-  entry.lines(chomp: true).map {
-    k, v = it.split(': ', 2)
-
-    [ k.to_sym, v ]
-  }.group_by(&:first).transform_values { it.map(&:last) }
-}.select {
-  it[:objectClass].include?('posixAccount')
-}.each do |entry|
-  next unless entry[:userPassword]
-  next unless row = csv[entry[:uid].first]
-  next unless row[:email]
-
-  puts JSON.generate(
+  {
     username:              entry[:uid].first.required,
     password:              entry[:userPassword].first.required,
     email:                 row[:email].required,
@@ -65,5 +54,24 @@ ldif.split("\n\n").map { |entry|
     home_directory:        entry[:homeDirectory].first.required,
     login_shell:           entry[:loginShell].first.required,
     inet_user_status:      entry[:inetUserStatus].first.required.downcase
-  )
+  }
+end
+
+csv = CSV.read("tmp/account.other_id.20250207-staging.csv", **{
+  headers:           true,
+  header_converters: :symbol
+}).index_by { it[:account_id] }
+
+ldif = File.read("tmp/userRoot.20250207-staging.ldif")
+
+ldif.split("\n\n").map { |entry|
+  entry.lines(chomp: true).map {
+    k, v = it.split(': ', 2)
+
+    [ k.to_sym, v ]
+  }.group_by(&:first).transform_values { it.map(&:last) }
+}.select {
+  it[:objectClass].include?('posixAccount')
+}.each do |entry|
+  puts JSON.generate(entry_to_json(entry, csv))
 end
