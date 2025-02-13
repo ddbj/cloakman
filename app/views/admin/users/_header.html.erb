@@ -1,0 +1,17 @@
+<%# locals: (user:) %>
+
+<div class="mb-3">
+  <%= link_to "« Back", admin_users_path %>
+</div>
+
+<h1 class="mb-3"><%= user.username %></h1>
+
+<div class="nav nav-tabs mb-3">
+  <%= link_to "Profile", edit_admin_user_profile_path(user), **{
+    class: [ "nav-link", active: controller_path == "admin/user_profiles" ]
+  } %>
+
+  <%= link_to "Config", edit_admin_user_config_path(user), **{
+    class: [ "nav-link", active: controller_path == "admin/user_configs" ]
+  } %>
+</div>

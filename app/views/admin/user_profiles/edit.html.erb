@@ -1,0 +1,7 @@
+<%= render "admin/users/header", user: @user %>
+
+<%= bootstrap_form_with model: @user, url: admin_user_profile_path(@user) do |form| %>
+  <%= render "profiles/form", form: form %>
+
+  <%= form.primary "Update User" %>
+<% end %>

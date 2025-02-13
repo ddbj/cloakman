@@ -4,14 +4,18 @@ Rails.application.routes.draw do
   get "auth/:provider/callback", to: "sessions#create", as: :auth_callback
   get "auth/failure",            to: "sessions#failure"
 
-  resource :session, only: %i[destroy]
-  resource :account, only: %i[new create]
-  resource :profile, only: %i[edit update]
-  resource :password, only: %i[edit update]
+  resource :session,   only: %i[destroy]
+  resource :account,   only: %i[new create]
+  resource :profile,   only: %i[edit update]
+  resource :password,  only: %i[edit update]
   resources :ssh_keys, only: %i[index new create destroy]
 
   namespace :admin do
-    resources :users,   only: %i[index new create edit update]
+    resources :users, only: %i[index new create] do
+      resource :profile, only: %i[edit update], controller: "user_profiles"
+      resource :config,  only: %i[edit update], controller: "user_configs"
+    end
+
     resources :readers, only: %i[index show new create destroy]
   end
 
