@@ -61,6 +61,7 @@ class User
         job_title_japanese:    entry.first("title;lang-ja"),
         orcid:                 entry.first(:orcid),
         erad_id:               entry.first(:eradID),
+        jga_datasets:          entry[:jgaDataset],
         ssh_keys:              entry[:sshPublicKey],
         account_type_number:   entry.first(:accountTypeNumber),
         inet_user_status:      entry.first(:inetUserStatus)
@@ -93,6 +94,7 @@ class User
   attribute :city,                  :string
   attribute :street,                :string
   attribute :phone,                 :string
+  attribute :jga_datasets,                    default: -> { [] }
   attribute :ssh_keys,                        default: -> { [] }
   attribute :inet_user_status,      :string,  default: "active"
   attribute :account_type_number,   :integer, default: 1
@@ -169,11 +171,12 @@ class User
         street:                    :streetAddress,
         phone:                     :telephoneNumber,
         ssh_keys:                  :sshPublicKey,
+        jga_datasets:              :jgaDataset,
         account_type_number_value: :accountTypeNumber,
         inet_user_status:          :inetUserStatus
       }.each do |model_key, ldap_key|
         if val = public_send(model_key).presence
-          LDAP.connection.assert_call :replace_attribute, dn, ldap_key, val.to_s
+          LDAP.connection.assert_call :replace_attribute, dn, ldap_key, Array(val).map(&:to_s)
         else
           begin
             LDAP.connection.assert_call :delete_attribute, dn, ldap_key
@@ -187,6 +190,10 @@ class User
     end
 
     errors.empty?
+  end
+
+  def update!(attrs = {})
+    raise ActiveRecord::RecordInvalid, self unless update(attrs)
   end
 
   def destroy!
@@ -249,6 +256,7 @@ class User
             localityName:                     city,
             streetAddress:                    street,
             telephoneNumber:                  phone,
+            jgaDataset:                       jga_datasets,
             sshPublicKey:                     ssh_keys,
             accountTypeNumber:                account_type_number_value.to_s,
             uidNumber:                        uid_number.to_s,

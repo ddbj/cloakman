@@ -6,17 +6,21 @@ olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.1
   EQUALITY integerMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
 olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.2
+  NAME 'jgaDataset'
+  EQUALITY caseExactMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.3
   NAME 'middleName'
   SUP name )
-olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.3
+olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.4
   NAME 'organizationURL'
   EQUALITY caseExactMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
-olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.4
+olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.5
   NAME 'orcid'
   EQUALITY caseExactMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
-olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.5
+olcAttributeTypes: ( 1.3.6.1.4.1.63082.1.2.6
   NAME 'eradID'
   EQUALITY caseExactMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
@@ -24,4 +28,4 @@ olcObjectClasses: ( 1.3.6.1.4.1.63082.1.1.1
   NAME 'ddbjUser'
   SUP inetOrgPerson STRUCTURAL
   MUST ( accountTypeNumber )
-  MAY ( countryName $ middleName $ organizationURL $ orcid $ eradID ) )
+  MAY ( jgaDataset $ countryName $ middleName $ organizationURL $ orcid $ eradID ) )

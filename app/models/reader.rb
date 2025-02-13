@@ -84,6 +84,10 @@ class Reader
     errors.empty?
   end
 
+  def update!(attrs = {})
+    raise ActiveRecord::RecordInvalid, self unless update(attrs)
+  end
+
   def destroy!
     LDAP.connection.assert_call(:delete, dn:)
   end
