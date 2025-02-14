@@ -7,7 +7,7 @@ class ImportJGADatasetsJob < ApplicationJob
         json = JSON.parse(line, symbolize_names: true)
         user = User.find(json[:username])
 
-        user.update! jga_datasets: json[:dataset].map { JSON.dump(it) }
+        user.update! jga_datasets: json[:dataset].uniq.map { JSON.dump(it) }
       rescue ActiveRecord::RecordNotFound
         # do nothing
       end
