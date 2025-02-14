@@ -1,11 +1,11 @@
 require_relative "../config/environment"
 
-require "csv"
+using GenerateSSHA
 
 using Module.new {
   refine Object do
     def required
-      if nil?
+      if blank?
         raise "required"
       else
         self
@@ -14,19 +14,34 @@ using Module.new {
   end
 }
 
-def entry_to_json(entry, csv)
-  uid_number_only = {
-    uid_number: entry[:uidNumber].first.required
-  }
+def parse_ldif(path)
+  File.read(path).split("\n\n").map { |entry|
+    entry.lines(chomp: true).map {
+      k, v = it.split(': ', 2)
 
-  return uid_number_only unless entry[:userPassword]
-  return uid_number_only unless row = csv[entry[:uid].first]
-  return uid_number_only unless row[:email]
+      [ k.to_sym, v ]
+    }.group_by(&:first).transform_values { it.map(&:last) }
+  }
+end
+
+def parse_tsv(path)
+  lines   = IO.readlines(path, chomp: true)
+  headers = lines.first.split("\t").map(&:to_sym)
+
+  lines.drop(1).map { |line|
+    cols = line.split("\t").map(&:presence)
+
+    headers.zip(cols).to_h
+  }
+end
+
+def entry_to_json(entry, row)
+  uid = entry[:uid].first.required
 
   {
-    username:              entry[:uid].first.required,
-    password:              entry[:userPassword].first.required,
-    email:                 row[:email].required,
+    username:              uid,
+    password:              entry[:userPassword]&.first || Base58.binary_to_base58(SecureRandom.random_bytes).generate_ssha,
+    email:                 row[:email] || "nobody@ddbj.nig.ac.jp",
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
@@ -46,32 +61,29 @@ def entry_to_json(entry, csv)
     prefecture:            row[:prefecture],
     city:                  row[:city] || "-",
     street:                row[:street],
-    phone:                 row[:phone],
+    phone:                 row[:phone]&.gsub(/[^\d\-\+]/, ""),
     ssh_keys:              entry[:sshPublicKey] || [],
     account_type_number:   row[:account_type_number].required,
     uid_number:            entry[:uidNumber].first.required,
-    gid_number:            entry[:gidNumber].first.required,
-    home_directory:        entry[:homeDirectory].first.required,
-    login_shell:           entry[:loginShell].first.required,
+    gid_number:            entry[:gidNumber]&.first || "61000",
+    home_directory:        entry[:homeDirectory]&.first || "/submission/#{uid}",
+    login_shell:           entry[:loginShell]&.first || "/bin/bash",
     inet_user_status:      entry[:inetUserStatus].first.required.downcase
   }
 end
 
-csv = CSV.read("tmp/account.other_id.20250207-staging.csv", **{
-  headers:           true,
-  header_converters: :symbol
-}).index_by { it[:account_id] }
+entries        = parse_ldif(ARGV[0]).select { it[:uid] }
+row_assoc      = parse_tsv(ARGV[1]).index_by { it[:account_id] }
+max_uid_number = entries.filter_map { Array(it[:uidNumber]).first&.to_i }.max
 
-ldif = File.read("tmp/userRoot.20250207-staging.ldif")
+entries.each do |entry|
+  next unless row = row_assoc[entry[:uid].first]
 
-ldif.split("\n\n").map { |entry|
-  entry.lines(chomp: true).map {
-    k, v = it.split(': ', 2)
+  entry[:uidNumber] ||= begin
+    max_uid_number += 1
 
-    [ k.to_sym, v ]
-  }.group_by(&:first).transform_values { it.map(&:last) }
-}.select {
-  it[:objectClass].include?('posixAccount')
-}.each do |entry|
-  puts JSON.generate(entry_to_json(entry, csv))
+    [ max_uid_number.to_s ]
+  end
+
+  puts JSON.generate(entry_to_json(entry, row))
 end
