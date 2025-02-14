@@ -15,7 +15,13 @@ module ExtLDAP
           password: ENV.fetch("EXT_LDAP_PASSWORD", "adminpassword")
         },
 
-        encryption: Rails.env.production? ? :simple_tls : nil
+        encryption: Rails.env.production? ? {
+          method: :simple_tls,
+
+          tls_options: {
+            verify_mode: OpenSSL::SSL::VERIFY_NONE
+          }
+        } : nil
       )
 
       Thread.current.thread_variable_set(:ext_ldap_connection, conn)
