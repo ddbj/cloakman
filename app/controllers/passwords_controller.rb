@@ -1,3 +1,5 @@
+using LDAPAssertion
+
 class PasswordsController < ApplicationController
   layout "main"
 
@@ -24,7 +26,7 @@ class PasswordsController < ApplicationController
 
     if @form.valid?
       LDAP.connection.assert_call :password_modify, **{
-        dn:,
+        dn:           current_user.dn,
         new_password: @form.new_password,
         old_password: @form.current_password
       }
