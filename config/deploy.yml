@@ -43,6 +43,10 @@ asset_path: /rails/public/assets
 builder:
   arch: amd64
 
+  args:
+    APP_GID: 11370
+    APP_UID: 2233
+
 ssh:
   user: w3const
 
