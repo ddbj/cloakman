@@ -1,16 +1,49 @@
 using GenerateSSHA
 using LDAPAssertion
 
-class User
-  include ActiveModel::Model
-  include ActiveModel::Attributes
-  include ActiveModel::Dirty
-
+class User < LDAPEntry
   extend Enumerize
 
-  class << self
-    def users_dn = "ou=users,#{LDAP.base_dn}"
+  self.base_dn        = "ou=users,#{LDAP.base_dn}"
+  self.ldap_id_attr   = :uid
+  self.object_classes = %w[ddbjUser ldapPublicKey posixAccount inetUser]
 
+  self.model_to_ldap_map = {
+    username:              :uid,
+    password_digest:       :userPassword,
+    email:                 :mail,
+    first_name:            :givenName,
+    first_name_japanese:   "givenName;lang-ja",
+    middle_name:           :middleName,
+    last_name:             :sn,
+    last_name_japanese:    "sn;lang-ja",
+    full_name:             :cn,
+    job_title:             :title,
+    job_title_japanese:    "title;lang-ja",
+    orcid:                 :orcid,
+    erad_id:               :eradID,
+    organization:          :o,
+    organization_japanese: "o;lang-ja",
+    lab_fac_dep:           :ou,
+    lab_fac_dep_japanese:  "ou;lang-ja",
+    organization_url:      :organizationURL,
+    country:               :c,
+    postal_code:           :postalCode,
+    prefecture:            :st,
+    city:                  :l,
+    street:                :street,
+    phone:                 :telephoneNumber,
+    ssh_keys:              [ :sshPublicKey ],
+    jga_datasets:          [ :jgaDataset ],
+    account_type_number:   :accountTypeNumber,
+    inet_user_status:      :inetUserStatus,
+    uid_number:            :uidNumber,
+    gid_number:            :gidNumber,
+    home_directory:        :homeDirectory,
+    login_shell:           :loginShell
+  }
+
+  class << self
     def search(query)
       filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
 
@@ -19,54 +52,11 @@ class User
       }.inject(:|) if query.present?
 
       LDAP.connection.assert_call(:search, **{
-        base:   users_dn,
+        base:   base_dn,
         scope:  Net::LDAP::SearchScope_SingleLevel,
         filter:,
         size:   100
       }).map { from_entry(it) }
-    end
-
-    def find(username)
-      entry = LDAP.connection.assert_call(:search, **{
-        base:  "uid=#{username},#{users_dn}",
-        scope: Net::LDAP::SearchScope_BaseObject
-      }).first
-
-      from_entry(entry)
-    rescue LDAPError::NoSuchObject
-      raise ActiveRecord::RecordNotFound
-    end
-
-    def from_entry(entry)
-      new(
-        persisted?:            true,
-        username:              entry.first(:uid),
-        email:                 entry.first(:mail),
-        first_name:            entry.first(:givenName),
-        middle_name:           entry.first(:middleName),
-        last_name:             entry.first(:sn),
-        first_name_japanese:   entry.first("givenName;lang-ja"),
-        last_name_japanese:    entry.first("sn;lang-ja"),
-        organization:          entry.first(:o),
-        organization_japanese: entry.first("o;lang-ja"),
-        lab_fac_dep:           entry.first(:ou),
-        lab_fac_dep_japanese:  entry.first("ou;lang-ja"),
-        organization_url:      entry.first(:organizationURL),
-        country:               entry.first(:c),
-        postal_code:           entry.first(:postalCode),
-        prefecture:            entry.first(:st),
-        city:                  entry.first(:l),
-        street:                entry.first(:street),
-        phone:                 entry.first(:telephoneNumber),
-        job_title:             entry.first(:title),
-        job_title_japanese:    entry.first("title;lang-ja"),
-        orcid:                 entry.first(:orcid),
-        erad_id:               entry.first(:eradID),
-        jga_datasets:          entry[:jgaDataset],
-        ssh_keys:              entry[:sshPublicKey],
-        account_type_number:   entry.first(:accountTypeNumber),
-        inet_user_status:      entry.first(:inetUserStatus)
-      ).tap(&:changes_applied)
     end
   end
 
@@ -75,6 +65,7 @@ class User
   attribute :full_name,             :string
   attribute :password,              :string
   attribute :password_confirmation, :string
+  attribute :password_digest,       :string
   attribute :email,                 :string
   attribute :first_name,            :string
   attribute :middle_name,           :string
@@ -100,6 +91,10 @@ class User
   attribute :ssh_keys,                        default: -> { [] }
   attribute :inet_user_status,      :string,  default: "active"
   attribute :account_type_number,   :integer, default: 1
+  attribute :uid_number,            :integer
+  attribute :gid_number,            :integer
+  attribute :home_directory,        :string
+  attribute :login_shell,           :string
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
 
@@ -120,184 +115,39 @@ class User
   validates :country,      presence: true
   validates :city,         presence: true
 
-  delegate :users_dn, to: :class
-
-  def new_record? = !persisted?
-  def to_param    = username
-  def dn          = "uid=#{username},#{users_dn}"
-
-  def save
-    update
-  end
-
-  def save!
-    raise ActiveRecord::RecordInvalid, self unless update
-  end
-
-  def update(attrs = {})
-    assign_attributes attrs
-
-    self.full_name = [ first_name, middle_name, last_name ].compact_blank.join(" ")
-
-    return create if new_record?
-
-    return false unless valid?(:update)
-
-    REDIS.with_lock "email:#{email}" do
-      if email_exists?
-        errors.add :email, "has already been taken"
-
-        return false
-      end
-
-      {
-        full_name:             :commonName,
-        email:                 :mail,
-        first_name:            :givenName,
-        first_name_japanese:   "givenName;lang-ja",
-        middle_name:           :middleName,
-        last_name:             :surname,
-        last_name_japanese:    "surname;lang-ja",
-        job_title:             :title,
-        job_title_japanese:    "title;lang-ja",
-        orcid:                 :orcid,
-        erad_id:               :eradID,
-        organization:          :organizationName,
-        organization_japanese: "organizationName;lang-ja",
-        lab_fac_dep:           :organizationalUnitName,
-        lab_fac_dep_japanese:  "organizationalUnitName;lang-ja",
-        organization_url:      :organizationURL,
-        country:               :countryName,
-        postal_code:           :postalCode,
-        prefecture:            :stateOrProvinceName,
-        city:                  :localityName,
-        street:                :streetAddress,
-        phone:                 :telephoneNumber,
-        ssh_keys:              :sshPublicKey,
-        jga_datasets:          :jgaDataset,
-        account_type_number:   :accountTypeNumber,
-        inet_user_status:      :inetUserStatus
-      }.each do |model_key, ldap_key|
-        next unless public_send("#{model_key}_changed?")
-
-        if val = public_send(model_key).presence
-          val = val.value if val.is_a?(Enumerize::Value)
-
-          LDAP.connection.assert_call :replace_attribute, dn, ldap_key, Array(val).map(&:to_s)
-        else
-          begin
-            LDAP.connection.assert_call :delete_attribute, dn, ldap_key
-          rescue LDAPError::NoSuchAttribute
-            # do nothing
-          end
-        end
-
-        public_send "clear_#{model_key}_change"
-      rescue LDAPError => e
-        errors.add model_key, e.message
-      end
-    end
-
-    errors.empty?
-  end
-
-  def update!(attrs = {})
-    raise ActiveRecord::RecordInvalid, self unless update(attrs)
-  end
-
-  def destroy!
-    LDAP.connection.assert_call(:delete, dn:)
-  end
-
-  private
-
-  def create
-    return false unless valid?(:create)
-
-    if user_exists_in_ext_ldap?
-      errors.add :username, "has already been taken"
-
-      return false
-    end
-
-    REDIS.with_lock "email:#{email}" do
-      if email_exists?
-        errors.add :email, "has already been taken"
-
-        return false
-      end
-
-      uid_number = REDIS.call(:incr, "uid_number")
-
-      begin
-        LDAP.connection.assert_call :add, **{
-          dn:,
-
-          attributes: {
-            objectClass: %w[
-              ddbjUser
-              ldapPublicKey
-              posixAccount
-              inetUser
-            ],
-
-            uid:                              username,
-            userPassword:                     password.generate_ssha,
-            commonName:                       full_name,
-            mail:                             email,
-            givenName:                        first_name,
-            "givenName;lang-ja":              first_name_japanese,
-            middleName:                       middle_name,
-            surname:                          last_name,
-            "surname;lang-ja":                last_name_japanese,
-            title:                            job_title,
-            "title;lang-ja":                  job_title_japanese,
-            orcid:                            orcid,
-            eradID:                           erad_id,
-            organizationName:                 organization,
-            "organizationName;lang-ja":       organization_japanese,
-            organizationalUnitName:           lab_fac_dep,
-            "organizationalUnitName;lang-ja": lab_fac_dep_japanese,
-            organizationURL:                  organization_url,
-            countryName:                      country,
-            postalCode:                       postal_code,
-            stateOrProvinceName:              prefecture,
-            localityName:                     city,
-            streetAddress:                    street,
-            telephoneNumber:                  phone,
-            jgaDataset:                       jga_datasets,
-            sshPublicKey:                     ssh_keys,
-            accountTypeNumber:                account_type_number_value.to_s,
-            uidNumber:                        uid_number.to_s,
-            gidNumber:                        "61000",
-            homeDirectory:                    "/submission/#{username}",
-            loginShell:                       "/bin/bash",
-            inetUserStatus:                   inet_user_status
-          }.compact_blank
-        }
-
-        changes_applied
-      rescue LDAPError => e
-        errors.add :base, e.message
-
-        return false
-      end
-    end
-
-    true
-  end
-
-  def user_exists_in_ext_ldap?
-    !ExtLDAP.connection.assert_call(:search, **{
+  validate do
+    exists = !ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
       filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", username)
     }).empty?
+
+    errors.add :username, "has already been taken" if exists
   end
 
-  def email_exists?
-    !LDAP.connection.assert_call(:search, **{
-      base:   users_dn,
+  validate do
+    exists = !LDAP.connection.assert_call(:search, **{
+      base:   base_dn,
       filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
     }).empty?
+
+    errors.add :email, "has already been taken" if exists
   end
+
+  around_save do |_, block|
+    REDIS.with_lock "email:#{email}", &block
+  end
+
+  before_save do
+    self.full_name = [ first_name, middle_name, last_name ].compact_blank.join(" ")
+  end
+
+  before_create do
+    self.password_digest = password.generate_ssha
+    self.uid_number      = REDIS.call(:incr, "uid_number")
+    self.gid_number      = 61000
+    self.home_directory  = "/submission/#{username}"
+    self.login_shell     = "/bin/bash"
+  end
+
+  def to_param = username
 end
