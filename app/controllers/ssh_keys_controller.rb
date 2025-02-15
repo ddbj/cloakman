@@ -18,6 +18,7 @@ class SSHKeysController < ApplicationController
       return false unless valid?
 
       user.ssh_keys << ssh_key.strip
+      user.ssh_keys_will_change!
 
       user.save
     end
@@ -48,6 +49,7 @@ class SSHKeysController < ApplicationController
 
   def destroy
     current_user.ssh_keys.delete_at params.expect(:id).to_i
+    current_user.ssh_keys_will_change!
 
     if current_user.save
       redirect_to ssh_keys_path, notice: "SSH key deleted successfully."

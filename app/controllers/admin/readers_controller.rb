@@ -21,7 +21,7 @@ class Admin::ReadersController < ApplicationController
     if @reader.save
       flash[:password] = @reader.password
 
-      redirect_to admin_reader_path(@reader), notice: "Reader was successfully created."
+      redirect_to admin_reader_path(@reader), notice: "Reader created successfully."
     else
       flash.now[:alert] = @reader.errors.full_messages_for(:base).join(" ")
 
@@ -32,7 +32,7 @@ class Admin::ReadersController < ApplicationController
   def destroy
     Reader.find(params[:id]).destroy!
 
-    redirect_to admin_readers_path, notice: "Reader was successfully destroyed."
+    redirect_to admin_readers_path, notice: "Reader deleted successfully."
   end
 
   private

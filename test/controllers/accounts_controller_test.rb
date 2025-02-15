@@ -54,7 +54,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "doesn't match Password"
+    assert_dom ".invalid-feedback", text: "doesn't match Password"
   end
 
   test "duplicate usernames with external LDAP are not allowed" do
@@ -87,7 +87,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "has already been taken"
+    assert_dom ".invalid-feedback", text: "has already been taken"
   end
 
   test "duplicate emails are not allowed" do
@@ -109,6 +109,6 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "has already been taken"
+    assert_dom ".invalid-feedback", text: "has already been taken"
   end
 end

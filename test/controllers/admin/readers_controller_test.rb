@@ -14,9 +14,9 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
 
     get admin_reader_path("example")
 
-    assert_select "dd", text: "ou=users,dc=example,dc=org"
-    assert_select "dd", text: "uid=example,ou=readers,dc=example,dc=org"
-    assert_select "dd", text: "********"
+    assert_dom "dd", text: "ou=users,dc=example,dc=org"
+    assert_dom "dd", text: "uid=example,ou=readers,dc=example,dc=org"
+    assert_dom "dd", text: "********"
   end
 
   test "listing readers" do
@@ -26,7 +26,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :ok
 
-    assert_select "a", text: "example"
+    assert_dom "a", text: "example"
   end
 
   test "reader created successfully" do
@@ -39,11 +39,11 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to admin_reader_path("example")
-
     follow_redirect!
 
-    assert_select "dd", text: "uid=example,ou=readers,dc=example,dc=org"
-    assert_select "dd", text: "notasecret"
+    assert_dom ".alert", "Reader created successfully."
+    assert_dom "dd", "uid=example,ou=readers,dc=example,dc=org"
+    assert_dom "dd", "notasecret"
   end
 
   test "reader creation failed" do
@@ -55,7 +55,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "can't be blank"
+    assert_dom ".invalid-feedback", text: "can't be blank"
   end
 
   test "reader deleted successfully" do
@@ -64,5 +64,8 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
     delete admin_reader_path("example")
 
     assert_redirected_to admin_readers_path
+    follow_redirect!
+
+    assert_dom ".alert", "Reader deleted successfully."
   end
 end
