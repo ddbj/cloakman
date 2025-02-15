@@ -4,6 +4,7 @@ using LDAPAssertion
 class Reader
   include ActiveModel::Model
   include ActiveModel::Attributes
+  include ActiveModel::Dirty
 
   class << self
     def endpoint   = ENV.fetch("LDAP_INTERNAL_ENDPOINT", "ldap://localhost:1389")
@@ -32,7 +33,7 @@ class Reader
       new(
         persisted?: true,
         username:   entry.first(:uid)
-      )
+      ).tap(&:changes_applied)
     end
   end
 
@@ -68,6 +69,8 @@ class Reader
       username: :uid,
       password: :userPassword
     }.each do |model_key, ldap_key|
+      next unless public_send("#{model_key}_changed?")
+
       if val = public_send(model_key).presence
         LDAP.connection.assert_call :replace_attribute, dn, ldap_key, val.to_s
       else
@@ -77,6 +80,8 @@ class Reader
           # do nothing
         end
       end
+
+      public_send "clear_#{model_key}_change"
     rescue LDAPError => e
       errors.add model_key, e.message
     end
@@ -110,6 +115,8 @@ class Reader
         userPassword: password.generate_ssha
       }.compact_blank
     }
+
+    changes_applied
 
     true
   rescue LDAPError => e
