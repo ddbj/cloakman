@@ -15,6 +15,14 @@ class LDAPEntry
   attribute :persisted?, :boolean, default: false
 
   class << self
+    def create(attrs = {})
+      new(attrs).tap(&:save)
+    end
+
+    def create!(attrs = {})
+      new(attrs).tap(&:save!)
+    end
+
     def all
       LDAP.connection.assert_call(:search, **{
         base:   base_dn,
@@ -58,22 +66,22 @@ class LDAPEntry
     raise NotImplementedError
   end
 
-  def save
-    update
+  def save(context: nil)
+    update(context:)
   end
 
-  def save!
-    raise ActiveRecord::RecordInvalid, self unless update
+  def save!(context: nil)
+    raise ActiveRecord::RecordInvalid, self unless update(context:)
   end
 
-  def update(attrs = {})
+  def update(attrs = {}, context: nil)
     assign_attributes attrs
 
     run_callbacks :save do
-      return create if new_record?
+      return create(context:) if new_record?
 
       run_callbacks :update do
-        return false unless valid?(:update)
+        return false unless valid?(context || :update)
 
         model_to_ldap_map.each do |model_key, ldap_key|
           next unless public_send("#{model_key}_changed?")
@@ -112,9 +120,9 @@ class LDAPEntry
 
   private
 
-  def create
+  def create(context:)
     run_callbacks :create do
-      return false unless valid?(:create)
+      return false unless valid?(context || :create)
 
       LDAP.connection.assert_call :add, **{
         dn:,

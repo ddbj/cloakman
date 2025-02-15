@@ -1,7 +1,8 @@
-using GenerateSSHA
 using LDAPAssertion
 
 class User < LDAPEntry
+  include HasSSHAPassword
+
   extend Enumerize
 
   self.base_dn        = "ou=users,#{LDAP.base_dn}"
@@ -63,9 +64,7 @@ class User < LDAPEntry
   attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
   attribute :full_name,             :string
-  attribute :password,              :string
   attribute :password_confirmation, :string
-  attribute :password_digest,       :string
   attribute :email,                 :string
   attribute :first_name,            :string
   attribute :middle_name,           :string
@@ -107,7 +106,7 @@ class User < LDAPEntry
   }
 
   validates :username,     presence: true
-  validates :password,     presence: true, confirmation: true, on: :create
+  validates :password,     presence: true, confirmation: true, on: :create_account
   validates :email,        presence: true
   validates :first_name,   presence: true
   validates :last_name,    presence: true
@@ -124,7 +123,7 @@ class User < LDAPEntry
     errors.add :username, "has already been taken" if exists
   end
 
-  validate do
+  validate on: %i[create_account update] do
     exists = !LDAP.connection.assert_call(:search, **{
       base:   base_dn,
       filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
@@ -142,7 +141,6 @@ class User < LDAPEntry
   end
 
   before_create do
-    self.password_digest = password.generate_ssha
     self.uid_number      = REDIS.call(:incr, "uid_number")
     self.gid_number      = 61000
     self.home_directory  = "/submission/#{username}"

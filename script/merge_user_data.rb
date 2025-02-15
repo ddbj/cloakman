@@ -40,7 +40,7 @@ def entry_to_json(entry, row)
 
   {
     username:              uid,
-    password:              entry[:userPassword]&.first || Base58.binary_to_base58(SecureRandom.random_bytes).generate_ssha,
+    password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
     email:                 row[:email] || "nobody@ddbj.nig.ac.jp",
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
@@ -70,6 +70,10 @@ def entry_to_json(entry, row)
     login_shell:           entry[:loginShell]&.first || "/bin/bash",
     inet_user_status:      entry[:inetUserStatus].first.required.downcase
   }
+end
+
+def random_password
+  Base58.binary_to_base58(SecureRandom.random_bytes)
 end
 
 entries        = parse_ldif(ARGV[0]).select { it[:uid] }
