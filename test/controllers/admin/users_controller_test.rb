@@ -18,8 +18,8 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :ok
 
-    assert_select "tbody > tr", count: 1
-    assert_select "a", text: "alice"
+    assert_dom "tbody > tr", count: 1
+    assert_dom "a", text: "alice"
   end
 
   test "user created successfully" do
@@ -72,6 +72,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "doesn't match Password"
+    assert_dom ".invalid-feedback", text: "doesn't match Password"
   end
 end

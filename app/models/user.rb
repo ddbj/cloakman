@@ -4,6 +4,7 @@ using LDAPAssertion
 class User
   include ActiveModel::Model
   include ActiveModel::Attributes
+  include ActiveModel::Dirty
 
   extend Enumerize
 
@@ -65,12 +66,13 @@ class User
         ssh_keys:              entry[:sshPublicKey],
         account_type_number:   entry.first(:accountTypeNumber),
         inet_user_status:      entry.first(:inetUserStatus)
-      )
+      ).tap(&:changes_applied)
     end
   end
 
   attribute :persisted?,            :boolean, default: false
   attribute :username,              :string
+  attribute :full_name,             :string
   attribute :password,              :string
   attribute :password_confirmation, :string
   attribute :email,                 :string
@@ -123,7 +125,6 @@ class User
   def new_record? = !persisted?
   def to_param    = username
   def dn          = "uid=#{username},#{users_dn}"
-  def full_name   = [ first_name, middle_name, last_name ].compact_blank.join(" ")
 
   def save
     update
@@ -135,6 +136,8 @@ class User
 
   def update(attrs = {})
     assign_attributes attrs
+
+    self.full_name = [ first_name, middle_name, last_name ].compact_blank.join(" ")
 
     return create if new_record?
 
@@ -148,34 +151,38 @@ class User
       end
 
       {
-        full_name:                 :commonName,
-        email:                     :mail,
-        first_name:                :givenName,
-        first_name_japanese:       "givenName;lang-ja",
-        middle_name:               :middleName,
-        last_name:                 :surname,
-        last_name_japanese:        "surname;lang-ja",
-        job_title:                 :title,
-        job_title_japanese:        "title;lang-ja",
-        orcid:                     :orcid,
-        erad_id:                   :eradID,
-        organization:              :organizationName,
-        organization_japanese:     "organizationName;lang-ja",
-        lab_fac_dep:               :organizationalUnitName,
-        lab_fac_dep_japanese:      "organizationalUnitName;lang-ja",
-        organization_url:          :organizationURL,
-        country:                   :countryName,
-        postal_code:               :postalCode,
-        prefecture:                :stateOrProvinceName,
-        city:                      :localityName,
-        street:                    :streetAddress,
-        phone:                     :telephoneNumber,
-        ssh_keys:                  :sshPublicKey,
-        jga_datasets:              :jgaDataset,
-        account_type_number_value: :accountTypeNumber,
-        inet_user_status:          :inetUserStatus
+        full_name:             :commonName,
+        email:                 :mail,
+        first_name:            :givenName,
+        first_name_japanese:   "givenName;lang-ja",
+        middle_name:           :middleName,
+        last_name:             :surname,
+        last_name_japanese:    "surname;lang-ja",
+        job_title:             :title,
+        job_title_japanese:    "title;lang-ja",
+        orcid:                 :orcid,
+        erad_id:               :eradID,
+        organization:          :organizationName,
+        organization_japanese: "organizationName;lang-ja",
+        lab_fac_dep:           :organizationalUnitName,
+        lab_fac_dep_japanese:  "organizationalUnitName;lang-ja",
+        organization_url:      :organizationURL,
+        country:               :countryName,
+        postal_code:           :postalCode,
+        prefecture:            :stateOrProvinceName,
+        city:                  :localityName,
+        street:                :streetAddress,
+        phone:                 :telephoneNumber,
+        ssh_keys:              :sshPublicKey,
+        jga_datasets:          :jgaDataset,
+        account_type_number:   :accountTypeNumber,
+        inet_user_status:      :inetUserStatus
       }.each do |model_key, ldap_key|
+        next unless public_send("#{model_key}_changed?")
+
         if val = public_send(model_key).presence
+          val = val.value if val.is_a?(Enumerize::Value)
+
           LDAP.connection.assert_call :replace_attribute, dn, ldap_key, Array(val).map(&:to_s)
         else
           begin
@@ -184,6 +191,8 @@ class User
             # do nothing
           end
         end
+
+        public_send "clear_#{model_key}_change"
       rescue LDAPError => e
         errors.add model_key, e.message
       end
@@ -266,6 +275,8 @@ class User
             inetUserStatus:                   inet_user_status
           }.compact_blank
         }
+
+        changes_applied
       rescue LDAPError => e
         errors.add :base, e.message
 

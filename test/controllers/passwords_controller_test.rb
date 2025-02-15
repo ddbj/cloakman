@@ -19,5 +19,8 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to edit_password_path
+    follow_redirect!
+
+    assert_dom ".alert", "Password updated successfully."
   end
 end

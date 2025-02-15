@@ -38,7 +38,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "can't be blank"
+    assert_dom ".invalid-feedback", text: "can't be blank"
   end
 
   test "duplicate emails are not allowed" do
@@ -57,6 +57,6 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
 
-    assert_select ".invalid-feedback", text: "has already been taken"
+    assert_dom ".invalid-feedback", text: "has already been taken"
   end
 end
