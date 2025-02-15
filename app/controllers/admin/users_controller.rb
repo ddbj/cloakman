@@ -14,7 +14,7 @@ class Admin::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    if @user.save
+    if @user.save(context: :create_account)
       redirect_to admin_users_path, notice: "User has been successfully creted."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
