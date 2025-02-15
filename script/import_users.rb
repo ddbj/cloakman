@@ -15,7 +15,7 @@ $stdin.each do |line|
   next unless user[:username]
 
   LDAP.connection.assert_call :add, **{
-    dn: "uid=#{user[:username]},#{User.users_dn}",
+    dn: "uid=#{user[:username]},#{User.base_dn}",
 
     attributes: {
       objectclass: %w[

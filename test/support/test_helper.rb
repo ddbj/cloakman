@@ -47,7 +47,7 @@ module TestHelper
     }
 
     LDAP.connection.assert_call :add, **{
-      dn: User.users_dn,
+      dn: User.base_dn,
 
       attributes: {
         objectClass: %w[organizationalUnit],
@@ -56,7 +56,7 @@ module TestHelper
     }
 
     LDAP.connection.assert_call :add, **{
-      dn: Reader.readers_dn,
+      dn: Reader.base_dn,
 
       attributes: {
         objectClass: %w[organizationalUnit],

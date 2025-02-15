@@ -27,7 +27,7 @@ module Authentication
 
           @current_user = nil
         end
-      rescue ActiveRecord::RecordNotFound
+      rescue LDAPError::NoSuchObject
         session.delete :username
 
         @current_user = nil

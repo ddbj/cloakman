@@ -1,0 +1,144 @@
+using LDAPAssertion
+
+class LDAPEntry
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveModel::Dirty
+
+  class_attribute :base_dn
+  class_attribute :ldap_id_attr
+  class_attribute :model_to_ldap_map
+  class_attribute :object_classes
+
+  define_model_callbacks :save, :create, :update
+
+  attribute :persisted?, :boolean, default: false
+
+  class << self
+    def all
+      LDAP.connection.assert_call(:search, **{
+        base:   base_dn,
+        scope:  Net::LDAP::SearchScope_SingleLevel,
+        filter: object_classes.map { Net::LDAP::Filter.eq("objectClass", it) }.inject(:&)
+      }).map { from_entry(it) }
+    end
+
+    def find(id)
+      entry = LDAP.connection.assert_call(:search, **{
+        base:  "#{ldap_id_attr}=#{id},#{base_dn}",
+        scope: Net::LDAP::SearchScope_BaseObject
+      }).first
+
+      from_entry(entry)
+    end
+
+    def from_entry(entry)
+      new(
+        persisted?: true,
+
+        **model_to_ldap_map.map { |model_key, ldap_key|
+          if ldap_key.is_a?(Array)
+            multi    = true
+            ldap_key = ldap_key.first
+          else
+            multi = false
+          end
+
+          [ model_key, multi ? entry[ldap_key] : entry.first(ldap_key) ]
+        }.to_h
+      ).tap(&:changes_applied)
+    end
+  end
+
+  def new_record? = !persisted?
+
+  def dn = "#{ldap_id_attr}=#{to_param},#{self.class.base_dn}"
+
+  def to_param
+    raise NotImplementedError
+  end
+
+  def save
+    update
+  end
+
+  def save!
+    raise ActiveRecord::RecordInvalid, self unless update
+  end
+
+  def update(attrs = {})
+    assign_attributes attrs
+
+    run_callbacks :save do
+      return create if new_record?
+
+      run_callbacks :update do
+        return false unless valid?(:update)
+
+        model_to_ldap_map.each do |model_key, ldap_key|
+          next unless public_send("#{model_key}_changed?")
+
+          ldap_key = ldap_key.first if ldap_key.is_a?(Array)
+
+          if val = public_send(model_key).presence
+            val = val.value if val.is_a?(Enumerize::Value)
+
+            LDAP.connection.assert_call :replace_attribute, dn, ldap_key, Array(val).map(&:to_s)
+          else
+            begin
+              LDAP.connection.assert_call :delete_attribute, dn, ldap_key
+            rescue LDAPError::NoSuchAttribute
+              # do nothing
+            end
+          end
+
+          public_send "clear_#{model_key}_change"
+        rescue LDAPError => e
+          errors.add model_key, e.message
+        end
+      end
+    end
+
+    errors.empty?
+  end
+
+  def update!(attrs = {})
+    raise ActiveRecord::RecordInvalid, self unless update(attrs)
+  end
+
+  def destroy!
+    LDAP.connection.assert_call(:delete, dn:)
+  end
+
+  private
+
+  def create
+    run_callbacks :create do
+      return false unless valid?(:create)
+
+      LDAP.connection.assert_call :add, **{
+        dn:,
+
+        attributes: {
+          objectClass: object_classes,
+
+          **model_to_ldap_map.map { |model_key, ldap_key|
+            val      = public_send(model_key).presence
+            val      = val.value if val.is_a?(Enumerize::Value)
+            ldap_key = ldap_key.first if ldap_key.is_a?(Array)
+
+            [ ldap_key, Array(val).map(&:to_s) ]
+          }.to_h.compact_blank
+        }
+      }
+
+      changes_applied
+    rescue LDAPError => e
+      errors.add :base, e.message
+
+      return false
+    end
+
+    true
+  end
+end

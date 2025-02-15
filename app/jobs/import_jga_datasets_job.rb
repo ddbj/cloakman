@@ -8,7 +8,7 @@ class ImportJGADatasetsJob < ApplicationJob
         user = User.find(json[:username])
 
         user.update! jga_datasets: json[:dataset].uniq.map { JSON.dump(it) }
-      rescue ActiveRecord::RecordNotFound
+      rescue LDAPError::NoSuchObject
         # do nothing
       end
 
