@@ -3,7 +3,7 @@
 <% account = form.object %>
 
 <% if account.new_record? %>
-  <%= form.text_field :username, required: true, autocomplete: "username" %>
+  <%= form.text_field :id, required: true, autocomplete: "username" %>
 
   <%= form.password_field :password,              required: true, minlength: 6, autocomplete: "new-password" %>
   <%= form.password_field :password_confirmation, required: true, minlength: 6, autocomplete: "new-password" %>

@@ -21,7 +21,7 @@ class Admin::UserConfigsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to edit_admin_user_config_path(user)
 
-    user = User.find(user.username)
+    user = User.find(user.id)
 
     assert_equal "active", user.inet_user_status
     assert_equal "ddbj",   user.account_type_number

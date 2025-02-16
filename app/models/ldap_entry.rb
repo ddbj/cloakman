@@ -12,7 +12,10 @@ class LDAPEntry
 
   define_model_callbacks :save, :create, :update
 
+  attribute :id,         :string
   attribute :persisted?, :boolean, default: false
+
+  validates :id, presence: true
 
   class << self
     def create(attrs = {})
@@ -55,11 +58,7 @@ class LDAPEntry
 
   def new_record? = !persisted?
 
-  def dn = "#{ldap_id_attr}=#{to_param},#{self.class.base_dn}"
-
-  def to_param
-    raise NotImplementedError
-  end
+  def dn = "#{ldap_id_attr}=#{id},#{base_dn}"
 
   def save(context: nil)
     update(context:)
@@ -132,7 +131,13 @@ class LDAPEntry
         }
       }
 
+      assign_attributes persisted?: true
+
       changes_applied
+    rescue LDAPError::EntryAlreadyExists
+      errors.add :id, "has already been taken"
+
+      return false
     rescue LDAPError => e
       errors.add :base, e.message
 

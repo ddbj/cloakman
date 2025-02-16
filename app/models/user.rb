@@ -10,7 +10,7 @@ class User < LDAPEntry
   self.object_classes = %w[ddbjUser ldapPublicKey posixAccount inetUser]
 
   self.model_to_ldap_map = {
-    username:              :uid,
+    id:                    :uid,
     password_digest:       :userPassword,
     email:                 :mail,
     first_name:            :givenName,
@@ -61,11 +61,9 @@ class User < LDAPEntry
     end
   end
 
-  attribute :persisted?,            :boolean, default: false
-  attribute :username,              :string
-  attribute :full_name,             :string
   attribute :password_confirmation, :string
   attribute :email,                 :string
+  attribute :full_name,             :string
   attribute :first_name,            :string
   attribute :middle_name,           :string
   attribute :last_name,             :string
@@ -105,7 +103,6 @@ class User < LDAPEntry
     system_reference: 5
   }
 
-  validates :username,     presence: true
   validates :password,     presence: true, confirmation: true, length: { minimum: 6, allow_blank: true }, on: :sign_up
   validates :email,        presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :first_name,   presence: true
@@ -119,16 +116,16 @@ class User < LDAPEntry
   validate do
     exists = !ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
-      filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", username)
+      filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", id)
     }).empty?
 
-    errors.add :username, "has already been taken" if exists
+    errors.add :id, "has already been taken" if exists
   end
 
   validate do
     exists = !LDAP.connection.assert_call(:search, **{
       base:   base_dn,
-      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
+      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", id)
     }).empty?
 
     errors.add :email, "has already been taken" if exists
@@ -147,9 +144,7 @@ class User < LDAPEntry
     self.account_type_number ||= :general
     self.uid_number          ||= REDIS.call(:incr, "uid_number")
     self.gid_number          ||= 61000
-    self.home_directory      ||= "/submission/#{username}"
+    self.home_directory      ||= "/submission/#{id}"
     self.login_shell         ||= "/bin/bash"
   end
-
-  def to_param = username
 end

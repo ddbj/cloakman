@@ -6,6 +6,6 @@
 
 <div class="list-group">
   <% @readers.each do |reader| %>
-    <%= link_to reader.username, admin_reader_path(reader), class: "list-group-item list-group-item-action" %>
+    <%= link_to reader.id, admin_reader_path(reader), class: "list-group-item list-group-item-action" %>
   <% end %>
 </div>

@@ -10,7 +10,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "search user" do
-    FactoryBot.create :user, username: "alice"
+    FactoryBot.create :user, id: "alice"
 
     get admin_users_path, params: {
       query: "alice"
@@ -27,7 +27,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       user: {
         inet_user_status:      "active",
         account_type_number:   "general",
-        username:              "alice",
+        id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",
@@ -58,7 +58,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
       user: {
         inet_user_status:      "active",
         account_type_number:   "general",
-        username:              "alice",
+        id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
         email:                 "alice@example.com",

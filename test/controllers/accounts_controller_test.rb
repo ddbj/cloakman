@@ -12,7 +12,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "account created successfully" do
     post account_path, params: {
       user: {
-        username:              "alice",
+        id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",
@@ -28,7 +28,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find("alice")
 
-    assert_equal "alice",             user.username
+    assert_equal "alice",             user.id
     assert_equal "alice@example.com", user.email
     assert_equal "Alice",             user.first_name
     assert_equal "Liddell",           user.last_name
@@ -40,7 +40,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "account creation failed" do
     post account_path, params: {
       user: {
-        username:              "alice",
+        id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
         email:                 "alice@example.com",
@@ -57,7 +57,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_dom ".invalid-feedback", text: "doesn't match Password"
   end
 
-  test "duplicate usernames with external LDAP are not allowed" do
+  test "duplicate id with external LDAP are not allowed" do
     ExtLDAP.connection.assert_call :add, **{
       dn: "uid=alice,ou=people,#{ExtLDAP.base_dn}",
 
@@ -73,7 +73,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     post account_path, params: {
       user: {
-        username:              "alice",
+        id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",
@@ -95,7 +95,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
     post account_path, params: {
       user: {
-        username:              "alice",
+        id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
         email:                 "alice@example.com",
