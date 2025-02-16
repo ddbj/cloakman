@@ -41,7 +41,7 @@ def entry_to_json(entry, row)
   {
     username:              uid,
     password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
-    email:                 row[:email].then { it ? it.gsub(/\s/, "").delete_prefix("Example:") : "nobody@ddbj.nig.ac.jp" },
+    email:                 row[:email].gsub(/\s/, "").delete_prefix("Example:"),
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
