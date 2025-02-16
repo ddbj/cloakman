@@ -29,7 +29,7 @@ def parse_tsv(path)
   headers = lines.first.split("\t").map(&:to_sym)
 
   lines.drop(1).map { |line|
-    cols = line.split("\t").map(&:presence)
+    cols = line.split("\t").map { it.strip.presence }
 
     headers.zip(cols).to_h
   }
@@ -41,7 +41,7 @@ def entry_to_json(entry, row)
   {
     username:              uid,
     password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
-    email:                 row[:email] || "nobody@ddbj.nig.ac.jp",
+    email:                 row[:email].then { it ? it.gsub(/\s/, "").delete_prefix("Example:") : "nobody@ddbj.nig.ac.jp" },
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
@@ -50,7 +50,7 @@ def entry_to_json(entry, row)
     job_title:             row[:job_title],
     job_title_japanese:    row[:job_title_japanese],
     orcid:                 row[:orcid],
-    erad_id:               row[:eradid],
+    erad_id:               row[:eradid].then { it&.match?(/\A\d{8}\z/) ? it : nil },
     organization:          row[:institution] || "-",
     organization_japanese: row[:institution_japanese],
     lab_fac_dep:           row[:lab_fac_dep],
