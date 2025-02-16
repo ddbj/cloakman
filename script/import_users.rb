@@ -6,7 +6,7 @@ emails = Set.new
 users.each do |attrs|
   attrs => {id:, email:}
 
-  if %w[admin _pg].any? { id.include?(it) } || !id.match?(/\A[a-z][a-z0-9_]{3,23}\z/)
+  if id.include?("admin") || id.end_with?("_pg") || !id.match?(/\A[a-z][a-z0-9_]{3,23}\z/)
     puts "[SKIPPED] #{id}: invalid username"
     next
   end
