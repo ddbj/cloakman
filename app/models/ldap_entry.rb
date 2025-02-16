@@ -57,8 +57,7 @@ class LDAPEntry
   end
 
   def new_record? = !persisted?
-
-  def dn = "#{ldap_id_attr}=#{id},#{base_dn}"
+  def dn          = "#{ldap_id_attr}=#{id},#{base_dn}"
 
   def save(context: nil)
     update(context:)
