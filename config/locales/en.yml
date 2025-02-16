@@ -2,6 +2,7 @@ en:
   activemodel:
     attributes:
       user:
+        id: Username
         first_name_japanese: First name in Japanese
         last_name_japanese: Last name in Japanese
         job_title_japanese: Job title in Japanese

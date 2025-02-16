@@ -103,6 +103,7 @@ class User < LDAPEntry
     system_reference: 5
   }
 
+  validates :id,               length: { minimum: 4, maximum: 24 }, format: { with: /\A[a-z][a-z0-9_]*\z/ }, allow_blank: true
   validates :password,         presence: true, confirmation: true, length: { minimum: 6, allow_blank: true }, on: :sign_up
   validates :email,            presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :first_name,       presence: true
@@ -113,6 +114,10 @@ class User < LDAPEntry
   validates :city,             presence: true
   validates :orcid,            format: { with: /\A\d{4}-\d{4}-\d{4}-\d{3}[\dX]\z/, allow_blank: true }
   validates :erad_id,          format: { with: /\A\d{8}\z/, allow_blank: true }
+
+  validate do
+    errors.add :id, "is reserved" if %w[admin _pg].any? { id.include?(it) }
+  end
 
   validate do
     exists = !ExtLDAP.connection.assert_call(:search, **{

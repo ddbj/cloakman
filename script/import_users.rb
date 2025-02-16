@@ -1,23 +1,22 @@
 require_relative "../config/environment"
 
-max_uid_number = -1
+users  = $stdin.each_line.map { JSON.parse(it, symbolize_names: true) }
+emails = Set.new
 
-$stdin.each do |line|
-  next if line.blank?
+users.each do |attrs|
+  attrs => {id:, email:}
 
-  attrs      = JSON.parse(line, symbolize_names: true)
-  uid_number = attrs[:uid_number].to_i
-
-  max_uid_number = uid_number if uid_number > max_uid_number
-
-  next unless attrs[:id]
+  next if %w[admin _pg].any? { id.include?(it) }
+  next unless id.match?(/\A[a-z][a-z0-9_]{3,23}\z/)
+  next unless email
+  next unless emails.add?(email)
 
   User.create! attrs
 
-  puts "User #{attrs[:id]} created"
+  puts "User #{id} created"
 rescue ActiveRecord::RecordInvalid => e
   if e.record.errors[:id].include?("has already been taken")
-    warn "User #{attrs[:id]} already exists"
+    warn "User #{id} already exists"
   else
     p e.record.errors
 
@@ -25,4 +24,4 @@ rescue ActiveRecord::RecordInvalid => e
   end
 end
 
-REDIS.call :set, "uid_number", max_uid_number
+REDIS.call :set, "uid_number", users.map { it[:uid_number].to_i }.max

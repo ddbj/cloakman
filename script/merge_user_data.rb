@@ -41,7 +41,7 @@ def entry_to_json(entry, row)
   {
     id:                    uid,
     password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
-    email:                 row[:email].gsub(/\s/, "").delete_prefix("Example:"),
+    email:                 row[:email].then { it ? it.gsub(/\s/, "").delete_prefix("Example:") : nil },
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
@@ -79,15 +79,11 @@ end
 entries        = parse_ldif(ARGV[0]).select { it[:uid] }
 row_assoc      = parse_tsv(ARGV[1]).index_by { it[:account_id] }
 max_uid_number = entries.filter_map { Array(it[:uidNumber]).first&.to_i }.max
-emails         = Set.new
 
 entries.each do |entry|
-  next unless row   = row_assoc[entry[:uid].first]
-  next unless email = row[:email]
+  uid = entry[:uid].first.required
 
-  next if emails.include?(email)
-
-  emails << email
+  next unless row = row_assoc[uid]
 
   entry[:uidNumber] ||= begin
     max_uid_number += 1
