@@ -88,8 +88,8 @@ class User < LDAPEntry
   attribute :phone,                 :string
   attribute :jga_datasets,                    default: -> { [] }
   attribute :ssh_keys,                        default: -> { [] }
-  attribute :inet_user_status,      :string,  default: "active"
-  attribute :account_type_number,   :integer, default: 1
+  attribute :inet_user_status,      :string
+  attribute :account_type_number,   :integer
   attribute :uid_number,            :integer
   attribute :gid_number,            :integer
   attribute :home_directory,        :string
@@ -141,10 +141,12 @@ class User < LDAPEntry
   end
 
   before_create do
-    self.uid_number      = REDIS.call(:incr, "uid_number")
-    self.gid_number      = 61000
-    self.home_directory  = "/submission/#{username}"
-    self.login_shell     = "/bin/bash"
+    self.inet_user_status    ||= :active
+    self.account_type_number ||= :general
+    self.uid_number          ||= REDIS.call(:incr, "uid_number")
+    self.gid_number          ||= 61000
+    self.home_directory      ||= "/submission/#{username}"
+    self.login_shell         ||= "/bin/bash"
   end
 
   def to_param = username
