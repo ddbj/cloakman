@@ -106,7 +106,7 @@ class User < LDAPEntry
   }
 
   validates :username,     presence: true
-  validates :password,     presence: true, confirmation: true, on: :create_account
+  validates :password,     presence: true, confirmation: true, on: :sign_up
   validates :email,        presence: true
   validates :first_name,   presence: true
   validates :last_name,    presence: true
@@ -123,7 +123,7 @@ class User < LDAPEntry
     errors.add :username, "has already been taken" if exists
   end
 
-  validate on: %i[create_account update] do
+  validate on: %i[sign_up update] do
     exists = !LDAP.connection.assert_call(:search, **{
       base:   base_dn,
       filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
