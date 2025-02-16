@@ -63,7 +63,7 @@ def entry_to_json(entry, row)
     street:                row[:street],
     phone:                 row[:phone]&.gsub(/[^\d\-\+]/, ""),
     ssh_keys:              entry[:sshPublicKey] || [],
-    account_type_number:   row[:account_type_number].required,
+    account_type_number:   row[:account_type_number],
     uid_number:            entry[:uidNumber].first.required,
     gid_number:            entry[:gidNumber]&.first || "61000",
     home_directory:        entry[:homeDirectory]&.first || "/submission/#{uid}",
@@ -82,8 +82,7 @@ max_uid_number = entries.filter_map { Array(it[:uidNumber]).first&.to_i }.max
 
 entries.each do |entry|
   uid = entry[:uid].first.required
-
-  next unless row = row_assoc[uid]
+  row = row_assoc[uid] || {}
 
   entry[:uidNumber] ||= begin
     max_uid_number += 1

@@ -6,17 +6,17 @@ emails = Set.new
 users.each do |attrs|
   attrs => {id:, email:}
 
-  next if %w[admin _pg].any? { id.include?(it) }
-  next unless id.match?(/\A[a-z][a-z0-9_]{3,23}\z/)
-  next unless email
-  next unless emails.add?(email)
+  if %w[admin _pg].any? { id.include?(it) } || !id.match?(/\A[a-z][a-z0-9_]{3,23}\z/) || !email || !emails.add?(email)
+    puts "[SKIPPED] #{id}: invalid"
+    next
+  end
 
   User.create! attrs
 
-  puts "User #{id} created"
+  puts "[CREATED] #{id}"
 rescue ActiveRecord::RecordInvalid => e
   if e.record.errors[:id].include?("has already been taken")
-    warn "User #{id} already exists"
+    puts "[SKIPPED] #{id}: already exists"
   else
     p e.record.errors
 
