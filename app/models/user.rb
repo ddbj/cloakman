@@ -103,15 +103,16 @@ class User < LDAPEntry
     system_reference: 5
   }
 
-  validates :password,     presence: true, confirmation: true, length: { minimum: 6, allow_blank: true }, on: :sign_up
-  validates :email,        presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
-  validates :first_name,   presence: true
-  validates :last_name,    presence: true
-  validates :organization, presence: true
-  validates :country,      presence: true, inclusion: { in: ISO3166::Country.codes }
-  validates :city,         presence: true
-  validates :orcid,        format: { with: /\A\d{4}-\d{4}-\d{4}-\d{3}[\dX]\z/, allow_blank: true }
-  validates :erad_id,      format: { with: /\A\d{8}\z/, allow_blank: true }
+  validates :password,         presence: true, confirmation: true, length: { minimum: 6, allow_blank: true }, on: :sign_up
+  validates :email,            presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
+  validates :first_name,       presence: true
+  validates :last_name,        presence: true
+  validates :organization,     presence: true
+  validates :organization_url, format: { with: /\A#{URI.regexp(%w[http https])}\z/, allow_blank: true }
+  validates :country,          presence: true, inclusion: { in: ISO3166::Country.codes }
+  validates :city,             presence: true
+  validates :orcid,            format: { with: /\A\d{4}-\d{4}-\d{4}-\d{3}[\dX]\z/, allow_blank: true }
+  validates :erad_id,          format: { with: /\A\d{8}\z/, allow_blank: true }
 
   validate do
     exists = !ExtLDAP.connection.assert_call(:search, **{
