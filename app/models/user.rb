@@ -116,7 +116,7 @@ class User < LDAPEntry
   validates :erad_id,          format: { with: /\A\d{8}\z/, allow_blank: true }
 
   validate do
-    errors.add :id, "is reserved" if %w[admin _pg].any? { id.include?(it) }
+    errors.add :id, "is reserved" if id.include?("admin") || id.end_with?("_pg")
   end
 
   validate do
