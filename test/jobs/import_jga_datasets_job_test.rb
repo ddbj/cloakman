@@ -8,7 +8,7 @@ class ImportJGADatasetsJobTest < ActiveJob::TestCase
   end
 
   test "perform" do
-    FactoryBot.create :user, username: "alice"
+    FactoryBot.create :user, id: "alice"
 
     ImportJGADatasetsJob.perform_now dir: "test/fixtures/files/jga_datasets", cleanup: false
 

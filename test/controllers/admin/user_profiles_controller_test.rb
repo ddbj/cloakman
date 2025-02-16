@@ -25,7 +25,7 @@ class Admin::UserProfilesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to edit_admin_user_profile_path(user)
 
-    user = User.find(user.username)
+    user = User.find(user.id)
 
     assert_equal "alice@example.com", user.email
     assert_equal "Alice",             user.first_name

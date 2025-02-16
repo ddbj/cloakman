@@ -10,7 +10,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "reader details" do
-    FactoryBot.create :reader, username: "example"
+    FactoryBot.create :reader, id: "example"
 
     get admin_reader_path("example")
 
@@ -20,7 +20,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "listing readers" do
-    FactoryBot.create :reader, username: "example"
+    FactoryBot.create :reader, id: "example"
 
     get admin_readers_path
 
@@ -33,7 +33,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
     Base58.stub :binary_to_base58, "notasecret" do
       post admin_readers_path, params: {
         reader: {
-          username: "example"
+          id: "example"
         }
       }
     end
@@ -49,7 +49,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
   test "reader creation failed" do
     post admin_readers_path, params: {
       reader: {
-        username: ""
+        id: ""
       }
     }
 
@@ -59,7 +59,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "reader deleted successfully" do
-    FactoryBot.create :reader, username: "example"
+    FactoryBot.create :reader, id: "example"
 
     delete admin_reader_path("example")
 

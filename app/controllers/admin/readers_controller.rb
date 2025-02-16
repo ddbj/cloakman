@@ -39,7 +39,7 @@ class Admin::ReadersController < ApplicationController
 
   def reader_params
     params.expect(reader: [
-      :username
+      :id
     ])
   end
 end

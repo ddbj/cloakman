@@ -39,7 +39,7 @@ def entry_to_json(entry, row)
   uid = entry[:uid].first.required
 
   {
-    username:              uid,
+    id:                    uid,
     password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
     email:                 row[:email].gsub(/\s/, "").delete_prefix("Example:"),
     first_name:            row[:first_name] || "-",

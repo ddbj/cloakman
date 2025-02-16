@@ -45,7 +45,7 @@ class Admin::UsersController < ApplicationController
     params.expect(user: [
       :inet_user_status,
       :account_type_number,
-      :username,
+      :id,
       :password,
       :password_confirmation,
       :email,

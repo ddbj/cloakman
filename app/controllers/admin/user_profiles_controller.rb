@@ -23,7 +23,7 @@ class Admin::UserProfilesController < ApplicationController
 
   def user_params
     params.expect(user: [
-      :username,
+      :id,
       :password,
       :password_confirmation,
       :email,

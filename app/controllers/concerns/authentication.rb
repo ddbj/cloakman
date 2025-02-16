@@ -16,19 +16,19 @@ module Authentication
   def current_user
     return @current_user if defined?(@current_user)
 
-    if username = session[:username]
+    if id = session[:user_id]
       begin
-        user = User.find(username)
+        user = User.find(id)
 
         if user.inet_user_status.active?
           @current_user = user
         else
-          session.delete :username
+          session.delete :user_id
 
           @current_user = nil
         end
       rescue LDAPError::NoSuchObject
-        session.delete :username
+        session.delete :user_id
 
         @current_user = nil
       end

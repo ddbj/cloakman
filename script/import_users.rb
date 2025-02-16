@@ -10,16 +10,17 @@ $stdin.each do |line|
 
   max_uid_number = uid_number if uid_number > max_uid_number
 
-  next unless attrs[:username]
+  next unless attrs[:id]
 
   User.create! attrs
 
-  puts "User #{attrs[:username]} created"
+  puts "User #{attrs[:id]} created"
 rescue ActiveRecord::RecordInvalid => e
-  if e.record.errors[:base].include?("Entry Already Exists")
-    warn "User #{attrs[:username]} already exists"
+  if e.record.errors[:id].include?("has already been taken")
+    warn "User #{attrs[:id]} already exists"
   else
     p e.record.errors
+
     raise
   end
 end
