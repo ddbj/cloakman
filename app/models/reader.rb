@@ -16,6 +16,6 @@ class Reader < LDAPEntry
   def self.endpoint = ENV.fetch("LDAP_INTERNAL_ENDPOINT", "ldap://localhost:1389")
 
   before_save prepend: true do
-    self.password = Base58.binary_to_base58(SecureRandom.random_bytes) unless password_digest
+    self.password ||= Base58.binary_to_base58(SecureRandom.random_bytes) unless password_digest
   end
 end
