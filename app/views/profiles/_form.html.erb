@@ -3,7 +3,14 @@
 <% account = form.object %>
 
 <% if account.new_record? %>
-  <%= form.text_field :id, required: true, autocomplete: "username" %>
+  <%= form.text_field :id, **{
+    help:         "Only lowercase letters, digits, and underscores are allowed. Hyphens and uppercase letters are not permitted, and the input must not start with a digit or underscore.",
+    required:     true,
+    minlength:    4,
+    maxlength:    24,
+    pattern:      "[a-z][a-z0-9_]*",
+    autocomplete: "username"
+  } %>
 
   <%= form.password_field :password,              required: true, minlength: 6, autocomplete: "new-password" %>
   <%= form.password_field :password_confirmation, required: true, minlength: 6, autocomplete: "new-password" %>
