@@ -106,13 +106,15 @@ class User < LDAPEntry
   }
 
   validates :username,     presence: true
-  validates :password,     presence: true, confirmation: true, on: :sign_up
-  validates :email,        presence: true
+  validates :password,     presence: true, confirmation: true, length: { minimum: 6, allow_blank: true }, on: :sign_up
+  validates :email,        presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :first_name,   presence: true
   validates :last_name,    presence: true
   validates :organization, presence: true
-  validates :country,      presence: true
+  validates :country,      presence: true, inclusion: { in: ISO3166::Country.codes }
   validates :city,         presence: true
+  validates :orcid,        format: { with: /\A\d{4}-\d{4}-\d{4}-\d{3}[\dX]\z/, allow_blank: true }
+  validates :erad_id,      format: { with: /\A\d{8}\z/, allow_blank: true }
 
   validate do
     exists = !ExtLDAP.connection.assert_call(:search, **{

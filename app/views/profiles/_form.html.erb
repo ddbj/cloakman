@@ -5,8 +5,8 @@
 <% if account.new_record? %>
   <%= form.text_field :username, required: true, autocomplete: "username" %>
 
-  <%= form.password_field :password,              required: true, autocomplete: "new-password" %>
-  <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+  <%= form.password_field :password,              required: true, minlength: 6, autocomplete: "new-password" %>
+  <%= form.password_field :password_confirmation, required: true, minlength: 6, autocomplete: "new-password" %>
 <% end %>
 
 <%= form.email_field :email, required: true, autocomplete: "work email" %>
@@ -28,8 +28,8 @@
   <%= form.text_field :job_title_japanese, autocomplete: "organization-title" %>
 </div>
 
-<%= form.text_field :orcid %>
-<%= form.text_field :erad_id %>
+<%= form.text_field :orcid, format: "^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$", placeholder: "0000-0000-0000-0000" %>
+<%= form.text_field :erad_id, format: "^\d{8}$", placeholder: "00000000" %>
 
 <hr>
 
