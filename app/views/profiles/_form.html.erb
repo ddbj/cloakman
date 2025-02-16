@@ -3,16 +3,9 @@
 <% account = form.object %>
 
 <% if account.new_record? %>
-  <%= form.text_field :id, **{
-    help:         "Only lowercase letters, digits, and underscores are allowed. Hyphens and uppercase letters are not permitted, and the input must not start with a digit or underscore.",
-    required:     true,
-    minlength:    4,
-    maxlength:    24,
-    pattern:      "[a-z][a-z0-9_]*",
-    autocomplete: "username"
-  } %>
+  <%= form.text_field :id, required: true, minlength: 4, maxlength: 24, pattern: "[a-z][a-z0-9_]*", autocomplete: "username", help: "Must start with a lowercase letter and can contain lowercase letters, digits, and underscores, with a length of 4–24 characters." %>
 
-  <%= form.password_field :password,              required: true, minlength: 6, autocomplete: "new-password" %>
+  <%= form.password_field :password, required: true, minlength: 6, autocomplete: "new-password", help: "At least 6 characters." %>
   <%= form.password_field :password_confirmation, required: true, minlength: 6, autocomplete: "new-password" %>
 <% end %>
 
@@ -35,8 +28,8 @@
   <%= form.text_field :job_title_japanese, autocomplete: "organization-title" %>
 </div>
 
-<%= form.text_field :orcid, format: "^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$", placeholder: "0000-0000-0000-0000" %>
-<%= form.text_field :erad_id, format: "^\d{8}$", placeholder: "00000000" %>
+<%= form.text_field :orcid, format: "^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$", help: "Format: 0000-0002-1825-0097 (16 digits separated by hyphens)" %>
+<%= form.text_field :erad_id, format: "^\d{8}$", help: "Format: 12345678 (8 digits)" %>
 
 <hr>
 
