@@ -125,7 +125,7 @@ class User < LDAPEntry
     errors.add :username, "has already been taken" if exists
   end
 
-  validate on: %i[sign_up update] do
+  validate do
     exists = !LDAP.connection.assert_call(:search, **{
       base:   base_dn,
       filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", username)
