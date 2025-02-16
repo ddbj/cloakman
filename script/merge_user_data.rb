@@ -55,7 +55,7 @@ def entry_to_json(entry, row)
     organization_japanese: row[:institution_japanese],
     lab_fac_dep:           row[:lab_fac_dep],
     lab_fac_dep_japanese:  row[:lab_fac_dep_japanese],
-    organization_url:      row[:url],
+    organization_url:      row[:url].then { /\A#{URI.regexp(%w[http https])}\z/.match?(it || "") ? it : nil },
     country:               ISO3166::Country.from_alpha3_to_alpha2(row[:country]) || "JP",
     postal_code:           row[:postal_code],
     prefecture:            row[:prefecture],
