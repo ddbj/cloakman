@@ -45,14 +45,9 @@ class LDAPEntry
         persisted?: true,
 
         **model_to_ldap_map.map { |model_key, ldap_key|
-          if ldap_key.is_a?(Array)
-            multi    = true
-            ldap_key = ldap_key.first
-          else
-            multi = false
-          end
+          is_array = attribute_types.fetch(model_key.to_s).instance_of?(ActiveModel::Type::Value)
 
-          [ model_key, multi ? entry[ldap_key] : entry.first(ldap_key) ]
+          [ model_key, is_array ? entry[ldap_key] : entry.first(ldap_key) ]
         }.to_h
       ).tap(&:changes_applied)
     end
@@ -85,8 +80,6 @@ class LDAPEntry
 
         model_to_ldap_map.each do |model_key, ldap_key|
           next unless public_send("#{model_key}_changed?")
-
-          ldap_key = ldap_key.first if ldap_key.is_a?(Array)
 
           if val = public_send(model_key).presence
             val = val.value if val.is_a?(Enumerize::Value)
@@ -131,9 +124,8 @@ class LDAPEntry
           objectClass: object_classes,
 
           **model_to_ldap_map.map { |model_key, ldap_key|
-            val      = public_send(model_key).presence
-            val      = val.value if val.is_a?(Enumerize::Value)
-            ldap_key = ldap_key.first if ldap_key.is_a?(Array)
+            val = public_send(model_key).presence
+            val = val.value if val.is_a?(Enumerize::Value)
 
             [ ldap_key, Array(val).map(&:to_s) ]
           }.to_h.compact_blank
