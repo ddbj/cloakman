@@ -79,9 +79,15 @@ end
 entries        = parse_ldif(ARGV[0]).select { it[:uid] }
 row_assoc      = parse_tsv(ARGV[1]).index_by { it[:account_id] }
 max_uid_number = entries.filter_map { Array(it[:uidNumber]).first&.to_i }.max
+emails         = Set.new
 
 entries.each do |entry|
-  next unless row = row_assoc[entry[:uid].first]
+  next unless row   = row_assoc[entry[:uid].first]
+  next unless email = row[:email]
+
+  next if emails.include?(email)
+
+  emails << email
 
   entry[:uidNumber] ||= begin
     max_uid_number += 1
