@@ -10,6 +10,7 @@ olcAttributeTypes: ( 1.2.840.113556.1.2.102
 olcAttributeTypes: ( 2.16.840.1.113730.3.1.692
   NAME 'inetUserStatus'
   DESC '"active", "inactive", or "deleted" status of a user'
+  EQUALITY caseIgnoreMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE
   X-ORIGIN 'Netscape subscriber interoperability' )
 olcAttributeTypes: ( 2.16.840.1.113730.3.1.693

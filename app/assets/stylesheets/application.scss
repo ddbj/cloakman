@@ -4,3 +4,20 @@ label.required:after {
   content: ' *';
   color: var(--bs-red);
 }
+
+dl.horizontal {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem 1.25rem;
+
+  dt {
+    grid-column: 1;
+    text-align: right;
+  }
+
+  dd {
+    grid-column: 2;
+    margin: 0;
+    padding: 0;
+  }
+}

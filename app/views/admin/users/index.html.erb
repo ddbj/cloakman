@@ -4,8 +4,36 @@
   <%= link_to "New User", new_admin_user_path, class: "btn btn-primary" %>
 </div>
 
-<%= bootstrap_form_with method: :get do |f| %>
-  <%= f.search_field :query, value: params[:query], hide_label: true, placeholder: "Search by username, email, name, or organization", append: f.primary("Search") %>
+<%= bootstrap_form_with model: @form, url: admin_users_path, scope: :form, method: :get, class: "bg-light border rounded p-3" do |f| %>
+  <dl class="horizontal align-items-center mb-0">
+    <dt>Query</dt>
+
+    <dd>
+      <%= f.search_field :query, value: params[:query], placeholder: "Search by username, email, name, or organization", wrapper: false %>
+    </dd>
+
+    <dt>Status</dt>
+
+    <dd>
+      <%= f.radio_button :inet_user_status, "", label: "All", inline: true %>
+
+      <% User.inet_user_status.options.each do |label, value| %>
+        <%= f.radio_button :inet_user_status, value, label:, inline: true %>
+      <% end %>
+    </dd>
+
+    <dt>Account type</dt>
+
+    <dd>
+      <%= f.radio_button :account_type_number, "", label: "All", inline: true %>
+
+      <% User.account_type_number.options.each do |label, value| %>
+        <%= f.radio_button :account_type_number, value, label:, inline: true %>
+      <% end %>
+    </dd>
+
+    <dd><%= f.primary "Search" %></dd>
+  </dl>
 <% end %>
 
 <p>Displaying the first 100 users from your search.</p>

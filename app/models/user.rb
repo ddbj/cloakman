@@ -45,12 +45,8 @@ class User < LDAPEntry
   }
 
   class << self
-    def search(query)
-      filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
-
-      filter = filter & %w[uid mail commonName organizationName].map { |attr|
-        Net::LDAP::Filter.contains(attr, query)
-      }.inject(:|) if query.present?
+    def search(filter)
+      filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser") & filter
 
       LDAP.connection.assert_call(:search, **{
         base:   base_dn,
