@@ -119,7 +119,7 @@ class User < LDAPEntry
     errors.add :id, "is reserved" if id.include?("admin") || id.end_with?("_pg")
   end
 
-  validate do
+  validate unless: -> { id.in?(%w[ts-tracesys ts-jgasys ts-agdsys]) } do
     exists = !ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
       filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", id)
