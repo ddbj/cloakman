@@ -41,7 +41,7 @@ def entry_to_json(entry, row)
   {
     id:                    uid,
     password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
-    email:                 row[:email].then { it ? it.gsub(/\s/, "").delete_prefix("Example:") : nil },
+    email:                 row[:email]&.gsub(/\s/, "")&.delete_prefix("Example:"),
     first_name:            row[:first_name] || "-",
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
@@ -68,7 +68,7 @@ def entry_to_json(entry, row)
     gid_number:            entry[:gidNumber]&.first || "61000",
     home_directory:        entry[:homeDirectory]&.first || "/submission/#{uid}",
     login_shell:           entry[:loginShell]&.first || "/bin/bash",
-    inet_user_status:      entry[:inetUserStatus].first.required.downcase
+    inet_user_status:      entry[:inetUserStatus]&.first&.downcase || "active"
   }
 end
 
