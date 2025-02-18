@@ -1,7 +1,6 @@
 service: cloakman
 image: w3const/cloakman
 require_destination: true
-deploy_timeout: 120
 
 registry:
   username: w3const
