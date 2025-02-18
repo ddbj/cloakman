@@ -13,7 +13,9 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     FactoryBot.create :user, id: "alice"
 
     get admin_users_path, params: {
-      query: "alice"
+      form: {
+        query: "alice"
+      }
     }
 
     assert_response :ok
