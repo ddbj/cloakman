@@ -3,9 +3,9 @@ class Admin::UsersController < ApplicationController
     include ActiveModel::Model
     include ActiveModel::Attributes
 
-    attribute :query,               :string
-    attribute :inet_user_status,    :string
-    attribute :account_type_number, :string
+    attribute :query,                :string
+    attribute :inet_user_statuses,   default: -> { User.inet_user_status.values }
+    attribute :account_type_numbers, default: -> { User.account_type_number.values }
 
     def build_filter
       filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
@@ -16,13 +16,20 @@ class Admin::UsersController < ApplicationController
         }.inject(:|)
       end
 
-      if inet_user_status.present?
-        filter = filter & Net::LDAP::Filter.eq("inetUserStatus", inet_user_status)
+      if statuses = inet_user_statuses.compact_blank.presence
+        filter = filter & statuses.map { |status|
+          value = User.inet_user_status.find_value(status).value
+
+          Net::LDAP::Filter.eq("inetUserStatus", value)
+        }.inject(:|)
       end
 
-      if account_type_number.present?
-        value  = User.account_type_number.find_value(account_type_number).value
-        filter = filter & Net::LDAP::Filter.eq("accountTypeNumber", value)
+      if types = account_type_numbers.compact_blank.presence
+        filter = filter & types.map { |type|
+          value = User.account_type_number.find_value(type).value
+
+          Net::LDAP::Filter.eq("accountTypeNumber", value)
+        }.inject(:|)
       end
 
       filter
@@ -75,8 +82,9 @@ class Admin::UsersController < ApplicationController
   def form_params
     params.fetch(:form, {}).permit(
       :query,
-      :inet_user_status,
-      :account_type_number
+
+      inet_user_statuses:   [],
+      account_type_numbers: []
     )
   end
 

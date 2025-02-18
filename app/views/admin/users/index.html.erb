@@ -15,21 +15,13 @@
     <dt>Status</dt>
 
     <dd>
-      <%= f.radio_button :inet_user_status, "", label: "All", inline: true %>
-
-      <% User.inet_user_status.options.each do |label, value| %>
-        <%= f.radio_button :inet_user_status, value, label:, inline: true %>
-      <% end %>
+      <%= f.collection_check_boxes :inet_user_statuses, User.inet_user_status.options, :last, :first, wrapper: false, inline: true %>
     </dd>
 
     <dt>Account type</dt>
 
     <dd>
-      <%= f.radio_button :account_type_number, "", label: "All", inline: true %>
-
-      <% User.account_type_number.options.each do |label, value| %>
-        <%= f.radio_button :account_type_number, value, label:, inline: true %>
-      <% end %>
+      <%= f.collection_check_boxes :account_type_numbers, User.account_type_number.options, :last, :first, wrapper: false, inline: true %>
     </dd>
 
     <dd><%= f.primary "Search" %></dd>
