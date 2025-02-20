@@ -8,9 +8,15 @@ module TestHelper
   end
 
   def sign_in(user)
-    OmniAuth.config.add_mock :keycloak, extra: {
-      raw_info: {
-        preferred_username: user.id
+    OmniAuth.config.add_mock :keycloak, **{
+      credentials: {
+        id_token: "ID_TOKEN"
+      },
+
+      extra: {
+        raw_info: {
+          preferred_username: user.id
+        }
       }
     }
 

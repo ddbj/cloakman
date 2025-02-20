@@ -47,7 +47,7 @@
 
                 <ul class="dropdown-menu">
                   <li>
-                    <%= button_to "Logout", session_path, method: :delete, class: "dropdown-item" %>
+                    <%= button_to "Logout", session_path, method: :delete, class: "dropdown-item", data: { turbo: false } %>
                   </li>
                 </ul>
               </li>
