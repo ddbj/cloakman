@@ -1,3 +1,5 @@
+ENV["KEYCLOAK_REALM"]      = "master"
+ENV["KEYCLOAK_URL"]        = "http://keycloak.example.com"
 ENV["LDAP_ADMIN_BIND_DN"]  = "cn=admin,dc=example,dc=org"
 ENV["LDAP_ADMIN_PASSWORD"] = "adminpassword"
 ENV["LDAP_BASE_DN"]        = "dc=example,dc=org"
