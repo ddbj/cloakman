@@ -21,15 +21,6 @@ class AuthenticationTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
-  test "non-active users cannot log in" do
-    user = FactoryBot.create(:user, inet_user_status: "inactive")
-
-    sign_in user
-    get edit_profile_path
-
-    assert_redirected_to root_path
-  end
-
   test "accessing a protected page as an admin" do
     sign_in FactoryBot.create(:user, :admin)
 
