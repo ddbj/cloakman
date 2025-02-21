@@ -14,8 +14,8 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
 
     get admin_reader_path("example")
 
-    assert_dom "dd", text: "ou=users,dc=example,dc=org"
-    assert_dom "dd", text: "uid=example,ou=readers,dc=example,dc=org"
+    assert_dom "dd", text: "ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp"
+    assert_dom "dd", text: "uid=example,ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp"
     assert_dom "dd", text: "********"
   end
 
@@ -42,7 +42,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     assert_dom ".alert", "Reader created successfully."
-    assert_dom "dd", "uid=example,ou=readers,dc=example,dc=org"
+    assert_dom "dd", "uid=example,ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp"
     assert_dom "dd", "notasecret"
   end
 
