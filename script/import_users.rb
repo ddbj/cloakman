@@ -21,7 +21,7 @@ users.each do |attrs|
     next
   end
 
-  User.create! attrs
+  User.create! **attrs, loose?: true
 
   puts "[CREATED] #{id}"
 rescue ActiveRecord::RecordInvalid => e

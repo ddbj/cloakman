@@ -88,6 +88,7 @@ class User < LDAPEntry
   attribute :gid_number,            :integer
   attribute :home_directory,        :string
   attribute :login_shell,           :string
+  attribute :loose?,                :boolean, default: false
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
 
@@ -99,8 +100,10 @@ class User < LDAPEntry
     system_reference: 5
   }
 
-  validates :id,               length: { minimum: 4, maximum: 24 }, format: { with: /\A[a-z][a-z0-9_\-]*\z/ }, allow_blank: true
-  validates :password,         presence: true, confirmation: true, length: { minimum: 6, allow_blank: true }, on: :sign_up
+  validates :id,               length: { minimum: 4, maximum: 24, allow_blank: true }
+  validates :id,               format: { with: /\A[a-z][a-z0-9_]*\z/, allow_blank: true }, unless: :loose?
+  validates :id,               format: { with: /\A[a-z][a-z0-9_\-]*\z/, allow_blank: true }, if: :loose?
+  validates :password,         presence: true, confirmation: true, length: { minimum: 8, allow_blank: true }, on: :sign_up
   validates :email,            presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :first_name,       presence: true
   validates :last_name,        presence: true
@@ -115,7 +118,7 @@ class User < LDAPEntry
     errors.add :id, "is reserved" if id.include?("admin") || id.end_with?("_pg")
   end
 
-  validate unless: -> { id.in?(%w[ts-tracesys ts-jgasys ts-agdsys]) } do
+  validate unless: :loose? do
     exists = !ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
       filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", id)
