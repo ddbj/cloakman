@@ -1,9 +1,9 @@
 <h1 class="mb-3">Password</h1>
 
 <%= bootstrap_form_with model: @form, scope: :form, url: password_path do |f| %>
-  <%= f.password_field :current_password,          required: true, minlength: 6, autocomplete: "current-password" %>
-  <%= f.password_field :new_password,              required: true, minlength: 6, autocomplete: "new-password", help: "At least 6 characters." %>
-  <%= f.password_field :new_password_confirmation, required: true, minlength: 6, autocomplete: "new-password" %>
+  <%= f.password_field :current_password,          required: true, minlength: 8, autocomplete: "current-password" %>
+  <%= f.password_field :new_password,              required: true, minlength: 8, autocomplete: "new-password", help: "At least 8 characters." %>
+  <%= f.password_field :new_password_confirmation, required: true, minlength: 8, autocomplete: "new-password" %>
 
   <%= f.primary "Update password" %>
 <% end %>
