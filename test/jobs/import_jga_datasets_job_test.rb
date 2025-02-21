@@ -18,10 +18,7 @@ class ImportJGADatasetsJobTest < ActiveJob::TestCase
 
     first, second = user.jga_datasets.map { JSON.parse(it, symbolize_names: true) }
 
-    assert_equal "JGAD000001",           first[:id]
-    assert_equal "2025-01-01T00:00:00Z", first[:expires_at]
-
-    assert_equal "JGAD000002",           second[:id]
-    assert_equal "2025-01-02T00:00:00Z", second[:expires_at]
+    assert_equal({ id: "JGAD000001", expires_at: "2025-01-01T00:00:00Z" }, first)
+    assert_equal({ id: "JGAD000002", expires_at: "2025-01-02T00:00:00Z" }, second)
   end
 end
