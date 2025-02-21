@@ -8,10 +8,14 @@ class SSHKeysController < ApplicationController
 
     validates :ssh_key, presence: true
 
-    validates_each :ssh_key do |record, attr, value|
-      SSHData::PublicKey.parse_openssh value
+    validate do
+      key = SSHData::PublicKey.parse_openssh(ssh_key)
+
+      if key.algo == "ssh-dss"
+        errors.add :ssh_key, "DSA keys are not permitted. Please use RSA, ECDSA, or ED25519 keys instead."
+      end
     rescue SSHData::DecodeError
-      record.errors.add attr, "Key is invalid. You must supply a key in OpenSSH public key format."
+      errors.add :ssh_key, "Key is invalid. You must supply a key in OpenSSH public key format."
     end
 
     def save
