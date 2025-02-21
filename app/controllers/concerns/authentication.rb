@@ -18,15 +18,7 @@ module Authentication
 
     if id = session[:user_id]
       begin
-        user = User.find(id)
-
-        if user.inet_user_status.active?
-          @current_user = user
-        else
-          session.delete :user_id
-
-          @current_user = nil
-        end
+        @current_user = User.find(id)
       rescue LDAPError::NoSuchObject
         session.delete :user_id
 
