@@ -35,6 +35,8 @@ def parse_tsv(path)
   }
 end
 
+FILLER = "(Filled by DDBJ)"
+
 def entry_to_json(entry, row)
   uid = entry[:uid].first.required
 
@@ -42,16 +44,16 @@ def entry_to_json(entry, row)
     id:                    uid,
     password_digest:       entry[:userPassword]&.first || random_password.generate_ssha,
     email:                 row[:email]&.gsub(/\s/, "")&.delete_prefix("Example:"),
-    first_name:            row[:first_name] || "-",
+    first_name:            row[:first_name] || FILLER,
     first_name_japanese:   row[:first_name_japanese],
     middle_name:           row[:middle_name],
-    last_name:             row[:last_name] || "-",
+    last_name:             row[:last_name] || FILLER,
     last_name_japanese:    row[:last_name_japanese],
     job_title:             row[:job_title],
     job_title_japanese:    row[:job_title_japanese],
     orcid:                 row[:orcid],
     erad_id:               row[:eradid].then { it&.match?(/\A\d{8}\z/) ? it : nil },
-    organization:          row[:institution] || "-",
+    organization:          row[:institution] || FILLER,
     organization_japanese: row[:institution_japanese],
     lab_fac_dep:           row[:lab_fac_dep],
     lab_fac_dep_japanese:  row[:lab_fac_dep_japanese],
@@ -91,4 +93,15 @@ entries.each do |entry|
   end
 
   puts JSON.generate(entry_to_json(entry, row))
+end
+
+uids = Set.new(entries.map { it[:uid].first.required })
+
+row_assoc.each do |uid, row|
+  next if uids.include?(uid)
+
+  puts JSON.generate(entry_to_json({
+    uid:       [ uid ],
+    uidNumber: [ (max_uid_number += 1).to_s ]
+  }, row))
 end
