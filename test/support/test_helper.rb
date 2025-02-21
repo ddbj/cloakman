@@ -30,78 +30,17 @@ module TestHelper
   private
 
   def reset_ldap
-    begin
-      LDAP.connection.assert_call :search, **{
-        base:          LDAP.base_dn,
-        scope:         Net::LDAP::SearchScope_BaseObject,
-        return_result: false
-      }
-    rescue LDAPError::NoSuchObject
-      # do nothing
-    else
-      LDAP.connection.assert_call :delete_tree, dn: LDAP.base_dn
-    end
-
-    LDAP.connection.assert_call :add, **{
-      dn: LDAP.base_dn,
-
-      attributes: {
-        objectClass: %w[dcObject organization],
-        dc:          "example",
-        o:           "example"
-      }
-    }
-
-    LDAP.connection.assert_call :add, **{
-      dn: User.base_dn,
-
-      attributes: {
-        objectClass: %w[organizationalUnit],
-        ou:          "users"
-      }
-    }
-
-    LDAP.connection.assert_call :add, **{
-      dn: Reader.base_dn,
-
-      attributes: {
-        objectClass: %w[organizationalUnit],
-        ou:          "readers"
-      }
-    }
+    User.all.each(&:destroy!)
+    Reader.all.each(&:destroy!)
   end
 
   def reset_ext_ldap
-    begin
-      ExtLDAP.connection.assert_call :search, **{
-        base:          ExtLDAP.base_dn,
-        scope:         Net::LDAP::SearchScope_BaseObject,
-        return_result: false
-      }
-    rescue LDAPError::NoSuchObject
-      # do nothing
-    else
-      ExtLDAP.connection.assert_call :delete_tree, dn: ExtLDAP.base_dn
+    ExtLDAP.connection.assert_call(:search, **{
+      base:   ExtLDAP.base_dn,
+      filter: Net::LDAP::Filter.eq("objectClass", "account")
+    }).each do |entry|
+      ExtLDAP.connection.assert_call :delete, dn: entry.dn
     end
-
-    ExtLDAP.connection.assert_call :add, **{
-      dn: ExtLDAP.base_dn,
-
-      attributes: {
-        objectClass: %w[dcObject organization],
-        dc:          "example",
-        o:           "example"
-      }
-    }
-
-    ExtLDAP.connection.assert_call :add, **{
-      dn: "ou=people,#{ExtLDAP.base_dn}",
-
-      attributes: {
-        objectClass: %w[organizationalUnit],
-        ou:          "people"
-      }
-    }
   end
 
   def reset_redis
