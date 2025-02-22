@@ -92,6 +92,12 @@ class LDAPEntry
           end
 
           public_send "clear_#{model_key}_change"
+        rescue LDAPError::ConstraintViolation => e
+          if e.message.start_with?("non-unique attributes found with ")
+            errors.add model_key, "has already been taken"
+          else
+            errors.add model_key, e.message
+          end
         rescue LDAPError => e
           errors.add model_key, e.message
         end
@@ -135,6 +141,14 @@ class LDAPEntry
       changes_applied
     rescue LDAPError::EntryAlreadyExists
       errors.add :id, "has already been taken"
+
+      return false
+    rescue LDAPError::ConstraintViolation => e
+      if e.message.start_with?("non-unique attributes found with (|(mail=")
+        errors.add :email, "has already been taken"
+      else
+        errors.add :base, e.message
+      end
 
       return false
     rescue LDAPError => e
