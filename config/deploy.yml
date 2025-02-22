@@ -131,6 +131,7 @@ accessories:
     files:
       - openldap/docker-entrypoint-initdb.d/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
       - openldap/docker-entrypoint-initdb.d/ldifs/acl.ldif:/docker-entrypoint-initdb.d/ldifs/acl.ldif
+      - openldap/docker-entrypoint-initdb.d/ldifs/index.ldif:/docker-entrypoint-initdb.d/ldifs/index.ldif
       - openldap/docker-entrypoint-initdb.d/ldifs/lastbind.ldif:/docker-entrypoint-initdb.d/ldifs/lastbind.ldif
       - openldap/docker-entrypoint-initdb.d/ldifs/unique.ldif:/docker-entrypoint-initdb.d/ldifs/unique.ldif
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
