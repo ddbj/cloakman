@@ -6,4 +6,4 @@ set -eu
 trap ldap_stop EXIT
 ldap_start_bg
 
-ldapmodify -a -Y EXTERNAL -H ldapi:/// -f /docker-entrypoint-initdb.d/ldifs/acl.ldif
+ldapmodify -a -Y EXTERNAL -H ldapi:/// -f /docker-entrypoint-initdb.d/ldifs/unique.ldif

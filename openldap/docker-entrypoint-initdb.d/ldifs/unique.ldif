@@ -1,0 +1,13 @@
+dn: cn=module,cn=config
+changetype: add
+objectClass: olcModuleList
+cn: module
+olcModulePath: /opt/bitnami/openldap/lib/openldap
+olcModuleLoad: unique
+
+dn: olcOverlay=unique,olcDatabase={2}mdb,cn=config
+changetype: add
+objectClass: olcOverlayConfig
+objectClass: olcUniqueConfig
+olcOverlay: unique
+olcUniqueURI: ldap:///ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp?mail?sub

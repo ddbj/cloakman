@@ -88,11 +88,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/acl.ldif
+      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/unique.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/ddbj.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/inetuser.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/openssh-lpk.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp -w adminpassword -f openldap/ldifs/init.ldif
-
       - run: ldapadd -H ldap://localhost:3389 -x -D cn=admin,dc=example,dc=org -w adminpassword -f openldap/ext_ldifs/init.ldif
 
       - name: Set up Ruby

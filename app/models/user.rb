@@ -127,19 +127,6 @@ class User < LDAPEntry
     errors.add :id, "has already been taken" if exists
   end
 
-  validate do
-    exists = !LDAP.connection.assert_call(:search, **{
-      base:   base_dn,
-      filter: Net::LDAP::Filter.eq("mail", email) & Net::LDAP::Filter.ne("uid", id)
-    }).empty?
-
-    errors.add :email, "has already been taken" if exists
-  end
-
-  around_save do |_, block|
-    REDIS.with_lock "email:#{email}", &block
-  end
-
   before_save do
     self.full_name = [ first_name, middle_name, last_name ].compact_blank.join(" ")
   end
