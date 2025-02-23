@@ -89,6 +89,7 @@ jobs:
         uses: actions/checkout@v4
 
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/acl.ldif
+      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/lastbind.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/unique.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/ddbj.ldif
       - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/inetuser.ldif

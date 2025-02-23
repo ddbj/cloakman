@@ -7,11 +7,11 @@
 <h1 class="mb-3"><%= user.id %></h1>
 
 <div class="nav nav-tabs mb-3">
-  <%= link_to "Profile", edit_admin_user_profile_path(user), **{
-    class: [ "nav-link", active: controller_path == "admin/user_profiles" ]
+  <%= link_to "Admin", edit_admin_user_admin_path(user), **{
+    class: [ "nav-link", active: controller_path == "admin/user_admins" ]
   } %>
 
-  <%= link_to "Config", edit_admin_user_config_path(user), **{
-    class: [ "nav-link", active: controller_path == "admin/user_configs" ]
+  <%= link_to "Profile", edit_admin_user_profile_path(user), **{
+    class: [ "nav-link", active: controller_path == "admin/user_profiles" ]
   } %>
 </div>

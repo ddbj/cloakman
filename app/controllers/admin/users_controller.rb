@@ -3,15 +3,20 @@ class Admin::UsersController < ApplicationController
     include ActiveModel::Model
     include ActiveModel::Attributes
 
+    extend Enumerize
+
     attribute :query,                :string
     attribute :inet_user_statuses,   default: -> { User.inet_user_status.values }
     attribute :account_type_numbers, default: -> { User.account_type_number.values }
+    attribute :login_histories,      default: -> { login_history.values }
+
+    enumerize :login_history, in: %i[has_logged_in never_logged_in]
 
     def build_filter
       filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
 
       if query.present?
-        filter = filter & %w[uid mail commonName organizationName].map { |attr|
+        filter = filter & %w[uid mail commonName].map { |attr|
           Net::LDAP::Filter.contains(attr, query)
         }.inject(:|)
       end
@@ -22,6 +27,8 @@ class Admin::UsersController < ApplicationController
 
           Net::LDAP::Filter.eq("inetUserStatus", value)
         }.inject(:|)
+      else
+        filter = filter & Net::LDAP::Filter.ne("inetUserStatus", "*")
       end
 
       if types = account_type_numbers.compact_blank.presence
@@ -29,6 +36,19 @@ class Admin::UsersController < ApplicationController
           value = User.account_type_number.find_value(type).value
 
           Net::LDAP::Filter.eq("accountTypeNumber", value)
+        }.inject(:|)
+      else
+        filter = filter & Net::LDAP::Filter.ne("accountTypeNumber", "*")
+      end
+
+      if histories = login_histories.compact_blank.presence
+        filter = filter & histories.map { |history|
+          case history
+          when "has_logged_in"
+            Net::LDAP::Filter.present("pwdLastSuccess")
+          when "never_logged_in"
+            Net::LDAP::Filter.ne("pwdLastSuccess", "*")
+          end
         }.inject(:|)
       end
 
@@ -84,7 +104,8 @@ class Admin::UsersController < ApplicationController
       :query,
 
       inet_user_statuses:   [],
-      account_type_numbers: []
+      account_type_numbers: [],
+      login_histories:      []
     )
   end
 

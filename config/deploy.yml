@@ -118,6 +118,7 @@ accessories:
 
       clear:
         LDAP_ALLOW_ANON_BINDING: 'no'
+        LDAP_CONFIGURE_PPOLICY: 'yes'
         LDAP_CONFIG_ADMIN_ENABLED: 'yes'
         LDAP_ENABLE_TLS: 'yes'
         LDAP_ROOT: dc=ddbj,dc=nig,dc=ac,dc=jp
@@ -130,6 +131,7 @@ accessories:
     files:
       - openldap/docker-entrypoint-initdb.d/initdb.sh:/docker-entrypoint-initdb.d/initdb.sh
       - openldap/docker-entrypoint-initdb.d/ldifs/acl.ldif:/docker-entrypoint-initdb.d/ldifs/acl.ldif
+      - openldap/docker-entrypoint-initdb.d/ldifs/lastbind.ldif:/docker-entrypoint-initdb.d/ldifs/lastbind.ldif
       - openldap/docker-entrypoint-initdb.d/ldifs/unique.ldif:/docker-entrypoint-initdb.d/ldifs/unique.ldif
       - openldap/ldifs/init.ldif:/ldifs/init.ldif
       - openldap/schemas/ddbj.ldif:/schemas/ddbj.ldif

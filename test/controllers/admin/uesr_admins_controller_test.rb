@@ -12,14 +12,14 @@ class Admin::UserConfigsControllerTest < ActionDispatch::IntegrationTest
   test "config updated successfully" do
     user = FactoryBot.create(:user)
 
-    patch admin_user_config_path(user), params: {
+    patch admin_user_admin_path(user), params: {
       user: {
         inet_user_status:    "active",
         account_type_number: "ddbj"
       }
     }
 
-    assert_redirected_to edit_admin_user_config_path(user)
+    assert_redirected_to edit_admin_user_admin_path(user)
 
     user = User.find(user.id)
 
