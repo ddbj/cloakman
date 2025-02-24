@@ -24,10 +24,10 @@
       <%= f.collection_check_boxes :account_type_numbers, User.account_type_number.options, :last, :first, wrapper: false, inline: true %>
     </dd>
 
-    <dt>Login history</dt>
+    <dt>Sign in history</dt>
 
     <dd>
-      <%= f.collection_check_boxes :login_histories, Admin::UsersController::Form.login_history.options, :last, :first, wrapper: false, inline: true %>
+      <%= f.collection_check_boxes :sign_in_histories, Admin::UsersController::Form.sign_in_history.options, :last, :first, wrapper: false, inline: true %>
     </dd>
 
     <dd><%= f.primary "Search" %></dd>
@@ -44,7 +44,7 @@
       <th>Name</th>
       <th>Status</th>
       <th>Account type</th>
-      <th>Last login at</th>
+      <th>Last sign in at</th>
     </tr>
   </thead>
 
@@ -56,7 +56,7 @@
         <td class="text-break"><%= user.full_name %></td>
         <td class="text-break"><%= user.inet_user_status_text %></td>
         <td class="text-break"><%= user.account_type_number_text %></td>
-        <td class="text-break"><%= user.last_login_at.then { _1 ? l(_1) : "-" } %></td>
+        <td class="text-break"><%= user.last_sign_in_at.then { _1 ? l(_1) : "-" } %></td>
       </tr>
     <% end %>
   </tbody>

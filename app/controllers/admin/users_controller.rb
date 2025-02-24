@@ -8,9 +8,9 @@ class Admin::UsersController < ApplicationController
     attribute :query,                :string
     attribute :inet_user_statuses,   default: -> { User.inet_user_status.values }
     attribute :account_type_numbers, default: -> { User.account_type_number.values }
-    attribute :login_histories,      default: -> { login_history.values }
+    attribute :sign_in_histories,    default: -> { sign_in_history.values }
 
-    enumerize :login_history, in: %i[has_logged_in never_logged_in]
+    enumerize :sign_in_history, in: %i[has_signed_in never_signed_in]
 
     def build_filter
       filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
@@ -41,12 +41,12 @@ class Admin::UsersController < ApplicationController
         filter = filter & Net::LDAP::Filter.ne("accountTypeNumber", "*")
       end
 
-      if histories = login_histories.compact_blank.presence
+      if histories = sign_in_histories.compact_blank.presence
         filter = filter & histories.map { |history|
           case history
-          when "has_logged_in"
+          when "has_signed_in"
             Net::LDAP::Filter.present("pwdLastSuccess")
-          when "never_logged_in"
+          when "never_signed_in"
             Net::LDAP::Filter.ne("pwdLastSuccess", "*")
           end
         }.inject(:|)
@@ -105,7 +105,7 @@ class Admin::UsersController < ApplicationController
 
       inet_user_statuses:   [],
       account_type_numbers: [],
-      login_histories:      []
+      sign_in_histories:    []
     )
   end
 

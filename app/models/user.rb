@@ -43,7 +43,7 @@ class User < LDAPEntry
     "homeDirectory"     => :home_directory,
     "loginShell"        => :login_shell,
     "modifyTimestamp"   => :updated_at,
-    "pwdLastSuccess"    => :last_login_at
+    "pwdLastSuccess"    => :last_sign_in_at
   }
 
   self.model_to_ldap_map = ldap_to_model_map.except(
@@ -98,7 +98,7 @@ class User < LDAPEntry
   attribute :home_directory,        :string
   attribute :login_shell,           :string
   attribute :updated_at,            :datetime
-  attribute :last_login_at,         :datetime
+  attribute :last_sign_in_at,       :datetime
   attribute :loose?,                :boolean, default: false
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
