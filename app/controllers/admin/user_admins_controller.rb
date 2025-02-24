@@ -1,4 +1,4 @@
-class Admin::UserConfigsController < ApplicationController
+class Admin::UserAdminsController < ApplicationController
   layout "main"
 
   before_action :authenticate_admin!
@@ -11,7 +11,7 @@ class Admin::UserConfigsController < ApplicationController
     @user = User.find(params[:user_id])
 
     if @user.update(user_params)
-      redirect_to edit_admin_user_config_path(@user), notice: "User has been successfully updated."
+      redirect_to edit_admin_user_admin_path(@user), notice: "User has been successfully updated."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 

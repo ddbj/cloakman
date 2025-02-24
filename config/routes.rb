@@ -12,8 +12,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users, only: %i[index new create] do
+      resource :admin,   only: %i[edit update], controller: "user_admins"
       resource :profile, only: %i[edit update], controller: "user_profiles"
-      resource :config,  only: %i[edit update], controller: "user_configs"
     end
 
     resources :readers, only: %i[index show new create destroy]

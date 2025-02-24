@@ -8,6 +8,7 @@ class LDAPEntry
   class_attribute :base_dn
   class_attribute :ldap_id_attr
   class_attribute :model_to_ldap_map
+  class_attribute :ldap_to_model_map
   class_attribute :object_classes
 
   define_model_callbacks :save, :create, :update
@@ -28,16 +29,20 @@ class LDAPEntry
 
     def all
       LDAP.connection.assert_call(:search, **{
-        base:   base_dn,
-        scope:  Net::LDAP::SearchScope_SingleLevel,
-        filter: object_classes.map { Net::LDAP::Filter.eq("objectClass", it) }.inject(:&)
+        base:                          base_dn,
+        scope:                         Net::LDAP::SearchScope_SingleLevel,
+        attributes:                    ldap_to_model_map.keys,
+        return_operational_attributes: true,
+        filter:                        object_classes.map { Net::LDAP::Filter.eq("objectClass", it) }.inject(:&)
       }).map { from_entry(it) }
     end
 
     def find(id)
       entry = LDAP.connection.assert_call(:search, **{
-        base:  "#{ldap_id_attr}=#{id},#{base_dn}",
-        scope: Net::LDAP::SearchScope_BaseObject
+        base:                          "#{ldap_id_attr}=#{id},#{base_dn}",
+        scope:                         Net::LDAP::SearchScope_BaseObject,
+        attributes:                    ldap_to_model_map.keys,
+        return_operational_attributes: true
       }).first
 
       from_entry(entry)
@@ -47,8 +52,8 @@ class LDAPEntry
       new(
         persisted?: true,
 
-        **model_to_ldap_map.map { |model_key, ldap_key|
-          is_array = attribute_types.fetch(model_key.to_s).instance_of?(ActiveModel::Type::Value)
+        **ldap_to_model_map.map { |ldap_key, model_key|
+          is_array = type_for_attribute(model_key).instance_of?(ActiveModel::Type::Value)
 
           [ model_key, is_array ? entry[ldap_key] : entry.first(ldap_key) ]
         }.to_h

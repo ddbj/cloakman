@@ -1,8 +1,0 @@
-<%= render "admin/users/header", user: @user %>
-
-<%= bootstrap_form_with model: @user, url: admin_user_config_path(@user) do |form| %>
-  <%= form.select :inet_user_status,    User.inet_user_status.options %>
-  <%= form.select :account_type_number, User.account_type_number.options %>
-
-  <%= form.primary "Update User" %>
-<% end %>
