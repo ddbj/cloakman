@@ -1,0 +1,7 @@
+dn: olcDatabase={2}mdb,cn=config
+changetype: modify
+add: olcDbIndex
+olcDbIndex: accountTypeNumber eq
+olcDbIndex: inetUserStatus eq
+olcDbIndex: pwdLastSuccess pres
+olcDbIndex: uid eq,sub
