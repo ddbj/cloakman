@@ -70,40 +70,62 @@ accessories:
 
     files:
       - keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
+      - keycloak/themes/ddbj/login/cli_splash.ftl:/opt/keycloak/themes/ddbj/login/cli_splash.ftl
+      - keycloak/themes/ddbj/login/code.ftl:/opt/keycloak/themes/ddbj/login/code.ftl
+      - keycloak/themes/ddbj/login/delete-account-confirm.ftl:/opt/keycloak/themes/ddbj/login/delete-account-confirm.ftl
+      - keycloak/themes/ddbj/login/delete-credential.ftl:/opt/keycloak/themes/ddbj/login/delete-credential.ftl
+      - keycloak/themes/ddbj/login/error.ftl:/opt/keycloak/themes/ddbj/login/error.ftl
+      - keycloak/themes/ddbj/login/footer.ftl:/opt/keycloak/themes/ddbj/login/footer.ftl
+      - keycloak/themes/ddbj/login/frontchannel-logout.ftl:/opt/keycloak/themes/ddbj/login/frontchannel-logout.ftl
+      - keycloak/themes/ddbj/login/idp-review-user-profile.ftl:/opt/keycloak/themes/ddbj/login/idp-review-user-profile.ftl
+      - keycloak/themes/ddbj/login/info.ftl:/opt/keycloak/themes/ddbj/login/info.ftl
+      - keycloak/themes/ddbj/login/login-config-totp.ftl:/opt/keycloak/themes/ddbj/login/login-config-totp.ftl
+      - keycloak/themes/ddbj/login/login-idp-link-confirm-override.ftl:/opt/keycloak/themes/ddbj/login/login-idp-link-confirm-override.ftl
+      - keycloak/themes/ddbj/login/login-idp-link-confirm.ftl:/opt/keycloak/themes/ddbj/login/login-idp-link-confirm.ftl
+      - keycloak/themes/ddbj/login/login-idp-link-email.ftl:/opt/keycloak/themes/ddbj/login/login-idp-link-email.ftl
       - keycloak/themes/ddbj/login/login-oauth-grant.ftl:/opt/keycloak/themes/ddbj/login/login-oauth-grant.ftl
-      - keycloak/themes/ddbj/login/login.ftl:/opt/keycloak/themes/ddbj/login/login.ftl
+      - keycloak/themes/ddbj/login/login-oauth2-device-verify-user-code.ftl:/opt/keycloak/themes/ddbj/login/login-oauth2-device-verify-user-code.ftl
+      - keycloak/themes/ddbj/login/login-otp.ftl:/opt/keycloak/themes/ddbj/login/login-otp.ftl
+      - keycloak/themes/ddbj/login/login-page-expired.ftl:/opt/keycloak/themes/ddbj/login/login-page-expired.ftl
+      - keycloak/themes/ddbj/login/login-passkeys-conditional-authenticate.ftl:/opt/keycloak/themes/ddbj/login/login-passkeys-conditional-authenticate.ftl
+      - keycloak/themes/ddbj/login/login-password.ftl:/opt/keycloak/themes/ddbj/login/login-password.ftl
+      - keycloak/themes/ddbj/login/login-recovery-authn-code-config.ftl:/opt/keycloak/themes/ddbj/login/login-recovery-authn-code-config.ftl
+      - keycloak/themes/ddbj/login/login-recovery-authn-code-input.ftl:/opt/keycloak/themes/ddbj/login/login-recovery-authn-code-input.ftl
+      - keycloak/themes/ddbj/login/login-reset-otp.ftl:/opt/keycloak/themes/ddbj/login/login-reset-otp.ftl
+      - keycloak/themes/ddbj/login/login-update-password.ftl:/opt/keycloak/themes/ddbj/login/login-update-password.ftl
+      - keycloak/themes/ddbj/login/login-update-profile.ftl:/opt/keycloak/themes/ddbj/login/login-update-profile.ftl
+      - keycloak/themes/ddbj/login/login-username.ftl:/opt/keycloak/themes/ddbj/login/login-username.ftl
+      - keycloak/themes/ddbj/login/login-verify-email.ftl:/opt/keycloak/themes/ddbj/login/login-verify-email.ftl
+      - keycloak/themes/ddbj/login/login-x509-info.ftl:/opt/keycloak/themes/ddbj/login/login-x509-info.ftl
+      - keycloak/themes/ddbj/login/logout-confirm.ftl:/opt/keycloak/themes/ddbj/login/logout-confirm.ftl
       - keycloak/themes/ddbj/login/messages/messages_en.properties:/opt/keycloak/themes/ddbj/login/messages/messages_en.properties
-      - keycloak/themes/ddbj/login/resources/css/login.css:/opt/keycloak/themes/ddbj/login/resources/css/login.css
-      - keycloak/themes/ddbj/login/resources/css/tile.css:/opt/keycloak/themes/ddbj/login/resources/css/tile.css
-      - keycloak/themes/ddbj/login/resources/img/DDBJ_logo-large.png:/opt/keycloak/themes/ddbj/login/resources/img/DDBJ_logo-large.png
-      - keycloak/themes/ddbj/login/resources/img/favicon.ico:/opt/keycloak/themes/ddbj/login/resources/img/favicon.ico
-      - keycloak/themes/ddbj/login/resources/img/feedback-error-arrow-down.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-error-arrow-down.png
-      - keycloak/themes/ddbj/login/resources/img/feedback-error-sign.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-error-sign.png
-      - keycloak/themes/ddbj/login/resources/img/feedback-success-arrow-down.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-success-arrow-down.png
-      - keycloak/themes/ddbj/login/resources/img/feedback-success-sign.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-success-sign.png
-      - keycloak/themes/ddbj/login/resources/img/feedback-warning-arrow-down.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-warning-arrow-down.png
-      - keycloak/themes/ddbj/login/resources/img/feedback-warning-sign.png:/opt/keycloak/themes/ddbj/login/resources/img/feedback-warning-sign.png
-      - keycloak/themes/ddbj/login/resources/img/keycloak-bg.png:/opt/keycloak/themes/ddbj/login/resources/img/keycloak-bg.png
-      - keycloak/themes/ddbj/login/resources/img/keycloak-logo-text.png:/opt/keycloak/themes/ddbj/login/resources/img/keycloak-logo-text.png
-      - keycloak/themes/ddbj/login/resources/img/keycloak-logo.png:/opt/keycloak/themes/ddbj/login/resources/img/keycloak-logo.png
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/app.css:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/app.css
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.ttf
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff2
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-light.woff
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.ttf
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff2
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/assets/fonts/overpass-webfont/overpass-regular.woff
-      - keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/base.css:/opt/keycloak/themes/ddbj/login/resources/lib/@patternfly/react-core/dist/styles/base.css
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/css/patternfly.min.css:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/css/patternfly.min.css
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.ttf
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff2
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Light-webfont.woff
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.ttf:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.ttf
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff2:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff2
-      - keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff:/opt/keycloak/themes/ddbj/login/resources/lib/patternfly/dist/fonts/OpenSans-Regular-webfont.woff
-      - keycloak/themes/ddbj/login/resources/lib/pficon/pficon.css:/opt/keycloak/themes/ddbj/login/resources/lib/pficon/pficon.css
+      - keycloak/themes/ddbj/login/password-commons.ftl:/opt/keycloak/themes/ddbj/login/password-commons.ftl
+      - keycloak/themes/ddbj/login/register-commons.ftl:/opt/keycloak/themes/ddbj/login/register-commons.ftl
+      - keycloak/themes/ddbj/login/register.ftl:/opt/keycloak/themes/ddbj/login/register.ftl
+      - keycloak/themes/ddbj/login/resources/js/authChecker.js:/opt/keycloak/themes/ddbj/login/resources/js/authChecker.js
+      - keycloak/themes/ddbj/login/resources/js/common.js:/opt/keycloak/themes/ddbj/login/resources/js/common.js
+      - keycloak/themes/ddbj/login/resources/js/kcMultivalued.js:/opt/keycloak/themes/ddbj/login/resources/js/kcMultivalued.js
+      - keycloak/themes/ddbj/login/resources/js/kcNumberFormat.js:/opt/keycloak/themes/ddbj/login/resources/js/kcNumberFormat.js
+      - keycloak/themes/ddbj/login/resources/js/kcNumberUnFormat.js:/opt/keycloak/themes/ddbj/login/resources/js/kcNumberUnFormat.js
+      - keycloak/themes/ddbj/login/resources/js/menu-button-links.js:/opt/keycloak/themes/ddbj/login/resources/js/menu-button-links.js
+      - keycloak/themes/ddbj/login/resources/js/passkeysConditionalAuth.js:/opt/keycloak/themes/ddbj/login/resources/js/passkeysConditionalAuth.js
+      - keycloak/themes/ddbj/login/resources/js/passwordVisibility.js:/opt/keycloak/themes/ddbj/login/resources/js/passwordVisibility.js
+      - keycloak/themes/ddbj/login/resources/js/userProfile.js:/opt/keycloak/themes/ddbj/login/resources/js/userProfile.js
+      - keycloak/themes/ddbj/login/resources/js/webauthnAuthenticate.js:/opt/keycloak/themes/ddbj/login/resources/js/webauthnAuthenticate.js
+      - keycloak/themes/ddbj/login/resources/js/webauthnRegister.js:/opt/keycloak/themes/ddbj/login/resources/js/webauthnRegister.js
+      - keycloak/themes/ddbj/login/resources/img/logo.png:/opt/keycloak/themes/ddbj/login/resources/img/logo.png
+      - keycloak/themes/ddbj/login/saml-post-form.ftl:/opt/keycloak/themes/ddbj/login/saml-post-form.ftl
+      - keycloak/themes/ddbj/login/select-authenticator.ftl:/opt/keycloak/themes/ddbj/login/select-authenticator.ftl
+      - keycloak/themes/ddbj/login/select-organization.ftl:/opt/keycloak/themes/ddbj/login/select-organization.ftl
+      - keycloak/themes/ddbj/login/terms.ftl:/opt/keycloak/themes/ddbj/login/terms.ftl
+      - keycloak/themes/ddbj/login/update-email.ftl:/opt/keycloak/themes/ddbj/login/update-email.ftl
+      - keycloak/themes/ddbj/login/user-profile-commons.ftl:/opt/keycloak/themes/ddbj/login/user-profile-commons.ftl
+      - keycloak/themes/ddbj/login/webauthn-authenticate.ftl:/opt/keycloak/themes/ddbj/login/webauthn-authenticate.ftl
+      - keycloak/themes/ddbj/login/webauthn-error.ftl:/opt/keycloak/themes/ddbj/login/webauthn-error.ftl
+      - keycloak/themes/ddbj/login/webauthn-register.ftl:/opt/keycloak/themes/ddbj/login/webauthn-register.ftl
+      - keycloak/themes/ddbj/login/login.ftl:/opt/keycloak/themes/ddbj/login/login.ftl
+      - keycloak/themes/ddbj/login/login-reset-password.ftl:/opt/keycloak/themes/ddbj/login/login-reset-password.ftl
       - keycloak/themes/ddbj/login/template.ftl:/opt/keycloak/themes/ddbj/login/template.ftl
-      - keycloak/themes/ddbj/login/theme.properties:/opt/keycloak/themes/ddbj/login/theme.properties
 
   openldap:
     image: bitnami/openldap:2.6
