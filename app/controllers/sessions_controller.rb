@@ -9,8 +9,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    keycloak_url, realm = ENV.values_at("KEYCLOAK_URL", "KEYCLOAK_REALM")
-    logout_url          = URI.join(keycloak_url, "/realms/#{realm}/protocol/openid-connect/logout")
+    keycloak_url = ENV.fetch("KEYCLOAK_URL", "http://localhost:8080")
+    realm        = ENV.fetch("KEYCLOAK_REALM", "master")
+    logout_url   = URI.join(keycloak_url, "/realms/#{realm}/protocol/openid-connect/logout")
 
     logout_url.query = {
       id_token_hint:            session[:id_token],
