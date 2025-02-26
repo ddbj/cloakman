@@ -68,6 +68,7 @@ accessories:
         TZ: Asia/Tokyo
 
     files:
+      - keycloak/conf/truststores/mail1i.crt:/opt/keycloak/conf/truststores/mail1i.crt
       - keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-2fa-email-authenticator-1.0.0.0-SNAPSHOT.jar
       - keycloak/themes/ddbj/login/login-reset-password.ftl:/opt/keycloak/themes/ddbj/login/login-reset-password.ftl
       - keycloak/themes/ddbj/login/login-update-password.ftl:/opt/keycloak/themes/ddbj/login/login-update-password.ftl
