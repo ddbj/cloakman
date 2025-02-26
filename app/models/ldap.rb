@@ -21,6 +21,6 @@ module LDAP
   end
 
   def base_dn
-    ENV.fetch("LDAP_BASE_DN", "dc=ddbj,dc=nig,dc=ac,dc=jp")
+    "dc=ddbj,dc=nig,dc=ac,dc=jp"
   end
 end
