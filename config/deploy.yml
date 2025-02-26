@@ -66,6 +66,7 @@ accessories:
         - KEYCLOAK_ADMIN_PASSWORD
 
       clear:
+        KC_TLS_HOSTNAME_VERIFIER: ANY
         TZ: Asia/Tokyo
 
     files:
