@@ -1,37 +1,61 @@
 require_relative "../config/environment"
 
+using LDAPAssertion
+
 users  = $stdin.each_line.map { JSON.parse(it, symbolize_names: true) }
 emails = Set.new
 
 users.each do |attrs|
-  attrs => {id:, email:}
+  attrs => {
+    id:,
+    email:,
+    uid_number:,
+    home_directory:,
+    inet_user_status:
+  }
 
-  if id.include?("admin") || id.end_with?("_pg") || !id.match?(/\A[a-z][a-z0-9_\-]{3,23}\z/)
+  if id.end_with?("_pg") || !id.match?(/\A[a-z][a-z0-9_\-]{2,23}\z/)
     puts "[SKIPPED] #{id}: invalid username"
     next
   end
 
-  unless email
-    puts "[SKIPPED] #{id}: missing email"
-    next
-  end
+  ext = ExtLDAP.connection.assert_call(:search, **{
+    base:   ExtLDAP.base_dn,
+    filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", id)
+  }).first
 
-  unless emails.add?(email)
-    puts "[SKIPPED] #{id}: duplicate email"
-    next
-  end
+  renamed = ext && ext[:uidNumber].first.to_i != uid_number
+  id      = renamed ? "#{id}_db" : id
 
-  User.create! **attrs, loose?: true
+  email_missing    = !email
+  email_duplicated = !email_missing && !emails.add?(email)
 
-  puts "[CREATED] #{id}"
-rescue ActiveRecord::RecordInvalid => e
-  if e.record.errors[:id].include?("has already been taken")
-    puts "[SKIPPED] #{id}: already exists in ext ldap"
+  email = if email_missing
+    "#{id}@invalid.ddbj"
+  elsif email_duplicated
+    "#{email}.invalid.ddbj"
   else
-    p e.record.errors
-
-    raise
+    email
   end
+
+  User.create!(
+    **attrs,
+    id:,
+    email:,
+    home_directory:   home_directory || "/submission/#{id}",
+    inet_user_status: email_missing || email_duplicated ? "inactive" : inet_user_status,
+  )
+
+  print "[CREATED] #{id}"
+  print " (exists in ext ldap)"              if ext
+  print " (renamed from #{ext[:uid].first})" if renamed
+  print " (missing email)"                   if email_missing
+  print " (duplicated email)"                if email_duplicated
+  puts
+rescue ActiveRecord::RecordInvalid => e
+  warn e.record.errors.inspect
+
+  raise
 end
 
 REDIS.call :set, "uid_number", users.map { it[:uid_number].to_i }.max

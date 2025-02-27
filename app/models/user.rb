@@ -111,9 +111,7 @@ class User < LDAPEntry
     system_reference: 5
   }
 
-  validates :id,               length: { minimum: 4, maximum: 24, allow_blank: true }
-  validates :id,               format: { with: /\A[a-z][a-z0-9_]*\z/, allow_blank: true }, unless: :loose?
-  validates :id,               format: { with: /\A[a-z][a-z0-9_\-]*\z/, allow_blank: true }, if: :loose?
+  validates :id,               length: { minimum: 3, maximum: 24, allow_blank: true }, format: { with: /\A[a-z][a-z0-9_\-]*\z/, allow_blank: true }
   validates :password,         presence: true, confirmation: true, length: { minimum: 8, allow_blank: true }, on: :sign_up
   validates :email,            presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :first_name,       presence: true
@@ -126,16 +124,18 @@ class User < LDAPEntry
   validates :erad_id,          format: { with: /\A\d{8}\z/, allow_blank: true }
 
   validate do
-    errors.add :id, "is reserved" if id.include?("admin") || id.end_with?("_pg")
+    errors.add :id, "is reserved" if id.end_with?("_pg")
   end
 
-  validate unless: -> { id.in?(%w[ts-tracesys ts-jgasys ts-agdsys]) } do
-    exists = !ExtLDAP.connection.assert_call(:search, **{
+  validate do
+    next unless entry = ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
       filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", id)
-    }).empty?
+    }).first
 
-    errors.add :id, "has already been taken" if exists
+    if entry[:uidNumber].first.to_i != uid_number
+      errors.add :id, "has already been taken"
+    end
   end
 
   before_save do
