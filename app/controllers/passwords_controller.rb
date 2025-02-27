@@ -7,12 +7,12 @@ class PasswordsController < ApplicationController
     include ActiveModel::Model
     include ActiveModel::Attributes
 
-    attribute :current_password,          :string
-    attribute :new_password,              :string
-    attribute :new_password_confirmation, :string
+    attribute :current_password, :string
+    attribute :new_password,     :string
 
-    validates :current_password, presence: true
-    validates :new_password,     presence: true, confirmation: true
+    validates :current_password,          presence: true
+    validates :new_password,              presence: true, length: { minimum: 8, allow_blank: true }, confirmation: true
+    validates :new_password_confirmation, presence: true
 
     def persisted? = true
   end
