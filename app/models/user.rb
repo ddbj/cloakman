@@ -66,7 +66,6 @@ class User < LDAPEntry
     end
   end
 
-  attribute :password_confirmation, :string
   attribute :email,                 :string
   attribute :full_name,             :string
   attribute :first_name,            :string
@@ -89,8 +88,8 @@ class User < LDAPEntry
   attribute :city,                  :string
   attribute :street,                :string
   attribute :phone,                 :string
-  attribute :jga_datasets,                    default: -> { [] }
-  attribute :ssh_keys,                        default: -> { [] }
+  attribute :jga_datasets,          default: -> { [] }
+  attribute :ssh_keys,              default: -> { [] }
   attribute :inet_user_status,      :string
   attribute :account_type_number,   :integer
   attribute :uid_number,            :integer
@@ -122,8 +121,9 @@ class User < LDAPEntry
   validates :erad_id,          format: { with: /\A\d{8}\z/, allow_blank: true }
 
   with_options on: :sign_up do
-    validates :password,     presence: true, length: { minimum: 8, allow_blank: true }, confirmation: true
-    validates :accept_terms, acceptance: true
+    validates :password,              presence: true, length: { minimum: 8, allow_blank: true }, confirmation: true
+    validates :password_confirmation, presence: true
+    validates :accept_terms,          acceptance: true
   end
 
   validate do
