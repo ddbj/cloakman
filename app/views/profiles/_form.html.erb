@@ -72,3 +72,11 @@
 <%= form.text_field :city, required: true, autocomplete: "address-level2" %>
 <%= form.text_field :street, autocomplete: "street-address" %>
 <%= form.telephone_field :phone, autocomplete: "work tel" %>
+
+<% if account.new_record? %>
+  <hr>
+
+  <%= form.check_box :accept_terms, required: true do %>
+    I have read and agree to the <%= link_to "Terms of Use", "https://www.ddbj.nig.ac.jp/policies-e.html", target: "_blank" %>.
+  <% end %>
+<% end %>
