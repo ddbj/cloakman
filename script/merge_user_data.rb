@@ -61,14 +61,14 @@ def entry_to_json(entry, row)
     country:               ISO3166::Country.from_alpha3_to_alpha2(row[:country]) || "JP",
     postal_code:           row[:postal_code],
     prefecture:            row[:prefecture],
-    city:                  row[:city] || "-",
+    city:                  row[:city] || FILLER,
     street:                row[:street],
     phone:                 row[:phone]&.gsub(/[^\d\-\+]/, ""),
     ssh_keys:              entry[:sshPublicKey] || [],
     account_type_number:   row[:account_type_number],
-    uid_number:            entry[:uidNumber].first.required,
-    gid_number:            entry[:gidNumber]&.first || "61000",
-    home_directory:        entry[:homeDirectory]&.first || "/submission/#{uid}",
+    uid_number:            entry[:uidNumber].first.required.to_i,
+    gid_number:            entry[:gidNumber]&.first&.to_i || 61000,
+    home_directory:        entry[:homeDirectory]&.first,
     login_shell:           entry[:loginShell]&.first || "/bin/bash",
     inet_user_status:      entry[:inetUserStatus]&.first&.downcase || "active"
   }
