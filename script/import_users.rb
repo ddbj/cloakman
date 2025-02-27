@@ -52,6 +52,13 @@ users.each do |attrs|
   print " (missing email)"                   if email_missing
   print " (duplicated email)"                if email_duplicated
   puts
+
+  puts JSON.generate(
+    uid:       ext[:uid].first,
+    uidNumber: ext[:uidNumber].first,
+    gidNumber: ext[:gidNumber].first,
+    cn:        ext[:cn].first
+  ) if ext
 rescue ActiveRecord::RecordInvalid => e
   warn e.record.errors.inspect
 
