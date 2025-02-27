@@ -12,12 +12,12 @@
               <div class="mb-3">
                 <label for="username" class="form-label"><#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if></label>
 
-                <input tabindex="2" id="username" class="form-control" name="username" value="${(login.username!'')}"  type="text" autofocus autocomplete="username" aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>" dir="ltr">
+                <input tabindex="2" id="username" class="form-control <#if messagesPerField.existsError('username','password')>is-invalid</#if>" name="username" value="${(login.username!'')}"  type="text" autofocus autocomplete="username" aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>" dir="ltr">
 
                 <#if messagesPerField.existsError('username','password')>
-                  <span id="input-error" class="invalid-feedback" aria-live="polite">
-                      ${kcSanitize(messagesPerField.getFirstError('username','password'))?no_esc}
-                  </span>
+                  <div id="input-error" class="invalid-feedback" aria-live="polite">
+                    ${kcSanitize(messagesPerField.getFirstError('username','password'))?no_esc}
+                  </div>
                 </#if>
               </div>
             </#if>
@@ -26,20 +26,20 @@
               <label for="password" class="form-label">${msg("password")}</label>
 
               <div class="input-group mb-3" dir="ltr">
-                <input tabindex="3" id="password" class="form-control" name="password" type="password" autocomplete="current-password" aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>">
+                <input tabindex="3" id="password" class="form-control <#if messagesPerField.existsError('username','password')>is-invalid</#if>" name="password" type="password" autocomplete="current-password" aria-invalid="<#if messagesPerField.existsError('username','password')>true</#if>">
                 <button class="btn btn-outline-secondary" type="button" aria-label="${msg("showPassword")}" aria-controls="password" data-password-toggle tabindex="4" data-icon-show="${properties.kcFormPasswordVisibilityIconShow!}" data-icon-hide="${properties.kcFormPasswordVisibilityIconHide!}" data-label-show="${msg('showPassword')}" data-label-hide="${msg('hidePassword')}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                     <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"/>
                     <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7"/>
                   </svg>
                 </button>
-              </div>
 
-              <#if usernameHidden?? && messagesPerField.existsError('username','password')>
-                <span id="input-error" class="invalid-feedback" aria-live="polite">
+                <#if usernameHidden?? && messagesPerField.existsError('username','password')>
+                  <div id="input-error" class="invalid-feedback" aria-live="polite">
                     ${kcSanitize(messagesPerField.getFirstError('username','password'))?no_esc}
-                </span>
-              </#if>
+                  </div>
+                </#if>
+              </div>
             </div>
 
             <div class="${properties.kcFormGroupClass!} ${properties.kcFormSettingClass!}">
