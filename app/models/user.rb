@@ -99,7 +99,6 @@ class User < LDAPEntry
   attribute :login_shell,           :string
   attribute :updated_at,            :datetime
   attribute :last_sign_in_at,       :datetime
-  attribute :loose?,                :boolean, default: false
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
 
