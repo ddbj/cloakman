@@ -1,0 +1,39 @@
+servers:
+  web:
+    - cloakman-production
+
+proxy:
+  host: accounts.ddbj.nig.ac.jp
+
+env:
+  clear:
+    APP_URL: https://accounts.ddbj.nig.ac.jp
+    KEYCLOAK_URL: https://idp.ddbj.nig.ac.jp
+    LDAP_INTERNAL_ENDPOINT: ldaps://cloakman-production:636
+    SENTRY_CURRENT_ENV: production
+
+volumes:
+  - ./volumes/cloakman-production/storage:/rails/storage
+
+accessories:
+  keycloak:
+    host: cloakman-production
+
+    proxy:
+      host: idp.ddbj.nig.ac.jp
+
+    volumes:
+      - ./volumes/cloakman-production/keycloak:/opt/keycloak/data
+
+  openldap:
+    host: cloakman-production
+
+    volumes:
+      - ./volumes/cloakman-production/openldap:/bitnami/openldap
+      - ./volumes/cloakman-production/openldap-certs:/certs
+
+  redis:
+    host: cloakman-production
+
+    volumes:
+      - ./volumes/cloakman-production/redis:/data
