@@ -5,7 +5,6 @@
   <%= form.select :account_type_number, User.account_type_number.options %>
 
   <%= form.static_control :last_sign_in_at, value: @user.last_sign_in_at.then { _1 ? l(_1) : "-" } %>
-  <%= form.static_control :updated_at,      value: @user.updated_at.then { _1 ? l(_1) : "-" } %>
 
   <%= form.primary "Update User" %>
 <% end %>
