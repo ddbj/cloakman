@@ -20,7 +20,7 @@ env:
     - SENTRY_DSN
 
   clear:
-    EXT_LDAP_BASE_DN: dc=nig,dc=ac,dc=jp
+    EXT_LDAP_BASE_DN: ou=accounts,ou=ddbj_service,dc=nig,dc=ac,dc=jp
     EXT_LDAP_HOST: 172.19.25.251
     EXT_LDAP_PORT: 636
     KEYCLOAK_REALM: master
