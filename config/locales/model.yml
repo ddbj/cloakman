@@ -17,6 +17,9 @@ en:
         account_type_number: Account type
         inet_user_status: Status
 
+      reader:
+        id: Username
+
   enumerize:
     user:
       account_type_number:
