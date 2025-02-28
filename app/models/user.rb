@@ -42,14 +42,10 @@ class User < LDAPEntry
     "gidNumber"         => :gid_number,
     "homeDirectory"     => :home_directory,
     "loginShell"        => :login_shell,
-    "modifyTimestamp"   => :updated_at,
     "pwdLastSuccess"    => :last_sign_in_at
   }
 
-  self.model_to_ldap_map = ldap_to_model_map.except(
-    "modifyTimestamp",
-    "pwdLastSuccess"
-  ).invert
+  self.model_to_ldap_map = ldap_to_model_map.except("pwdLastSuccess").invert
 
   class << self
     def search(filter)
@@ -96,7 +92,6 @@ class User < LDAPEntry
   attribute :gid_number,            :integer
   attribute :home_directory,        :string
   attribute :login_shell,           :string
-  attribute :updated_at,            :datetime
   attribute :last_sign_in_at,       :datetime
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
