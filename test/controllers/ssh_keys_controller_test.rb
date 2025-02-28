@@ -52,4 +52,18 @@ class SSHKeysControllerTest < ActionDispatch::IntegrationTest
 
     assert_dom ".invalid-feedback", "DSA keys are not permitted. Please use RSA, ECDSA, or ED25519 keys instead."
   end
+
+  test "weak rsa keys are not permitted" do
+    sign_in FactoryBot.create(:user)
+
+    post ssh_keys_path, params: {
+      form: {
+        ssh_key: file_fixture("ssh_keys/id_rsa_1024bit.pub").read.chomp
+      }
+    }
+
+    assert_response :unprocessable_content
+
+    assert_dom ".invalid-feedback", "RSA keys must be at least 2048 bits long."
+  end
 end

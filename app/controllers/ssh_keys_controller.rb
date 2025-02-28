@@ -11,8 +11,11 @@ class SSHKeysController < ApplicationController
     validate do
       key = SSHData::PublicKey.parse_openssh(ssh_key)
 
-      if key.algo == "ssh-dss"
+      case key.algo
+      when "ssh-dss"
         errors.add :ssh_key, "DSA keys are not permitted. Please use RSA, ECDSA, or ED25519 keys instead."
+      when "ssh-rsa"
+        errors.add :ssh_key, "RSA keys must be at least 2048 bits long." if key.n.num_bits < 2048
       end
     rescue SSHData::DecodeError
       errors.add :ssh_key, "Key is invalid. You must supply a key in OpenSSH public key format."
