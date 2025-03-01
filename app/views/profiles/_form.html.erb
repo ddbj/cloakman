@@ -31,7 +31,7 @@
 </div>
 
 <%= form.text_field :orcid, format: "^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$", help: "Format: 0000-0002-1825-0097 (16 digits separated by hyphens)" %>
-<%= form.text_field :erad_id, format: "^\d{8}$", help: "Format: 12345678 (8 digits)" %>
+<%= form.text_field :erad_id, format: "^\d{8}$", inputmode: "numeric", help: "Format: 12345678 (8 digits)" %>
 
 <hr>
 
