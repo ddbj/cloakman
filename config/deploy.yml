@@ -50,7 +50,7 @@ ssh:
 
 accessories:
   keycloak:
-    image: keycloak/keycloak:26.1
+    image: keycloak/keycloak:26.1.3
     cmd: start --http-enabled true --hostname-strict false --proxy-headers xforwarded
 
     proxy:
@@ -80,7 +80,7 @@ accessories:
       - keycloak/themes/ddbj/login/theme.properties:/opt/keycloak/themes/ddbj/login/theme.properties
 
   openldap:
-    image: bitnami/openldap:2.6
+    image: bitnami/openldap:2.6.9
     port: 636:1636
 
     env:
@@ -114,7 +114,7 @@ accessories:
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
 
   redis:
-    image: redis:7.4
+    image: redis:7.4.2
     cmd: redis-server --appendonly yes
 
     env:

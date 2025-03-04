@@ -58,7 +58,7 @@ jobs:
 
     services:
       openldap:
-        image: bitnami/openldap
+        image: bitnami/openldap:2.6.9
         ports:
           - 2389:1389
         env:
@@ -68,7 +68,7 @@ jobs:
           LDAP_SKIP_DEFAULT_TREE: "yes"
 
       ext-openldap:
-        image: bitnami/openldap
+        image: bitnami/openldap:2.6.9
         ports:
           - 3389:1389
         env:
@@ -76,7 +76,7 @@ jobs:
           LDAP_SKIP_DEFAULT_TREE: "yes"
 
       redis:
-        image: redis
+        image: redis:7.4.2
         ports:
           - 6379:6379
         options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
