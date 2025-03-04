@@ -149,7 +149,7 @@
               <#else>
                 <#nested "show-username">
 
-                <div id="kc-username" class="${properties.kcFormGroupClass!}">
+                <div id="kc-username" class="mb-3">
                   <div class="fs-3">${auth.attemptedUsername}</div>
 
                   <a id="reset-login" href="${url.loginRestartFlowUrl}" aria-label="${msg("restartLoginTooltip")}">

@@ -5,30 +5,23 @@
   <#elseif section = "form">
     <form id="kc-reset-password-form" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
       <div class="mb-3">
-        <div class="${properties.kcLabelWrapperClass!}">
-          <label for="username" class="form-label"><#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if></label>
-        </div>
+        <label for="username" class="form-label"><#if !realm.loginWithEmailAllowed>${msg("username")}<#elseif !realm.registrationEmailAsUsername>${msg("usernameOrEmail")}<#else>${msg("email")}</#if></label>
 
-        <div class="${properties.kcInputWrapperClass!}">
-          <input type="text" id="username" name="username" class="form-control" autofocus value="${(auth.attemptedUsername!'')}" aria-invalid="<#if messagesPerField.existsError('username')>true</#if>" dir="ltr"/>
-          <#if messagesPerField.existsError('username')>
-            <span id="input-error-username" class="${properties.kcInputErrorMessageClass!}" aria-live="polite">
-              ${kcSanitize(messagesPerField.get('username'))?no_esc}
-            </span>
-          </#if>
-        </div>
+        <input type="text" id="username" name="username" class="form-control <#if messagesPerField.existsError('username')>is-invalid</#if>" autofocus value="${(auth.attemptedUsername!'')}" aria-invalid="<#if messagesPerField.existsError('username')>true</#if>" required>
+
+        <#if messagesPerField.existsError('username')>
+          <div id="input-error-username" class="invalid-feedback" aria-live="polite">
+            ${kcSanitize(messagesPerField.get('username'))?no_esc}
+          </div>
+        </#if>
       </div>
 
-      <div class="${properties.kcFormGroupClass!} ${properties.kcFormSettingClass!}">
-        <div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
-          <div class="${properties.kcFormOptionsWrapperClass!}">
-            <span><a href="${url.loginUrl}">${kcSanitize(msg("backToLogin"))?no_esc}</a></span>
-          </div>
-        </div>
+      <div class="mb-3">
+        <a href="${url.loginUrl}">${kcSanitize(msg("backToLogin"))?no_esc}</a>
+      </div>
 
-        <div id="kc-form-buttons" class="d-grid mt-3">
-          <input class="btn btn-primary" type="submit" value="${msg("doSubmit")}"/>
-        </div>
+      <div id="kc-form-buttons" class="d-grid">
+        <input class="btn btn-primary" type="submit" value="${msg("doSubmit")}"/>
       </div>
     </form>
   <#elseif section = "info" >
