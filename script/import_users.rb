@@ -3,7 +3,7 @@ require_relative "../config/environment"
 using LDAPAssertion
 
 users  = $stdin.each_line.map { JSON.parse(it, symbolize_names: true) }
-emails = Set.new
+emails = Hash.new(0)
 
 users.each do |attrs|
   attrs => {
@@ -27,13 +27,12 @@ users.each do |attrs|
   renamed = ext && ext[:uidNumber].first.to_i != uid_number
   id      = renamed ? "#{id}_db" : id
 
-  email_missing    = !email
-  email_duplicated = !email_missing && !emails.add?(email)
+  email_num = email ? emails[email] += 1 : 1
 
-  email = if email_missing
+  email = if !email
     "#{id}@invalid.ddbj"
-  elsif email_duplicated
-    "#{email}.invalid.ddbj"
+  elsif email_num > 1
+    "#{email}.invalid.ddbj.#{email_num}"
   else
     email
   end
@@ -43,14 +42,14 @@ users.each do |attrs|
     id:,
     email:,
     home_directory:   home_directory || "/submission/#{id}",
-    inet_user_status: email_missing || email_duplicated ? "inactive" : inet_user_status,
+    inet_user_status: !email || email_num > 1 ? "inactive" : inet_user_status,
   )
 
   print "[CREATED] #{id}"
   print " (exists in ext ldap)"              if ext
   print " (renamed from #{ext[:uid].first})" if renamed
-  print " (missing email)"                   if email_missing
-  print " (duplicated email)"                if email_duplicated
+  print " (missing email)"                   unless email
+  print " (duplicated email)"                if email_num > 1
   puts
 
   puts JSON.generate(
