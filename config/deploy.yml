@@ -92,7 +92,6 @@ accessories:
 
       clear:
         LDAP_ALLOW_ANON_BINDING: 'no'
-        LDAP_CONFIGURE_PPOLICY: 'yes'
         LDAP_CONFIG_ADMIN_ENABLED: 'yes'
         LDAP_ENABLE_TLS: 'yes'
         LDAP_ROOT: dc=ddbj,dc=nig,dc=ac,dc=jp
