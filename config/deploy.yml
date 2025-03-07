@@ -9,26 +9,12 @@ registry:
     - KAMAL_REGISTRY_PASSWORD
 
 env:
-  secret:
-    - EXT_LDAP_BIND_DN
-    - EXT_LDAP_PASSWORD
-    - KEYCLOAK_CLIENT_ID
-    - KEYCLOAK_CLIENT_SECRET
-    - LDAP_ADMIN_BIND_DN
-    - LDAP_ADMIN_PASSWORD
-    - SECRET_KEY_BASE
-    - SENTRY_DSN
-
   clear:
-    EXT_LDAP_BASE_DN: ou=accounts,ou=ddbj_service,dc=nig,dc=ac,dc=jp
-    EXT_LDAP_HOST: 172.19.25.251
-    EXT_LDAP_PORT: 636
-    KEYCLOAK_REALM: master
-    LDAP_HOST: cloakman-openldap
-    LDAP_PORT: 1389
-    REDIS_URL: redis://cloakman-redis:6379
     SOLID_QUEUE_IN_PUMA: true
     TZ: Asia/Tokyo
+
+  secret:
+    - RAILS_MASTER_KEY
 
 aliases:
   console: app exec --interactive --reuse "bin/rails console"

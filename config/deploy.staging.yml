@@ -7,10 +7,7 @@ proxy:
 
 env:
   clear:
-    APP_URL: https://accounts-staging.ddbj.nig.ac.jp
-    KEYCLOAK_URL: https://idp-staging.ddbj.nig.ac.jp
-    LDAP_INTERNAL_ENDPOINT: ldaps://cloakman-staging:636
-    SENTRY_CURRENT_ENV: staging
+    RAILS_ENV: staging
 
 volumes:
   - ./volumes/cloakman-staging/storage:/rails/storage

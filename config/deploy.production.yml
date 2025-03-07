@@ -5,13 +5,6 @@ servers:
 proxy:
   host: accounts.ddbj.nig.ac.jp
 
-env:
-  clear:
-    APP_URL: https://accounts.ddbj.nig.ac.jp
-    KEYCLOAK_URL: https://idp.ddbj.nig.ac.jp
-    LDAP_INTERNAL_ENDPOINT: ldaps://cloakman-production:636
-    SENTRY_CURRENT_ENV: production
-
 volumes:
   - ./volumes/cloakman-production/storage:/rails/storage
 

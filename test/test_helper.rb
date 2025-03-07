@@ -1,7 +1,3 @@
-ENV["KEYCLOAK_REALM"]      = "master"
-ENV["KEYCLOAK_URL"] = "http://keycloak.example.com"
-ENV["LDAP_PORT"]    = "2389"
-
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
