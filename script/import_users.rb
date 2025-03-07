@@ -14,18 +14,23 @@ users.each do |attrs|
     inet_user_status:
   }
 
-  if id.end_with?("_pg") || !id.match?(/\A[a-z][a-z0-9_\-]{2,23}\z/)
-    puts "[SKIPPED] #{id}: invalid username"
-    next
-  end
-
   ext = ExtLDAP.connection.assert_call(:search, **{
     base:   ExtLDAP.base_dn,
     filter: Net::LDAP::Filter.eq("objectClass", "posixAccount") & Net::LDAP::Filter.eq("uid", id)
   }).first
 
-  renamed = ext && ext[:uidNumber].first.to_i != uid_number
-  id      = renamed ? "#{id}_db" : id
+  if ext && ext[:uidNumber].first.to_i != uid_number
+    puts "[SKIPPED] #{id}: uidNumber mismatch"
+
+    puts JSON.generate(
+      uid:       ext[:uid].first,
+      uidNumber: ext[:uidNumber].first,
+      gidNumber: ext[:gidNumber].first,
+      cn:        ext[:cn].first
+    )
+
+    next
+  end
 
   email_num = email ? emails[email] += 1 : 1
 
@@ -46,10 +51,9 @@ users.each do |attrs|
   )
 
   print "[CREATED] #{id}"
-  print " (exists in ext ldap)"              if ext
-  print " (renamed from #{ext[:uid].first})" if renamed
-  print " (missing email)"                   unless email
-  print " (duplicated email)"                if email_num > 1
+  print " (exists in ext ldap)" if ext
+  print " (missing email)"      unless email
+  print " (duplicated email)"   if email_num > 1
   puts
 
   puts JSON.generate(
