@@ -12,6 +12,10 @@ dn: ou=users,ou=development,dc=example,dc=org
 objectClass: organizationalUnit
 ou: users
 
+dn: ou=cloakman-users,ou=development,dc=example,dc=org
+objectClass: organizationalUnit
+ou: cloakman-users
+
 dn: ou=test,dc=example,dc=org
 objectClass: organizationalUnit
 ou: test
@@ -19,3 +23,7 @@ ou: test
 dn: ou=users,ou=test,dc=example,dc=org
 objectClass: organizationalUnit
 ou: users
+
+dn: ou=cloakman-users,ou=test,dc=example,dc=org
+objectClass: organizationalUnit
+ou: cloakman-users
