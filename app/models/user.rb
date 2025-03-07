@@ -105,6 +105,9 @@ class User < LDAPEntry
   }
 
   validates :id,               length: { minimum: 3, maximum: 24, allow_blank: true }, format: { with: /\A[a-z0-9][a-z0-9_\-]*\z/, allow_blank: true }
+  validates :id,               format: { without: /_pg\z/, message: "cannot end with '_pg'" }
+  validates :id,               format: { with: /\Ats-/, message: "must start with 'ts-'" }, if: -> { Rails.env.staging? }
+  validates :id,               format: { without: /\Ats-/, message: "cannot start with 'ts-'" }, unless: -> { Rails.env.staging? }
   validates :email,            presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :first_name,       presence: true
   validates :last_name,        presence: true
@@ -119,10 +122,6 @@ class User < LDAPEntry
     validates :password,              presence: true, length: { minimum: 8, allow_blank: true }, confirmation: true
     validates :password_confirmation, presence: true
     validates :accept_terms,          acceptance: true
-  end
-
-  validate do
-    errors.add :id, "is reserved" if id.end_with?("_pg")
   end
 
   validate do
