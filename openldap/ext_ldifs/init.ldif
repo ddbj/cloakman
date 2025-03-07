@@ -4,6 +4,18 @@ objectClass: organization
 dc: example
 o: example
 
-dn: ou=people,dc=example,dc=org
+dn: ou=development,dc=example,dc=org
 objectClass: organizationalUnit
-ou: people
+ou: development
+
+dn: ou=users,ou=development,dc=example,dc=org
+objectClass: organizationalUnit
+ou: users
+
+dn: ou=test,dc=example,dc=org
+objectClass: organizationalUnit
+ou: test
+
+dn: ou=users,ou=test,dc=example,dc=org
+objectClass: organizationalUnit
+ou: users

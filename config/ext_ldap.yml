@@ -1,12 +1,13 @@
 development: &development
-  base_dn:  dc=example,dc=org
+  base_dn:  ou=development,dc=example,dc=org
   bind_dn:  cn=admin,dc=example,dc=org
   host:     localhost
   password: adminpassword
-  port:     3389
+  port:     2389
 
 test:
   <<: *development
+  base_dn: ou=test,dc=example,dc=org
 
 production: &production
   base_dn:  dc=nig,dc=ac,dc=jp

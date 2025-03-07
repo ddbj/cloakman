@@ -5,7 +5,7 @@ class User < LDAPEntry
 
   extend Enumerize
 
-  self.base_dn        = "ou=users,#{LDAP.base_dn}"
+  self.base_dn        = Rails.application.config_for(:ldap).users_dn!
   self.ldap_id_attr   = :uid
   self.object_classes = %w[ddbjUser ldapPublicKey posixAccount inetUser]
 

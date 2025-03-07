@@ -59,7 +59,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
 
   test "duplicate id with external LDAP are not allowed" do
     ExtLDAP.connection.assert_call :add, **{
-      dn: "uid=alice,ou=people,#{ExtLDAP.base_dn}",
+      dn: "uid=alice,ou=users,#{ExtLDAP.base_dn}",
 
       attributes: {
         objectClass:   %w[account posixAccount],

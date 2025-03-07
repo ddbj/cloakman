@@ -4,7 +4,7 @@ using LDAPAssertion
 class Reader < LDAPEntry
   include HasSSHAPassword
 
-  self.base_dn        = "ou=readers,#{LDAP.base_dn}"
+  self.base_dn        = Rails.application.config_for(:ldap).readers_dn!
   self.ldap_id_attr   = :uid
   self.object_classes = %w[account simpleSecurityObject]
 

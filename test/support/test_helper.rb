@@ -44,7 +44,6 @@ module TestHelper
   end
 
   def reset_redis
-    REDIS.call :select, 1
     REDIS.call :flushdb
     REDIS.call :set, "uid_number", 1000
   end
