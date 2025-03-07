@@ -5,14 +5,16 @@ module LDAP
     if conn = Thread.current.thread_variable_get(:ldap_connection)
       conn
     else
+      config = Rails.application.config_for(:ldap)
+
       conn = Net::LDAP.new(
-        host: ENV.fetch("LDAP_HOST", "localhost"),
-        port: ENV.fetch("LDAP_PORT", 1389),
+        host: config.host!,
+        port: config.port!,
 
         auth: {
           method:   :simple,
-          username: ENV.fetch("LDAP_ADMIN_BIND_DN",  "cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp"),
-          password: ENV.fetch("LDAP_ADMIN_PASSWORD", "adminpassword")
+          username: config.bind_dn!,
+          password: config.password!
         }
       )
 

@@ -1,0 +1,20 @@
+development: &development
+  base_dn:  dc=example,dc=org
+  bind_dn:  cn=admin,dc=example,dc=org
+  host:     localhost
+  password: adminpassword
+  port:     3389
+
+test:
+  <<: *development
+
+production: &production
+  base_dn:  dc=ddbj,dc=nig,dc=ac,dc=jp
+  bind_dn:  <%= Rails.application.credentials.dig(:ext_ldap, :bind_dn) %>
+  host:     172.19.25.251
+  password: <%= Rails.application.credentials.dig(:ext_ldap, :password) %>
+  port:     636
+  tls:      true
+
+staging:
+  <<: *production

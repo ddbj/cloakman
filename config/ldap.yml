@@ -1,0 +1,18 @@
+development: &development
+  bind_dn:  cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp
+  host:     localhost
+  password: adminpassword
+  port:     1389
+
+test:
+  <<: *development
+  port: 2389
+
+production: &production
+  bind_dn:  <%= Rails.application.credentials.dig(:ldap, :bind_dn) %>
+  host:     cloakman-openldap
+  password: <%= Rails.application.credentials.dig(:ldap, :password) %>
+  port:     1389
+
+staging:
+  <<: *production

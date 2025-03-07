@@ -15,7 +15,7 @@ class Reader < LDAPEntry
 
   self.model_to_ldap_map = ldap_to_model_map.invert
 
-  def self.endpoint = ENV.fetch("LDAP_INTERNAL_ENDPOINT", "ldap://localhost:1389")
+  def self.endpoint = Rails.application.config_for(:app).ldap_internal_endpoint!
 
   before_save prepend: true do
     self.password ||= Base58.binary_to_base58(SecureRandom.random_bytes) unless password_digest

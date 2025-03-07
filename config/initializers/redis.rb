@@ -1,3 +1,3 @@
-url = ENV.fetch("REDIS_URL", "redis://localhost:6379")
+url = Rails.application.config_for(:app).redis_url!
 
 REDIS = RedisClient.config(url:).new_pool
