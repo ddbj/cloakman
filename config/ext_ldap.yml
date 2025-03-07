@@ -5,9 +5,18 @@ development: &development
   password: adminpassword
   port:     2389
 
+  sink: &development_sink
+    base_dn:  ou=cloakman-users,ou=development,dc=example,dc=org
+    bind_dn:  cn=admin,dc=example,dc=org
+    password: adminpassword
+
 test:
   <<: *development
   base_dn: ou=test,dc=example,dc=org
+
+  sink:
+    <<: *development_sink
+    base_dn: ou=cloakman-users,ou=test,dc=example,dc=org
 
 production: &production
   base_dn:  dc=nig,dc=ac,dc=jp
@@ -16,6 +25,11 @@ production: &production
   password: <%= Rails.application.credentials.dig(:ext_ldap, :password) %>
   port:     636
   tls:      true
+
+  sink:
+    base_dn:  ou=cloakman-users,dc=ddbj,dc=nig,dc=ac,dc=jp
+    bind_dn:  <%= Rails.application.credentials.dig(:ext_ldap, :sink, :bind_dn) %>
+    password: <%= Rails.application.credentials.dig(:ext_ldap, :sink, :password) %>
 
 staging:
   <<: *production

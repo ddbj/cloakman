@@ -11,7 +11,7 @@ class LDAPEntry
   class_attribute :ldap_to_model_map
   class_attribute :object_classes
 
-  define_model_callbacks :save, :create, :update
+  define_model_callbacks :save, :create, :update, :destroy
 
   attribute :id,         :string
   attribute :persisted?, :boolean, default: false
@@ -37,6 +37,8 @@ class LDAPEntry
       }).map { from_entry(it) }
     end
 
+    delegate :size, :count, to: :all
+
     def find(id)
       entry = LDAP.connection.assert_call(:search, **{
         base:                          "#{ldap_id_attr}=#{id},#{base_dn}",
@@ -47,6 +49,12 @@ class LDAPEntry
 
       from_entry(entry)
     end
+
+    def destroy_all
+      all.each(&:destroy)
+    end
+
+    private
 
     def from_entry(entry)
       new(
@@ -65,14 +73,14 @@ class LDAPEntry
   def dn          = "#{ldap_id_attr}=#{id},#{base_dn}"
 
   def save(context: nil)
-    update(context:)
+    update({}, context)
   end
 
   def save!(context: nil)
-    raise ActiveRecord::RecordInvalid, self unless update(context:)
+    raise ActiveRecord::RecordInvalid, self unless save(context:)
   end
 
-  def update(attrs = {}, context: nil)
+  def update(attrs = {}, context = nil)
     assign_attributes attrs
 
     run_callbacks :save do
@@ -117,7 +125,17 @@ class LDAPEntry
   end
 
   def destroy!
-    LDAP.connection.assert_call(:delete, dn:)
+    run_callbacks :destroy do
+      LDAP.connection.assert_call(:delete, dn:)
+    end
+  end
+
+  def destroy
+    destroy!
+
+    true
+  rescue LDAPError
+    false
   end
 
   private
