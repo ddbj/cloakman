@@ -60,7 +60,7 @@ jobs:
       openldap:
         image: bitnami/openldap:2.6.9
         ports:
-          - 2389:1389
+          - 1389:1389
         env:
           LDAP_ALLOW_ANON_BINDING: "no"
           LDAP_CONFIG_ADMIN_ENABLED: "yes"
@@ -70,7 +70,7 @@ jobs:
       ext-openldap:
         image: bitnami/openldap:2.6.9
         ports:
-          - 3389:1389
+          - 2389:1389
         env:
           LDAP_ALLOW_ANON_BINDING: "no"
           LDAP_SKIP_DEFAULT_TREE: "yes"
@@ -88,15 +88,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/ddbj.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/inetuser.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/openssh-lpk.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/acl.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/index.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/lastbind.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/unique.ldif
-      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp -w adminpassword -f openldap/ldifs/init.ldif
-      - run: ldapadd -H ldap://localhost:3389 -x -D cn=admin,dc=example,dc=org -w adminpassword -f openldap/ext_ldifs/init.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/ddbj.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/inetuser.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/schemas/openssh-lpk.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/acl.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/index.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/lastbind.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,cn=config -w configpassword -f openldap/docker-entrypoint-initdb.d/ldifs/unique.ldif
+      - run: ldapadd -H ldap://localhost:1389 -x -D cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp -w adminpassword -f openldap/ldifs/init.ldif
+      - run: ldapadd -H ldap://localhost:2389 -x -D cn=admin,dc=example,dc=org -w adminpassword -f openldap/ext_ldifs/init.ldif
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1

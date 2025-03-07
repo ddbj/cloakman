@@ -22,7 +22,5 @@ module LDAP
     end
   end
 
-  def base_dn
-    "dc=ddbj,dc=nig,dc=ac,dc=jp"
-  end
+  def base_dn = Rails.application.config_for(:ldap).base_dn!
 end

@@ -1,18 +1,25 @@
 development: &development
-  bind_dn:  cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp
-  host:     localhost
-  password: adminpassword
-  port:     1389
+  base_dn:    dc=ddbj,dc=nig,dc=ac,dc=jp
+  bind_dn:    cn=admin,dc=ddbj,dc=nig,dc=ac,dc=jp
+  host:       localhost
+  password:   adminpassword
+  port:       1389
+  readers_dn: ou=development,ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp
+  users_dn:   ou=development,ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp
 
 test:
   <<: *development
-  port: 2389
+  readers_dn: ou=test,ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp
+  users_dn:   ou=test,ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp
 
 production: &production
-  bind_dn:  <%= Rails.application.credentials.dig(:ldap, :bind_dn) %>
-  host:     cloakman-openldap
-  password: <%= Rails.application.credentials.dig(:ldap, :password) %>
-  port:     1389
+  base_dn:    dc=ddbj,dc=nig,dc=ac,dc=jp
+  bind_dn:    <%= Rails.application.credentials.dig(:ldap, :bind_dn) %>
+  host:       cloakman-openldap
+  password:   <%= Rails.application.credentials.dig(:ldap, :password) %>
+  port:       1389
+  readers_dn: ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp
+  users_dn:   ou=users,dc=ddbj,dc=nig,dc=ac,dc=jp
 
 staging:
   <<: *production
