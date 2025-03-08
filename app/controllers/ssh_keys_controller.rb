@@ -17,7 +17,7 @@ class SSHKeysController < ApplicationController
       when "ssh-rsa"
         errors.add :ssh_key, "RSA keys must be at least 2048 bits long." if key.n.num_bits < 2048
       end
-    rescue SSHData::DecodeError
+    rescue SSHData::Error
       errors.add :ssh_key, "Key is invalid. You must supply a key in OpenSSH public key format."
     end
 
