@@ -12,10 +12,8 @@ production:
   app_url:                https://accounts.ddbj.nig.ac.jp
   ldap_internal_endpoint: ldaps://cloakman-production:636
   redis_url:              redis://cloakman-redis:6379
-  sentry_dsn:             <%= Rails.application.credentials.sentry_dsn %>
 
 staging:
   app_url:                https://accounts-staging.ddbj.nig.ac.jp
   ldap_internal_endpoint: ldaps://cloakman-staging:636
   redis_url:              redis://cloakman-redis:6379
-  sentry_dsn:             <%= Rails.application.credentials.sentry_dsn %>
