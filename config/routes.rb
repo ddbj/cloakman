@@ -11,11 +11,7 @@ Rails.application.routes.draw do
   resources :ssh_keys, only: %i[index new create destroy]
 
   namespace :admin do
-    resources :users, only: %i[index new create] do
-      resource :admin,   only: %i[edit update], controller: "user_admins"
-      resource :profile, only: %i[edit update], controller: "user_profiles"
-    end
-
+    resources :users,   only: %i[index new create edit update]
     resources :readers, only: %i[index show new create destroy]
   end
 

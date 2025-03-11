@@ -27,8 +27,6 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   test "user created successfully" do
     post admin_users_path, params: {
       user: {
-        inet_user_status:      "active",
-        account_type_number:   "general",
         id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd",
@@ -37,7 +35,11 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
         last_name:             "Liddell",
         organization:          "Wonderland",
         country:               "GB",
-        city:                  "Daresbury"
+        city:                  "Daresbury",
+        inet_user_status:      "active",
+        account_type_number:   "general",
+        uid_number:            111111,
+        gid_number:            222222
       }
     }
 
@@ -45,21 +47,21 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
     user = User.find("alice")
 
-    assert_equal "active",            user.inet_user_status
-    assert_equal "general",           user.account_type_number
     assert_equal "alice@example.com", user.email
     assert_equal "Alice",             user.first_name
     assert_equal "Liddell",           user.last_name
     assert_equal "Wonderland",        user.organization
     assert_equal "GB",                user.country
     assert_equal "Daresbury",         user.city
+    assert_equal "active",            user.inet_user_status
+    assert_equal "general",           user.account_type_number
+    assert_equal 111111,              user.uid_number
+    assert_equal 222222,              user.gid_number
   end
 
   test "user creation failed" do
     post admin_users_path, params: {
       user: {
-        inet_user_status:      "active",
-        account_type_number:   "general",
         id:                    "alice",
         password:              "P@ssw0rd",
         password_confirmation: "P@ssw0rd123",
@@ -68,12 +70,65 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
         last_name:             "Liddell",
         organization:          "Wonderland",
         country:               "GB",
-        city:                  "Daresbury"
+        city:                  "Daresbury",
+        inet_user_status:      "active",
+        account_type_number:   "general",
+        uid_number:            111111,
+        gid_number:            222222
       }
     }
 
     assert_response :unprocessable_content
 
     assert_dom ".invalid-feedback", text: "doesn't match Password"
+  end
+
+  test "profile updated successfully" do
+    user = FactoryBot.create(:user)
+
+    patch admin_user_path(user), params: {
+      user: {
+        email:               "alice@example.com",
+        first_name:          "Alice",
+        last_name:           "Liddell",
+        organization:        "Wonderland",
+        country:             "GB",
+        city:                "Daresbury",
+        inet_user_status:    "inactive",
+        account_type_number: "ddbj"
+      }
+    }
+
+    assert_redirected_to admin_users_path
+
+    user = User.find(user.id)
+
+    assert_equal "alice@example.com", user.email
+    assert_equal "Alice",             user.first_name
+    assert_equal "Liddell",           user.last_name
+    assert_equal "Wonderland",        user.organization
+    assert_equal "GB",                user.country
+    assert_equal "Daresbury",         user.city
+    assert_equal "inactive",          user.inet_user_status
+    assert_equal "ddbj",              user.account_type_number
+  end
+
+  test "profile update failed" do
+    user = FactoryBot.create(:user)
+
+    patch admin_user_path(user), params: {
+      user: {
+        email:               "",
+        first_name:          "Alice",
+        last_name:           "Liddell",
+        organization:        "Wonderland",
+        country:             "GB",
+        city:                "Daresbury",
+        inet_user_status:    "inactive",
+        account_type_number: "ddbj"
+      }
+    }
+
+    assert_response :unprocessable_content
   end
 end

@@ -86,12 +86,12 @@ class User < LDAPEntry
   attribute :phone,                 :string
   attribute :jga_datasets,          default: -> { [] }
   attribute :ssh_keys,              default: -> { [] }
-  attribute :inet_user_status,      :string
-  attribute :account_type_number,   :integer
+  attribute :inet_user_status,      :string, default: -> { "active" }
+  attribute :account_type_number,   :integer, default: 1
   attribute :uid_number,            :integer
-  attribute :gid_number,            :integer
+  attribute :gid_number,            :integer, default: 61000
   attribute :home_directory,        :string
-  attribute :login_shell,           :string
+  attribute :login_shell,           :string, default: -> { "/bin/bash" }
   attribute :last_sign_in_at,       :datetime
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
@@ -140,12 +140,8 @@ class User < LDAPEntry
   end
 
   before_create do
-    self.inet_user_status    ||= :active
-    self.account_type_number ||= :general
-    self.uid_number          ||= REDIS.call(:incr, "uid_number")
-    self.gid_number          ||= 61000
-    self.home_directory      ||= "/submission/#{id}"
-    self.login_shell         ||= "/bin/bash"
+    self.uid_number     ||= REDIS.call(:incr, "uid_number")
+    self.home_directory ||= "/submission/#{id}"
   end
 
   after_create do

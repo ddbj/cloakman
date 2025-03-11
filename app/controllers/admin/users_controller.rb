@@ -70,7 +70,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
+    @user = User.new(user_create_params)
 
     if @user.save(context: :sign_up)
       redirect_to admin_users_path, notice: "User has been successfully creted."
@@ -88,7 +88,7 @@ class Admin::UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if @user.update(user_params)
+    if @user.update(user_update_params)
       redirect_to admin_users_path, notice: "User has been successfully updated."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
@@ -109,19 +109,21 @@ class Admin::UsersController < ApplicationController
     )
   end
 
-  def user_params
+  def user_create_params
     params.expect(user: [
-      :inet_user_status,
-      :account_type_number,
       :id,
       :password,
       :password_confirmation,
       :email,
       :first_name,
+      :first_name_japanese,
       :middle_name,
       :last_name,
-      :first_name_japanese,
       :last_name_japanese,
+      :job_title,
+      :job_title_japanese,
+      :orcid,
+      :erad_id,
       :organization,
       :organization_japanese,
       :lab_fac_dep,
@@ -133,10 +135,38 @@ class Admin::UsersController < ApplicationController
       :city,
       :street,
       :phone,
+      :inet_user_status,
+      :account_type_number,
+      :uid_number,
+      :gid_number
+    ])
+  end
+
+  def user_update_params
+    params.expect(user: [
+      :email,
+      :first_name,
+      :first_name_japanese,
+      :middle_name,
+      :last_name,
+      :last_name_japanese,
       :job_title,
       :job_title_japanese,
       :orcid,
-      :erad_id
+      :erad_id,
+      :organization,
+      :organization_japanese,
+      :lab_fac_dep,
+      :lab_fac_dep_japanese,
+      :organization_url,
+      :country,
+      :postal_code,
+      :prefecture,
+      :city,
+      :street,
+      :phone,
+      :inet_user_status,
+      :account_type_number
     ])
   end
 end

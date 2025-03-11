@@ -51,7 +51,7 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td class="text-break"><%= link_to user.id, edit_admin_user_admin_path(user) %></td>
+        <td class="text-break"><%= link_to user.id, edit_admin_user_path(user) %></td>
         <td class="text-break"><%= user.email %></td>
         <td class="text-break"><%= user.full_name %></td>
         <td class="text-break"><%= user.inet_user_status_text %></td>

@@ -16,6 +16,8 @@ en:
         prefecture: State/Prefecture
         account_type_number: Account type
         inet_user_status: Status
+        uid_number: UID
+        gid_number: GID
 
       reader:
         id: Username
