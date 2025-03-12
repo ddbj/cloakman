@@ -68,4 +68,5 @@ rescue ActiveRecord::RecordInvalid => e
   raise
 end
 
-REDIS.call :set, "uid_number", users.map { it[:uid_number].to_i }.max
+REDIS.call :set, "uid_number", users.map { it[:uid_number] }.max
+warn "max uid_number: #{REDIS.call(:get, "uid_number")}"
