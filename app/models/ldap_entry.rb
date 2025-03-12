@@ -72,22 +72,22 @@ class LDAPEntry
   def new_record? = !persisted?
   def dn          = "#{ldap_id_attr}=#{id},#{base_dn}"
 
-  def save(context: nil)
-    update({}, context)
+  def save(validate: true, context: nil)
+    update({}, validate, context)
   end
 
-  def save!(context: nil)
-    raise ActiveRecord::RecordInvalid, self unless save(context:)
+  def save!(validate: true, context: nil)
+    raise ActiveRecord::RecordInvalid, self unless save(validate:, context:)
   end
 
-  def update(attrs = {}, context = nil)
+  def update(attrs = {}, validate = true, context = nil)
     assign_attributes attrs
 
     run_callbacks :save do
-      return create(context:) if new_record?
+      return create(validate:, context:) if new_record?
 
       run_callbacks :update do
-        return false unless valid?(context || :update)
+        return false if validate && invalid?(context || :update)
 
         model_to_ldap_map.each do |model_key, ldap_key|
           next unless public_send("#{model_key}_changed?")
@@ -140,9 +140,9 @@ class LDAPEntry
 
   private
 
-  def create(context:)
+  def create(validate:, context:)
     run_callbacks :create do
-      return false unless valid?(context || :create)
+      return false if validate && invalid?(context || :create)
 
       LDAP.connection.assert_call :add, **{
         dn:,
