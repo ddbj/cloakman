@@ -1,0 +1,16 @@
+<%# locals: (form:) %>
+
+<%= render "profiles/form", form: %>
+
+<hr>
+
+<%= form.select :inet_user_status,    User.inet_user_status.options, required: true %>
+<%= form.select :account_type_number, User.account_type_number.options, required: true %>
+
+<% if form.object.new_record? %>
+  <%= form.number_field :uid_number, help: "Leave blank to auto-generate." %>
+  <%= form.number_field :gid_number, required: true %>
+<% else %>
+  <%= form.number_field :uid_number, required: true, disabled: true %>
+  <%= form.number_field :gid_number, required: true, disabled: true %>
+<% end %>

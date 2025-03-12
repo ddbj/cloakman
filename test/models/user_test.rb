@@ -82,4 +82,15 @@ class UserTest < ActiveSupport::TestCase
       }
     end
   end
+
+  test "uid_number auto increment" do
+    FactoryBot.create :user, uid_number: 1001
+    FactoryBot.create :user, uid_number: 1002
+
+    REDIS.call :set, "uid_number", 1000
+
+    user = FactoryBot.create(:user)
+
+    assert_equal 1003, user.uid_number
+  end
 end

@@ -3,5 +3,11 @@
 <%= bootstrap_form_with model: @user, url: account_path do |form| %>
   <%= render "profiles/form", form: %>
 
+  <hr>
+
+  <%= form.check_box :accept_terms, required: true do %>
+    I have read and agree to the <%= link_to "Terms of Use", "https://www.ddbj.nig.ac.jp/policies-e.html", target: "_blank" %>.
+  <% end %>
+
   <%= form.primary "Create Account" %>
 <% end %>
