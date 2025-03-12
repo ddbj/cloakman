@@ -140,7 +140,14 @@ class User < LDAPEntry
   end
 
   before_create do
-    self.uid_number     ||= REDIS.call(:incr, "uid_number")
+    self.uid_number ||= begin
+      begin
+        uid_number = REDIS.call(:incr, "uid_number")
+      end until User.search(Net::LDAP::Filter.eq("uidNumber", uid_number)).empty?
+
+      uid_number
+    end
+
     self.home_directory ||= "/submission/#{id}"
   end
 
