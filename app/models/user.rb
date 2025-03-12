@@ -86,12 +86,12 @@ class User < LDAPEntry
   attribute :phone,                 :string
   attribute :jga_datasets,          default: -> { [] }
   attribute :ssh_keys,              default: -> { [] }
-  attribute :inet_user_status,      :string, default: -> { "active" }
+  attribute :inet_user_status,      :string,  default: -> { "active" }
   attribute :account_type_number,   :integer, default: 1
   attribute :uid_number,            :integer
   attribute :gid_number,            :integer, default: 61000
   attribute :home_directory,        :string
-  attribute :login_shell,           :string, default: -> { "/bin/bash" }
+  attribute :login_shell,           :string,  default: -> { "/bin/bash" }
   attribute :last_sign_in_at,       :datetime
 
   enumerize :inet_user_status, in: %i[active inactive deleted]
