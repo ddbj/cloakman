@@ -18,6 +18,6 @@ class Reader < LDAPEntry
   def self.endpoint = Rails.application.config_for(:app).ldap_internal_endpoint!
 
   before_save prepend: true do
-    self.password ||= Base58.binary_to_base58(SecureRandom.random_bytes) unless password_digest
+    self.password ||= SecureRandom.base58 unless password_digest
   end
 end
