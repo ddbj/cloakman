@@ -30,7 +30,7 @@ class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "reader created successfully" do
-    Base58.stub :binary_to_base58, "notasecret" do
+    SecureRandom.stub :base58, "notasecret" do
       post admin_readers_path, params: {
         reader: {
           id: "example"

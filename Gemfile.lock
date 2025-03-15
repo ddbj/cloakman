@@ -79,7 +79,6 @@ GEM
     attr_required (1.0.2)
     autoprefixer-rails (10.4.19.0)
       execjs (~> 2)
-    base58 (0.2.3)
     base64 (0.2.0)
     bcrypt_pbkdf (1.1.1)
     benchmark (0.4.0)
@@ -520,7 +519,6 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  base58
   bootsnap
   bootstrap
   bootstrap_form
