@@ -15,6 +15,13 @@
         } %>
       </div>
 
+      <%= button_to "Logout", session_path, **{
+        method:     :delete,
+        form_class: "list-group mt-3",
+        class:      "list-group-item list-group-item-action rounded",
+        data:       { turbo: false }
+      } %>
+
       <% if current_user.account_type_number.ddbj? %>
         <b class="d-block mt-3 mb-1 px-1">Administration</b>
 
