@@ -59,13 +59,9 @@ module SSHKeysControllable
     user.ssh_keys.delete_at params.expect(:id).to_i
     user.ssh_keys_will_change!
 
-    if user.save
-      redirect_to index_path, notice: "SSH key deleted successfully."
-    else
-      flash[:alert] = user.errors.full_messages_for(:base).join(" ")
+    user.save!
 
-      render :index, status: :unprocessable_content
-    end
+    redirect_to index_path, notice: "SSH key deleted successfully."
   end
 
   def form_params
