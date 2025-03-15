@@ -66,11 +66,16 @@ class Admin::UsersController < ApplicationController
   end
 
   def new
-    @user = User.new
+    @user = User.new(params[:user] ? user_create_params : {})
   end
 
   def create
     @user = User.new(user_create_params)
+
+    if entry = @user.ext_ldap_entry
+      @user.uid_number = entry[:uidNumber].first
+      @user.gid_number = entry[:gidNumber].first
+    end
 
     if @user.save(context: :sign_up)
       redirect_to admin_users_path, notice: "User has been successfully creted."
@@ -109,64 +114,42 @@ class Admin::UsersController < ApplicationController
     ])
   end
 
+  COMMON_ATTRS = %i[
+    email
+    first_name
+    first_name_japanese
+    middle_name
+    last_name
+    last_name_japanese
+    job_title
+    job_title_japanese
+    orcid
+    erad_id
+    organization
+    organization_japanese
+    lab_fac_dep
+    lab_fac_dep_japanese
+    organization_url
+    country
+    postal_code
+    prefecture
+    city
+    street
+    phone
+    inet_user_status
+    account_type_number
+  ]
+
   def user_create_params
     params.expect(user: [
       :id,
       :password,
       :password_confirmation,
-      :email,
-      :first_name,
-      :first_name_japanese,
-      :middle_name,
-      :last_name,
-      :last_name_japanese,
-      :job_title,
-      :job_title_japanese,
-      :orcid,
-      :erad_id,
-      :organization,
-      :organization_japanese,
-      :lab_fac_dep,
-      :lab_fac_dep_japanese,
-      :organization_url,
-      :country,
-      :postal_code,
-      :prefecture,
-      :city,
-      :street,
-      :phone,
-      :inet_user_status,
-      :account_type_number,
-      :uid_number,
-      :gid_number
+      *COMMON_ATTRS
     ])
   end
 
   def user_update_params
-    params.expect(user: [
-      :email,
-      :first_name,
-      :first_name_japanese,
-      :middle_name,
-      :last_name,
-      :last_name_japanese,
-      :job_title,
-      :job_title_japanese,
-      :orcid,
-      :erad_id,
-      :organization,
-      :organization_japanese,
-      :lab_fac_dep,
-      :lab_fac_dep_japanese,
-      :organization_url,
-      :country,
-      :postal_code,
-      :prefecture,
-      :city,
-      :street,
-      :phone,
-      :inet_user_status,
-      :account_type_number
-    ])
+    params.expect(user: COMMON_ATTRS)
   end
 end

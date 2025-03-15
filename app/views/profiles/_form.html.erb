@@ -1,9 +1,27 @@
-<%# locals: (form:) %>
+<%# locals: (form:, check_ext_ldap_username: false) %>
 
-<% account = form.object %>
+<% user = form.object %>
 
-<% if account.new_record? %>
-  <%= form.text_field :id, required: true, minlength: 3, maxlength: 24, pattern: "[a-z0-9][a-z0-9_\-]*", autocomplete: "username", help: "Must be 3–24 characters, start with a lowercase letter or digit (not _ or -), and contain only lowercase letters, digits, underscores, or hyphens." %>
+<% if user.new_record? %>
+  <%= form.text_field :id, **{
+    required:     true,
+    minlength:    3,
+    maxlength:    24,
+    pattern:      "[a-z0-9][a-z0-9_\\-]*",
+    autocomplete: "username",
+    help:         "Must be 3–24 characters, start with a lowercase letter or digit (not _ or -), and contain only lowercase letters, digits, underscores, or hyphens.",
+    data:         check_ext_ldap_username ? { action: "reform#visit" } : nil
+  } %>
+
+  <% if check_ext_ldap_username %>
+    <%= turbo_frame_tag :alert do %>
+      <% if user.ext_ldap_entry %>
+        <div class="alert alert-warning my-3">
+          This user already exists in the external LDAP. The UID and GID will be set to match the existing entry.
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
 
   <%= form.password_field :password, required: true, minlength: 8, autocomplete: "new-password", help: "At least 8 characters." %>
   <%= form.password_field :password_confirmation, required: true, minlength: 8, autocomplete: "new-password" %>
@@ -53,14 +71,14 @@
       [ ISO3166::Country[:JP] ],
       :alpha2,
       :common_name,
-      account.country
+      user.country
     ),
     tag(:hr),
     options_from_collection_for_select(
       ISO3166::Country.all.sort_by(&:common_name),
       :alpha2,
       :common_name,
-      account.country
+      user.country
     )
   ])
 %>
