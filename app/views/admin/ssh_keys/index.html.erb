@@ -1,0 +1,3 @@
+<%= render "admin/users/tab", user: @user %>
+
+<%= render "ssh_keys/index", ssh_keys: @user.ssh_keys, path_prefix: [ :admin, @user ] %>

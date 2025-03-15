@@ -1,0 +1,7 @@
+<%# locals: (form:, path_prefix: []) %>
+
+<%= bootstrap_form_with model: form, scope: :form, url: [ *path_prefix, :ssh_keys ], method: :post do |f| %>
+  <%= f.text_area :ssh_key, label: "Key", required: true, data: { controller: "autosize" }, help: "Supported key types: RSA, ECDSA, and ED25519." %>
+
+  <%= f.primary "Add SSH key" %>
+<% end %>

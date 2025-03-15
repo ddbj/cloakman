@@ -61,7 +61,7 @@ class Admin::UsersController < ApplicationController
   before_action :authenticate_admin!
 
   def index
-    @form  = Form.new(form_params)
+    @form  = Form.new(params[:form] ? form_params : {})
     @users = User.search(@form.build_filter)
   end
 
@@ -82,11 +82,11 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
+    @user = User.find(params.expect(:id))
   end
 
   def update
-    @user = User.find(params[:id])
+    @user = User.find(params.expect(:id))
 
     if @user.update(user_update_params)
       redirect_to admin_users_path, notice: "User has been successfully updated."
@@ -100,13 +100,13 @@ class Admin::UsersController < ApplicationController
   private
 
   def form_params
-    params.fetch(:form, {}).permit(
+    params.expect(form: [
       :query,
 
       inet_user_statuses:   [],
       account_type_numbers: [],
       sign_in_histories:    []
-    )
+    ])
   end
 
   def user_create_params

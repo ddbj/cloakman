@@ -1,0 +1,28 @@
+<%# locals: (ssh_keys:, path_prefix: []) %>
+
+<div class="card">
+  <div class="card-header text-end">
+    <%= link_to "New SSH key", [ :new, *path_prefix, :ssh_key ], class: "btn btn-primary btn-sm" %>
+  </div>
+
+  <ul class="list-group list-group-flush">
+    <% unless ssh_keys.empty? %>
+      <% ssh_keys.each_with_index do |key, i| %>
+        <li class="list-group-item d-flex align-items-center gap-3">
+          <div class="text-break me-auto"><%= key %></div>
+
+          <%= button_to "", [ *path_prefix, :ssh_key, id: i ], **{
+            method: :delete,
+            class:  "btn-close",
+
+            aria: {
+              label: "Delete"
+            }
+          } %>
+        </li>
+      <% end %>
+    <% else %>
+      <li class="list-group-item text-secondary">No SSH keys</li>
+    <% end %>
+  </ul>
+</div>
