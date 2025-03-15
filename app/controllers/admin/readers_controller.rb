@@ -8,7 +8,7 @@ class Admin::ReadersController < ApplicationController
   end
 
   def show
-    @reader = Reader.find(params[:id])
+    @reader = Reader.find(params.expect(:id))
   end
 
   def new
@@ -30,7 +30,7 @@ class Admin::ReadersController < ApplicationController
   end
 
   def destroy
-    Reader.find(params[:id]).destroy!
+    Reader.find(params.expect(:id)).destroy!
 
     redirect_to admin_readers_path, notice: "Reader deleted successfully."
   end
