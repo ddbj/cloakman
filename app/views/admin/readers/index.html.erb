@@ -4,8 +4,20 @@
   <%= link_to "New Reader", new_admin_reader_path, class: "btn btn-primary" %>
 </div>
 
-<div class="list-group">
-  <% @readers.each do |reader| %>
-    <%= link_to reader.id, admin_reader_path(reader), class: "list-group-item list-group-item-action" %>
-  <% end %>
-</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Last used at</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @readers.each do |reader| %>
+      <tr>
+        <td><%= link_to reader.id, admin_reader_path(reader) %></td>
+        <td><%= reader.last_used_at.then { _1 ? l(_1) : "-" } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -8,12 +8,16 @@ class Reader < LDAPEntry
   self.ldap_id_attr   = :uid
   self.object_classes = %w[account simpleSecurityObject]
 
-  self.ldap_to_model_map = {
-    "uid"          => :id,
-    "userPassword" => :password_digest
+  self.model_to_ldap_map = {
+    id:              "uid",
+    password_digest: "userPassword"
   }
 
-  self.model_to_ldap_map = ldap_to_model_map.invert
+  self.ldap_to_model_map = model_to_ldap_map.invert.merge(
+    "pwdLastSuccess" => :last_used_at
+  )
+
+  attribute :last_used_at, :datetime
 
   def self.endpoint = Rails.application.config_for(:app).ldap_internal_endpoint!
 

@@ -10,43 +10,44 @@ class User < LDAPEntry
   self.ldap_id_attr   = :uid
   self.object_classes = %w[ddbjUser ldapPublicKey posixAccount inetUser]
 
-  self.ldap_to_model_map = {
-    "uid"               => :id,
-    "userPassword"      => :password_digest,
-    "mail"              => :email,
-    "givenName"         => :first_name,
-    "givenName;lang-ja" => :first_name_japanese,
-    "middleName"        => :middle_name,
-    "sn"                => :last_name,
-    "sn;lang-ja"        => :last_name_japanese,
-    "cn"                => :full_name,
-    "title"             => :job_title,
-    "title;lang-ja"     => :job_title_japanese,
-    "orcid"             => :orcid,
-    "eradID"            => :erad_id,
-    "o"                 => :organization,
-    "o;lang-ja"         => :organization_japanese,
-    "ou"                => :lab_fac_dep,
-    "ou;lang-ja"        => :lab_fac_dep_japanese,
-    "organizationURL"   => :organization_url,
-    "c"                 => :country,
-    "postalCode"        => :postal_code,
-    "st"                => :prefecture,
-    "l"                 => :city,
-    "street"            => :street,
-    "telephoneNumber"   => :phone,
-    "sshPublicKey"      => :ssh_keys,
-    "jgaDataset"        => :jga_datasets,
-    "accountTypeNumber" => :account_type_number,
-    "inetUserStatus"    => :inet_user_status,
-    "uidNumber"         => :uid_number,
-    "gidNumber"         => :gid_number,
-    "homeDirectory"     => :home_directory,
-    "loginShell"        => :login_shell,
-    "pwdLastSuccess"    => :last_sign_in_at
+  self.model_to_ldap_map = {
+    id:                    "uid",
+    password_digest:       "userPassword",
+    email:                 "mail",
+    first_name:            "givenName",
+    middle_name:           "middleName",
+    last_name:             "sn",
+    first_name_japanese:   "givenName;lang-ja",
+    last_name_japanese:    "sn;lang-ja",
+    full_name:             "cn",
+    job_title:             "title",
+    job_title_japanese:    "title;lang-ja",
+    orcid:                 "orcid",
+    erad_id:               "eradID",
+    organization:          "o",
+    organization_japanese: "o;lang-ja",
+    lab_fac_dep:           "ou",
+    lab_fac_dep_japanese:  "ou;lang-ja",
+    organization_url:      "organizationURL",
+    country:               "c",
+    postal_code:           "postalCode",
+    prefecture:            "st",
+    city:                  "l",
+    street:                "street",
+    phone:                 "telephoneNumber",
+    ssh_keys:              "sshPublicKey",
+    jga_datasets:          "jgaDataset",
+    account_type_number:   "accountTypeNumber",
+    inet_user_status:      "inetUserStatus",
+    uid_number:            "uidNumber",
+    gid_number:            "gidNumber",
+    home_directory:        "homeDirectory",
+    login_shell:           "loginShell"
   }
 
-  self.model_to_ldap_map = ldap_to_model_map.except("pwdLastSuccess").invert
+  self.ldap_to_model_map = model_to_ldap_map.invert.merge(
+    "pwdLastSuccess" => :last_sign_in_at
+  )
 
   class << self
     def search(filter)
