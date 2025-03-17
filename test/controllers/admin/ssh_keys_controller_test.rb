@@ -1,11 +1,7 @@
 require "test_helper"
 
 class Admin::SSHKeysControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
   setup do
-    reset_data
-
     @ed25519 = file_fixture("ssh_keys/id_ed25519.pub").read.chomp
 
     sign_in FactoryBot.create(:user, :admin)

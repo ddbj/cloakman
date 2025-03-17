@@ -3,12 +3,6 @@ require "test_helper"
 using LDAPAssertion
 
 class AccountsControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
-  setup do
-    reset_data
-  end
-
   test "account created successfully" do
     post account_path, params: {
       user: {

@@ -1,12 +1,6 @@
 require "test_helper"
 
 class ImportJGADatasetsJobTest < ActiveJob::TestCase
-  include TestHelper
-
-  setup do
-    reset_data
-  end
-
   test "perform" do
     FactoryBot.create :user, id: "alice"
 

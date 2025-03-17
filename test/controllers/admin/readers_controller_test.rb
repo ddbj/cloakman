@@ -1,11 +1,7 @@
 require "test_helper"
 
 class Admin::ReadersControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
   setup do
-    reset_data
-
     sign_in FactoryBot.create(:user, :admin)
   end
 

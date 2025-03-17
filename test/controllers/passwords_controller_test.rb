@@ -1,11 +1,7 @@
 require "test_helper"
 
 class PasswordsControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
   setup do
-    reset_data
-
     sign_in FactoryBot.create(:user, password: "P@ssw0rd")
   end
 
