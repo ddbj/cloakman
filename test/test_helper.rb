@@ -11,9 +11,18 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    include LDAPTestHelper
+    include RedisTestHelper
+    include SessionTestHelper
+
+    setup do
+      reset_ldap
+      reset_ext_ldap
+      reset_redis
+    end
   end
 end
 
-Rails.root.glob("test/support/*.rb").each do
-  require it
-end
+require "minitest/mock"
+
+OmniAuth.config.test_mode = true

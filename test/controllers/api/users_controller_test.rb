@@ -1,12 +1,6 @@
 require "test_helper"
 
 class API::UsersControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
-  setup do
-    reset_data
-  end
-
   test "should create user" do
     post api_users_path, **{
       headers: {

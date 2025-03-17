@@ -1,11 +1,7 @@
 require "test_helper"
 
 class ProfilesControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
   setup do
-    reset_data
-
     sign_in FactoryBot.create(:user)
   end
 

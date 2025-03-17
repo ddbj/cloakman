@@ -1,12 +1,6 @@
 require "test_helper"
 
 class AuthenticationTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
-  setup do
-    reset_data
-  end
-
   test "accessing a protected page after signing in" do
     sign_in FactoryBot.create(:user)
 

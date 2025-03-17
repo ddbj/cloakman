@@ -3,12 +3,6 @@ require "test_helper"
 using LDAPAssertion
 
 class UserTest < ActiveSupport::TestCase
-  include TestHelper
-
-  setup do
-    reset_data
-  end
-
   test "create" do
     FactoryBot.create :user, **{
       id:             "alice",

@@ -1,12 +1,6 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
-  setup do
-    reset_data
-  end
-
   test "logout" do
     sign_in FactoryBot.create(:user)
 

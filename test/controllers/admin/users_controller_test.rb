@@ -3,11 +3,7 @@ require "test_helper"
 using LDAPAssertion
 
 class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
-  include TestHelper
-
   setup do
-    reset_data
-
     sign_in FactoryBot.create(:user, :admin)
   end
 
