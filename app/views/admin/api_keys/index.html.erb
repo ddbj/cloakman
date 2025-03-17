@@ -1,0 +1,23 @@
+<h1 class="mb-3">API Keys</h1>
+
+<div class="mb-3">
+  <%= link_to "New API Key", new_admin_api_key_path, class: "btn btn-primary" %>
+</div>
+
+<table class="table border">
+  <thead class="table-light">
+    <tr>
+      <th>Name</th>
+      <th>Last used at</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @keys.each do |key| %>
+      <tr>
+        <td><%= link_to key.name, admin_api_key_path(key) %></td>
+        <td><%= key.last_used_at.then { _1 ? l(_1) : "-" } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

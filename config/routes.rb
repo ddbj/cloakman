@@ -15,7 +15,12 @@ Rails.application.routes.draw do
       resources :ssh_keys, only: %i[index new create destroy]
     end
 
-    resources :readers, only: %i[index show new create destroy]
+    resources :readers,  only: %i[index show new create destroy]
+    resources :api_keys, only: %i[index show new create destroy]
+  end
+
+  namespace :api do
+    resources :users, only: :create
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

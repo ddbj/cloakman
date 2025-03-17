@@ -11,7 +11,7 @@ class LDAPEntry
   class_attribute :ldap_to_model_map
   class_attribute :object_classes
 
-  define_model_callbacks :save, :create, :update, :destroy
+  define_model_callbacks :validation, :save, :create, :update, :destroy
 
   attribute :id,         :string
   attribute :persisted?, :boolean, default: false
@@ -83,36 +83,38 @@ class LDAPEntry
   def update(attrs = {}, validate = true, context = nil)
     assign_attributes attrs
 
-    run_callbacks :save do
-      return create(validate:, context:) if new_record?
+    run_callbacks :validation do
+      run_callbacks :save do
+        return create(validate:, context:) if new_record?
 
-      run_callbacks :update do
-        return false if validate && invalid?(context || :update)
+        run_callbacks :update do
+          return false if validate && invalid?(context || :update)
 
-        model_to_ldap_map.each do |model_key, ldap_key|
-          next unless public_send("#{model_key}_changed?")
+          model_to_ldap_map.each do |model_key, ldap_key|
+            next unless public_send("#{model_key}_changed?")
 
-          if val = public_send(model_key).presence
-            val = val.value if val.is_a?(Enumerize::Value)
+            if val = public_send(model_key).presence
+              val = val.value if val.is_a?(Enumerize::Value)
 
-            LDAP.connection.assert_call :replace_attribute, dn, ldap_key, Array(val).map(&:to_s)
-          else
-            begin
-              LDAP.connection.assert_call :delete_attribute, dn, ldap_key
-            rescue LDAPError::NoSuchAttribute
-              # do nothing
+              LDAP.connection.assert_call :replace_attribute, dn, ldap_key, Array(val).map(&:to_s)
+            else
+              begin
+                LDAP.connection.assert_call :delete_attribute, dn, ldap_key
+              rescue LDAPError::NoSuchAttribute
+                # do nothing
+              end
             end
-          end
 
-          public_send "clear_#{model_key}_change"
-        rescue LDAPError::ConstraintViolation => e
-          if e.message.start_with?("non-unique attributes found with ")
-            errors.add model_key, "has already been taken"
-          else
+            public_send "clear_#{model_key}_change"
+          rescue LDAPError::ConstraintViolation => e
+            if e.message.start_with?("non-unique attributes found with ")
+              errors.add model_key, "has already been taken"
+            else
+              errors.add model_key, e.message
+            end
+          rescue LDAPError => e
             errors.add model_key, e.message
           end
-        rescue LDAPError => e
-          errors.add model_key, e.message
         end
       end
     end
