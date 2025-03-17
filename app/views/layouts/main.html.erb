@@ -33,6 +33,10 @@
           <%= link_to "Readers", admin_readers_path, **{
             class: [ "list-group-item", "list-group-item-action", active: controller_path == "admin/readers" ]
           } %>
+
+          <%= link_to "API keys", admin_api_keys_path, **{
+            class: [ "list-group-item", "list-group-item-action", active: controller_path == "admin/api_keys" ]
+          } %>
         </div>
       <% end %>
     </div>

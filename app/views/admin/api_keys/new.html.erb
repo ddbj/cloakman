@@ -1,0 +1,11 @@
+<div class="mb-3">
+  <%= link_to "« Back", admin_api_keys_path %>
+</div>
+
+<h1 class="mb-3">New API Key</h1>
+
+<%= bootstrap_form_with model: @key, url: admin_api_keys_path do |form| %>
+  <%= form.text_field :name, required: true %>
+
+  <%= form.primary "Create API Key" %>
+<% end %>

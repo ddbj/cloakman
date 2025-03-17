@@ -19,9 +19,9 @@ class Reader < LDAPEntry
 
   attribute :last_used_at, :datetime
 
-  def self.endpoint = Rails.application.config_for(:app).ldap_internal_endpoint!
-
-  before_save prepend: true do
-    self.password ||= SecureRandom.base58 unless password_digest
+  before_validation do
+    self.password ||= SecureRandom.base58(32) unless password_digest
   end
+
+  def self.endpoint = Rails.application.config_for(:app).ldap_internal_endpoint!
 end

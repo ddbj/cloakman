@@ -49,21 +49,6 @@ class User < LDAPEntry
     "pwdLastSuccess" => :last_sign_in_at
   )
 
-  class << self
-    def search(filter)
-      filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser") & filter
-
-      LDAP.connection.assert_call(:search, **{
-        base:                          base_dn,
-        scope:                         Net::LDAP::SearchScope_SingleLevel,
-        attributes:                    ldap_to_model_map.keys,
-        return_operational_attributes: true,
-        filter:,
-        size:                          100
-      }).map { from_entry(it) }
-    end
-  end
-
   attribute :email,                 :string
   attribute :full_name,             :string
   attribute :first_name,            :string
@@ -148,6 +133,19 @@ class User < LDAPEntry
     end
 
     self.home_directory ||= "/submission/#{id}"
+  end
+
+  def self.search(filter)
+    filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser") & filter
+
+    LDAP.connection.assert_call(:search, **{
+      base:                          base_dn,
+      scope:                         Net::LDAP::SearchScope_SingleLevel,
+      attributes:                    ldap_to_model_map.keys,
+      return_operational_attributes: true,
+      filter:,
+      size:                          100
+    }).map { from_entry(it) }
   end
 
   def ext_ldap_entry

@@ -22,6 +22,9 @@
 
   <dt>Password</dt>
   <dd><code><%= flash[:password] || "********" %></code></dd>
+
+  <dt>Last used at</dt>
+  <dd><%= @reader.last_used_at.then { _1 ? l(_1) : "-" } %></dd>
 </dl>
 
 <hr>

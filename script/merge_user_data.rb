@@ -42,7 +42,7 @@ def entry_to_json(entry, row)
 
   {
     id:                    uid,
-    password_digest:       entry[:userPassword]&.first || SecureRandom.base58.generate_ssha,
+    password_digest:       entry[:userPassword]&.first || SecureRandom.base58(32).generate_ssha,
     email:                 row[:email]&.gsub(/\s/, "")&.delete_prefix("Example:")&.downcase,
     first_name:            row[:first_name] || FILLER,
     first_name_japanese:   row[:first_name_japanese],

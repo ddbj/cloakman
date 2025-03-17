@@ -1,0 +1,40 @@
+<div class="mb-3">
+  <%= link_to "« Back", admin_api_keys_path %>
+</div>
+
+<h1 class="mb-3"><%= @key.name %></h1>
+
+<dl>
+  <dt>Token</dt>
+  <dd><code><%= @key.token %></code></dd>
+
+  <dt>Last used at</dt>
+  <dd><%= @key.last_used_at.then { _1 ? l(_1) : "-" } %></dd>
+</dl>
+
+<h2>Example</h2>
+
+<pre class="border rounded bg-light p-3"><code>curl <%= api_users_url %> \
+  -X POST \
+  -H 'Authorization: Bearer <%= @key.token %>' \
+  -H 'Content-Type: application/json' \
+  -d @- &lt;&lt;EOF
+{
+  "user": {
+    "id": "alice",
+    "password": "P@ssw0rd",
+    "email": "alice@example.com",
+    "first_name": "Alice",
+    "last_name": "Liddell",
+    "organization": "Wonderland",
+    "country": "GB",
+    "city": "Oxford"
+  }
+}
+EOF</code></pre>
+
+<p>A list of available attributes can be found in <%= link_to "this file", "https://github.com/ddbj/cloakman/tree/main/app/controllers/api/users_controller.rb" %>.</p>
+
+<hr>
+
+<%= button_to "Delete API Key", admin_api_key_path(@key), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
