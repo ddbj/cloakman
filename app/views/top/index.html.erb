@@ -11,4 +11,10 @@
     <%= button_to "Sign in", "/auth/keycloak", class: "btn btn-primary btn-lg", method: :post, data: { turbo: false } %>
     <%= link_to "Create an account", new_account_path, class: "btn btn-outline-primary btn-lg" %>
   </div>
+
+  <div class="alert alert-warning mt-3">
+    <h2 class="fs-6 fw-bold text-danger">Email address confirmation at first login</h4>
+
+    When you sign in for the first time with both new and/or existing account from this page (new version, 14 March 2025), an email will be sent to confirm your email address alive. Follow the instructions in the email.
+  </div>
 </div>
