@@ -76,7 +76,7 @@ class User < LDAPEntry
   attribute :inet_user_status,      :string,  default: -> { "active" }
   attribute :account_type_number,   :integer, default: 1
   attribute :uid_number,            :integer
-  attribute :gid_number,            :integer, default: 61000
+  attribute :gid_number,            :integer, default: -> { Rails.application.config_for(:app).submitter_gid_number! }
   attribute :home_directory,        :string
   attribute :login_shell,           :string,  default: -> { "/bin/bash" }
   attribute :last_sign_in_at,       :datetime
