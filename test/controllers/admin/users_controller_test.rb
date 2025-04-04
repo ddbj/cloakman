@@ -79,7 +79,7 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "active",            user.inet_user_status
     assert_equal "general",           user.account_type_number
     assert_equal 2001,                user.uid_number
-    assert_equal 61000,               user.gid_number
+    assert_equal 1234,                user.gid_number
   end
 
   test "create: user exists in external LDAP" do

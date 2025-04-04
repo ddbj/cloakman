@@ -2,18 +2,22 @@ development:
   app_url:                http://cloakman.localhost:3000
   ldap_internal_endpoint: ldap://localhost:1389
   redis_url:              redis://localhost:6379
+  submitter_gid_number:   1234
 
 test:
   app_url:                http://app.example.com
   ldap_internal_endpoint: ldap://ldap.example.com:389
   redis_url:              redis://localhost:6379/1
+  submitter_gid_number:   1234
 
 production:
   app_url:                https://accounts.ddbj.nig.ac.jp
   ldap_internal_endpoint: ldaps://cloakman-production:636
   redis_url:              redis://cloakman-redis:6379
+  submitter_gid_number:   60000
 
 staging:
   app_url:                https://accounts-staging.ddbj.nig.ac.jp
   ldap_internal_endpoint: ldaps://cloakman-staging:636
   redis_url:              redis://cloakman-redis:6379
+  submitter_gid_number:   61000

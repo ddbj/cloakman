@@ -35,7 +35,8 @@ def parse_tsv(path)
   }
 end
 
-FILLER = "(Filled by DDBJ)"
+FILLER     = "(Filled by DDBJ)"
+GID_NUMBER = Rails.application.config_for(:app).submitter_gid_number!
 
 def entry_to_json(entry, row)
   uid = entry[:uid].first.required
@@ -67,7 +68,7 @@ def entry_to_json(entry, row)
     ssh_keys:              entry[:sshPublicKey] || [],
     account_type_number:   row[:account_type_number],
     uid_number:            entry[:uidNumber].first.required.to_i,
-    gid_number:            entry[:gidNumber]&.first&.to_i || 61000,
+    gid_number:            entry[:gidNumber]&.first&.to_i || GID_NUMBER,
     home_directory:        entry[:homeDirectory]&.first,
     login_shell:           entry[:loginShell]&.first || "/bin/bash",
     inet_user_status:      entry[:inetUserStatus]&.first&.downcase || "active"
