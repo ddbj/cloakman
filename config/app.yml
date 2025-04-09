@@ -5,7 +5,7 @@ development:
   submitter_gid_number:   1234
 
 test:
-  app_url:                http://app.example.com
+  app_url:                http://cloakman.example.com
   ldap_internal_endpoint: ldap://ldap.example.com:389
   redis_url:              redis://localhost:6379/1
   submitter_gid_number:   1234

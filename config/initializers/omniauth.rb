@@ -1,10 +1,10 @@
-config       = Rails.application.config_for(:keycloak)
-keycloak_url = URI.parse(config.url!)
+keycloak     = Rails.application.config_for(:keycloak)
+keycloak_url = URI.parse(keycloak.url!)
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :openid_connect, **{
     name:          "keycloak",
-    issuer:        "#{keycloak_url}/realms/master",
+    issuer:        URI.join(keycloak_url, "/realms/master").to_s,
     discovery:     true,
     scope:         %i[openid email profile],
     prompt:        "login",
@@ -13,9 +13,9 @@ Rails.application.config.middleware.use OmniAuth::Builder do
       scheme:       keycloak_url.scheme,
       port:         keycloak_url.port,
       host:         keycloak_url.host,
-      identifier:   config.client_id,
-      secret:       config.client_secret,
-      redirect_uri: "#{Rails.application.config_for(:app).app_url!}/auth/keycloak/callback"
+      identifier:   keycloak.client_id,
+      secret:       keycloak.client_secret,
+      redirect_uri: URI.join(Rails.application.config_for(:app).app_url!, "/auth/keycloak/callback").to_s
     }
   }
 end
