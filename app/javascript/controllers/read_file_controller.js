@@ -5,9 +5,10 @@ export default class ReadFileController extends Controller {
     'destination'
   ];
 
-  async read(e) {
-    const file = e.target.files[0];
+  async read({ target }) {
+    const file = target.files[0];
 
     this.destinationTarget.value = await file.text();
+    target.value = null;
   }
 }
