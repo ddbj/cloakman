@@ -1,7 +1,7 @@
 class ImportJGADatasetsJob < ApplicationJob
   queue_as :default
 
-  def perform(dir: "storage/humansdb", cleanup: true)
+  def perform(dir: "storage/humandbs", cleanup: true)
     Rails.root.join(dir).glob "*.jsonl" do |path|
       path.each_line do |line|
         json = JSON.parse(line, symbolize_names: true)
