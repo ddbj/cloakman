@@ -19,7 +19,7 @@ class Admin::APIKeysController < ApplicationController
     @key = APIKey.new(key_params)
 
     if @key.save
-      redirect_to admin_api_key_path(@key), notice: "API key was successfully created."
+      redirect_to admin_api_key_path(@key), status: :see_other, notice: "API key was successfully created."
     else
       render :new, status: :unprocessable_content
     end
@@ -28,7 +28,7 @@ class Admin::APIKeysController < ApplicationController
   def destroy
     APIKey.find(params.expect(:id)).destroy!
 
-    redirect_to admin_api_keys_path, notice: "API key was successfully destroyed."
+    redirect_to admin_api_keys_path, status: :see_other, notice: "API key was successfully destroyed."
   end
 
   private
