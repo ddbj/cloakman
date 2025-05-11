@@ -51,6 +51,7 @@ accessories:
         - KEYCLOAK_ADMIN_PASSWORD
 
       clear:
+        KC_DB_USERNAME: sa
         TZ: Asia/Tokyo
 
     files:
