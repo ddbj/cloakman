@@ -45,7 +45,7 @@ module SSHKeysControllable
     @form = Form.new(user:, **form_params)
 
     if @form.save
-      redirect_to index_path, notice: "SSH key added successfully."
+      redirect_to index_path, status: :see_other, notice: "SSH key added successfully."
     else
       @form.user.errors[:ssh_keys].each do |error|
         @form.errors.add :ssh_key, error
@@ -61,7 +61,7 @@ module SSHKeysControllable
 
     user.save!
 
-    redirect_to index_path, notice: "SSH key deleted successfully."
+    redirect_to index_path, status: :see_other, notice: "SSH key deleted successfully."
   end
 
   def form_params

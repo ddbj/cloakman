@@ -78,7 +78,7 @@ class Admin::UsersController < ApplicationController
     end
 
     if @user.save(context: :sign_up)
-      redirect_to admin_users_path, notice: "User has been successfully creted."
+      redirect_to admin_users_path, status: :see_other, notice: "User has been successfully creted."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 
@@ -94,7 +94,7 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params.expect(:id))
 
     if @user.update(user_update_params)
-      redirect_to admin_users_path, notice: "User has been successfully updated."
+      redirect_to admin_users_path, status: :see_other, notice: "User has been successfully updated."
     else
       flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
 

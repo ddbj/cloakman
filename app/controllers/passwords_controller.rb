@@ -31,7 +31,7 @@ class PasswordsController < ApplicationController
         old_password: @form.current_password
       }
 
-      redirect_to edit_password_path, notice: "Password updated successfully."
+      redirect_to edit_password_path, status: :see_other, notice: "Password updated successfully."
     else
       render :edit, status: :unprocessable_content
     end
