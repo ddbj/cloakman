@@ -30,3 +30,7 @@ en:
         ddbj: DDBJ
         administrator: Administrator
         system_reference: System reference
+
+  errors:
+    messages:
+      ascii_only: must contain ASCII characters only—remove accented or non-English characters

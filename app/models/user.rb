@@ -91,19 +91,29 @@ class User < LDAPEntry
     system_reference: 5
   }
 
-  validates :id,               length: { minimum: 3, maximum: 24, allow_blank: true }, format: { with: /\A[a-z0-9][a-z0-9_\-]*\z/, allow_blank: true }
-  validates :id,               format: { without: /_pg\z/, message: "cannot end with '_pg'" }
-  validates :id,               format: { with: /\Ats-/, message: "must start with 'ts-'" }, if: -> { Rails.env.staging? }
-  validates :id,               format: { without: /\Ats-/, message: "cannot start with 'ts-'" }, unless: -> { Rails.env.staging? }
+  validates :id, length: { minimum: 3, maximum: 24 }, format: { with: /\A[a-z0-9][a-z0-9_\-]*\z/ }, allow_blank: true
+  validates :id, format: { without: /_pg\z/, message: "can't end with '_pg'" }
+  validates :id, format: { with:    /\Ats-/, message: "must start with 'ts-'" },  if:     -> { Rails.env.staging? }
+  validates :id, format: { without: /\Ats-/, message: "can't start with 'ts-'" }, unless: -> { Rails.env.staging? }
+
+  ascii_only = { with: /\A[[:ascii:]]+\z/, allow_blank: true, message: :ascii_only }
+
   validates :email,            presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
-  validates :first_name,       presence: true
-  validates :last_name,        presence: true
-  validates :organization,     presence: true
-  validates :organization_url, format: { with: /\A#{URI.regexp(%w[http https])}\z/, allow_blank: true }
-  validates :country,          presence: true, inclusion: { in: ISO3166::Country.codes }
-  validates :city,             presence: true
-  validates :orcid,            format: { with: /\A\d{4}-\d{4}-\d{4}-\d{3}[\dX]\z/, allow_blank: true }
-  validates :erad_id,          format: { with: /\A\d{8}\z/, allow_blank: true }
+  validates :first_name,       presence: true, format: ascii_only
+  validates :middle_name,                      format: ascii_only
+  validates :last_name,        presence: true, format: ascii_only
+  validates :job_title,                        format: ascii_only
+  validates :orcid,                            format: { with: /\A\d{4}-\d{4}-\d{4}-\d{3}[\dX]\z/, allow_blank: true }
+  validates :erad_id,                          format: { with: /\A\d{8}\z/, allow_blank: true }
+  validates :organization,     presence: true, format: ascii_only
+  validates :lab_fac_dep,                      format: ascii_only
+  validates :organization_url,                 format: { with: /\A#{URI.regexp(%w[http https])}\z/, allow_blank: true }
+  validates :country,          presence: true, inclusion: { in: ISO3166::Country.codes, allow_blank: true }
+  validates :postal_code,                      format: ascii_only
+  validates :prefecture,                       format: ascii_only
+  validates :city,             presence: true, format: ascii_only
+  validates :street,                           format: ascii_only
+  validates :phone,                            format: ascii_only
 
   with_options on: :sign_up do
     validates :password,              presence: true, length: { minimum: 8, allow_blank: true }, confirmation: true

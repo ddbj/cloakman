@@ -1,13 +1,20 @@
 <%# locals: (form:, check_ext_ldap_username: false) %>
 
-<% user = form.object %>
+<%
+  user = form.object
+
+  ascii_only = {
+    pattern: '\p{ASCII}+',
+    title:   "ASCII only—please remove accented or non-English characters."
+  }
+%>
 
 <% if user.new_record? %>
   <%= form.text_field :id, **{
     required:     true,
     minlength:    3,
     maxlength:    24,
-    pattern:      "[a-z0-9][a-z0-9_\\-]*",
+    pattern:      '[a-z0-9][a-z0-9_\-]*',
     autocomplete: "username",
     help:         "Must be 3–24 characters, start with a lowercase letter or digit (not _ or -), and contain only lowercase letters, digits, underscores, or hyphens.",
     data:         check_ext_ldap_username ? { action: "reform#visit" } : nil
@@ -32,34 +39,34 @@
 <%= form.email_field :email, required: true, autocomplete: "work email" %>
 
 <div class="row row-cols-2">
-  <%= form.text_field :first_name, required: true, autocomplete: "given-name" %>
+  <%= form.text_field :first_name, required: true, **ascii_only, autocomplete: "given-name" %>
   <%= form.text_field :first_name_japanese, autocomplete: "given-name" %>
 </div>
 
-<%= form.text_field :middle_name, autocomplete: "additional-name" %>
+<%= form.text_field :middle_name, **ascii_only, autocomplete: "additional-name" %>
 
 <div class="row row-cols-2">
-  <%= form.text_field :last_name, required: true, autocomplete: "family-name" %>
+  <%= form.text_field :last_name, required: true, **ascii_only, autocomplete: "family-name" %>
   <%= form.text_field :last_name_japanese, autocomplete: "family-name" %>
 </div>
 
 <div class="row row-cols-2">
-  <%= form.text_field :job_title, autocomplete: "organization-title" %>
+  <%= form.text_field :job_title, **ascii_only, autocomplete: "organization-title" %>
   <%= form.text_field :job_title_japanese, autocomplete: "organization-title" %>
 </div>
 
-<%= form.text_field :orcid, format: "^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$", help: "Format: 0000-0002-1825-0097 (16 digits separated by hyphens)" %>
-<%= form.text_field :erad_id, format: "^\d{8}$", inputmode: "numeric", help: "Format: 12345678 (8 digits)" %>
+<%= form.text_field :orcid, pattern: '\d{4}-\d{4}-\d{4}-\d{3}[\dX]', help: "Format: 0000-0002-1825-0097 (16 digits separated by hyphens)" %>
+<%= form.text_field :erad_id, pattern: '\d{8}', inputmode: "numeric", help: "Format: 12345678 (8 digits)" %>
 
 <hr>
 
 <div class="row row-cols-2">
-  <%= form.text_field :organization, required: true, autocomplete: "organization" %>
+  <%= form.text_field :organization, required: true, **ascii_only, autocomplete: "organization" %>
   <%= form.text_field :organization_japanese, autocomplete: "organization" %>
 </div>
 
 <div class="row row-cols-2">
-  <%= form.text_field :lab_fac_dep %>
+  <%= form.text_field :lab_fac_dep, **ascii_only %>
   <%= form.text_field :lab_fac_dep_japanese %>
 </div>
 
@@ -85,8 +92,8 @@
 
 <%= form.select :country, opts, include_blank: true, required: true, autocomplete: "country" %>
 
-<%= form.text_field :postal_code, autocomplete: "postal-code" %>
-<%= form.text_field :prefecture, autocomplete: "address-level1" %>
-<%= form.text_field :city, required: true, autocomplete: "address-level2" %>
-<%= form.text_field :street, autocomplete: "street-address" %>
-<%= form.telephone_field :phone, autocomplete: "work tel" %>
+<%= form.text_field :postal_code, **ascii_only, autocomplete: "postal-code" %>
+<%= form.text_field :prefecture, **ascii_only, autocomplete: "address-level1" %>
+<%= form.text_field :city, required: true, **ascii_only, autocomplete: "address-level2" %>
+<%= form.text_field :street, **ascii_only, autocomplete: "street-address" %>
+<%= form.telephone_field :phone, **ascii_only, autocomplete: "work tel" %>
