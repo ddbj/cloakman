@@ -18,6 +18,12 @@ accessories:
     volumes:
       - ./volumes/cloakman-production/keycloak:/opt/keycloak/data
 
+  keycloak-postgres:
+    host: cloakman-production
+
+    volumes:
+      - ./volumes/cloakman-production/keycloak-postgres:/var/lib/postgresql/data
+
   openldap:
     host: cloakman-production
 
