@@ -7,7 +7,9 @@ class ImportJGADatasetsJob < ApplicationJob
         json = JSON.parse(line, symbolize_names: true)
         user = User.find(json[:username])
 
-        user.update! jga_datasets: json[:dataset].uniq.map { JSON.dump(it) }
+        Rails.error.handle do
+          user.update! jga_datasets: json[:dataset].uniq.map { JSON.dump(it) }
+        end
       rescue LDAPError::NoSuchObject
         # do nothing
       end
