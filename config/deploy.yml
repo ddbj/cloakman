@@ -53,7 +53,7 @@ accessories:
         - KEYCLOAK_ADMIN_PASSWORD
 
       clear:
-        KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/keycloak
+        KC_DB_URL: jdbc:postgresql://cloakman-keycloak-postgres:5432/keycloak
         TZ: Asia/Tokyo
 
     files:
