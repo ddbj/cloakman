@@ -49,8 +49,8 @@ accessories:
       secret:
         - KC_DB_PASSWORD
         - KC_DB_USERNAME
-        - KEYCLOAK_ADMIN
-        - KEYCLOAK_ADMIN_PASSWORD
+        - KC_BOOTSTRAP_ADMIN_USERNAME
+        - KC_BOOTSTRAP_ADMIN_PASSWORD
 
       clear:
         KC_DB: postgres
