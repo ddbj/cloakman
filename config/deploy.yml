@@ -47,11 +47,14 @@ accessories:
 
     env:
       secret:
-        - KEYCLOAK_ADMIN
-        - KEYCLOAK_ADMIN_PASSWORD
+        - KC_DB_PASSWORD
+        - KC_DB_USERNAME
+        - KC_BOOTSTRAP_ADMIN_USERNAME
+        - KC_BOOTSTRAP_ADMIN_PASSWORD
 
       clear:
-        KC_DB_USERNAME: sa
+        KC_DB: postgres
+        KC_DB_URL: jdbc:postgresql://cloakman-keycloak-postgres:5432/keycloak
         TZ: Asia/Tokyo
 
     files:
@@ -65,6 +68,17 @@ accessories:
       - keycloak/themes/ddbj/login/resources/img/logo.png:/opt/keycloak/themes/ddbj/login/resources/img/logo.png
       - keycloak/themes/ddbj/login/template.ftl:/opt/keycloak/themes/ddbj/login/template.ftl
       - keycloak/themes/ddbj/login/theme.properties:/opt/keycloak/themes/ddbj/login/theme.properties
+
+  keycloak-postgres:
+    image: postgres:17.5
+
+    env:
+      secret:
+        - POSTGRES_PASSWORD:KC_DB_PASSWORD
+        - POSTGRES_USER:KC_DB_USERNAME
+
+      clear:
+        POSTGRES_DB: keycloak
 
   openldap:
     image: bitnami/openldap:2.6.9
