@@ -36,7 +36,7 @@ ssh:
 
 accessories:
   keycloak:
-    image: keycloak/keycloak:26.2.5
+    image: keycloak/keycloak:26.3.0
     cmd: start --http-enabled true --hostname-strict false --proxy-headers xforwarded
 
     proxy:
