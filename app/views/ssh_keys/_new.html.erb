@@ -3,15 +3,15 @@
 <%= bootstrap_form_with(
   model:  form,
   scope:  :form,
-  url:    [ *path_prefix, :ssh_keys ],
+  url:    [*path_prefix, :ssh_keys],
   method: :post,
-  data:   { controller: "read-file" }
+  data:   {controller: 'read-file'}
 ) do |f| %>
   <%= f.text_area :ssh_key, **{
-    label:    "Key",
+    label:    'Key',
     required: true,
-    data:     { controller: "autosize", read_file_target: "destination" },
-    help:     "Supported key types: RSA, ECDSA, and ED25519."
+    data:     {controller: 'autosize', read_file_target: 'destination'},
+    help:     'Supported key types: RSA, ECDSA, and ED25519.'
   } %>
 
   <%= f.form_group do %>
@@ -22,5 +22,5 @@
     </label>
   <% end %>
 
-  <%= f.primary "Save" %>
+  <%= f.primary 'Save' %>
 <% end %>

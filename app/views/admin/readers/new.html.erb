@@ -1,5 +1,5 @@
 <div class="mb-3">
-  <%= link_to "« Back", admin_readers_path %>
+  <%= link_to '« Back', admin_readers_path %>
 </div>
 
 <h1 class="mb-3">New Reader</h1>
@@ -7,5 +7,5 @@
 <%= bootstrap_form_with model: @reader, url: admin_readers_path do |form| %>
   <%= form.text_field :id, required: true %>
 
-  <%= form.primary "Create Reader" %>
+  <%= form.primary 'Create Reader' %>
 <% end %>

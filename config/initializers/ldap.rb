@@ -1,5 +1,5 @@
 if Rails.env.local?
-  require_relative "../../app/refinements/ldap_assertion"
+  require_relative '../../app/refinements/ldap_assertion'
 
   using LDAPAssertion
 
@@ -13,7 +13,7 @@ if Rails.env.local?
 
         attributes: {
           objectClass: %w[organizationalUnit],
-          ou:          dn.split(",").first.delete_prefix("ou=")
+          ou:          dn.split(',').first.delete_prefix('ou=')
         }
       }
     rescue LDAPError::EntryAlreadyExists

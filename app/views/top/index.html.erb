@@ -5,10 +5,10 @@
 </style>
 
 <div class="mx-auto my-5" style="max-width: 500px">
-  <%= image_tag "logo.png", class: "img-fluid" %>
+  <%= image_tag 'logo.png', class: 'img-fluid' %>
 
   <div class="d-grid gap-3 mt-5">
-    <%= button_to "Sign in", "/auth/keycloak", class: "btn btn-primary btn-lg", method: :post, data: { turbo: false } %>
-    <%= link_to "Create an account", new_account_path, class: "btn btn-outline-primary btn-lg" %>
+    <%= button_to 'Sign in', '/auth/keycloak', class: 'btn btn-primary btn-lg', method: :post, data: {turbo: false} %>
+    <%= link_to 'Create an account', new_account_path, class: 'btn btn-outline-primary btn-lg' %>
   </div>
 </div>

@@ -1,8 +1,8 @@
 class LDAPError < StandardError
-  MAPPINGS = Net::LDAP.constants.grep(/ResultCode[A-Z]/).map { |name|
+  MAPPINGS = Net::LDAP.constants.grep(/ResultCode[A-Z]/).map {|name|
     [
       Net::LDAP.const_get(name),
-      name.to_s.delete_prefix("ResultCode")
+      name.to_s.delete_prefix('ResultCode')
     ]
   }.to_h
 

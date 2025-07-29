@@ -9,7 +9,7 @@ module LDAPTestHelper
   def reset_ext_ldap
     ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
-      filter: Net::LDAP::Filter.eq("objectClass", "account")
+      filter: Net::LDAP::Filter.eq('objectClass', 'account')
     }).each do |entry|
       ExtLDAP.connection.assert_call :delete, dn: entry.dn
     end

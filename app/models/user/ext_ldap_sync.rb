@@ -47,12 +47,12 @@ module User::ExtLDAPSync
       dn: "uid=#{id},#{ExtLDAPSink.base_dn}",
 
       operations: [
-        [ :replace, :cn,            full_name ],
-        [ :replace, :userPassword,  password_digest ],
-        [ :replace, :uidNumber,     uid_number.to_s ],
-        [ :replace, :gidNumber,     gid_number.to_s ],
-        [ :replace, :homeDirectory, home_directory ],
-        [ :replace, :loginShell,    login_shell ]
+        [:replace, :cn,            full_name],
+        [:replace, :userPassword,  password_digest],
+        [:replace, :uidNumber,     uid_number.to_s],
+        [:replace, :gidNumber,     gid_number.to_s],
+        [:replace, :homeDirectory, home_directory],
+        [:replace, :loginShell,    login_shell]
       ]
     }
   end

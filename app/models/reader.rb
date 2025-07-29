@@ -9,12 +9,12 @@ class Reader < LDAPEntry
   self.object_classes = %w[account simpleSecurityObject]
 
   self.model_to_ldap_map = {
-    id:              "uid",
-    password_digest: "userPassword"
+    id:              'uid',
+    password_digest: 'userPassword'
   }
 
   self.ldap_to_model_map = model_to_ldap_map.invert.merge(
-    "pwdLastSuccess" => :last_used_at
+    'pwdLastSuccess' => :last_used_at
   )
 
   attribute :last_used_at, :datetime

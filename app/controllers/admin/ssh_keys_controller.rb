@@ -1,7 +1,7 @@
 class Admin::SSHKeysController < ApplicationController
   include SSHKeysControllable
 
-  layout "main"
+  layout 'main'
 
   before_action :authenticate_admin!
 

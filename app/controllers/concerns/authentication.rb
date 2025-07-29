@@ -6,7 +6,7 @@ module Authentication
   end
 
   def authenticate!
-    redirect_to root_path, status: :see_other, alert: "You must be signed in to access this page." unless signed_in?
+    redirect_to root_path, status: :see_other, alert: 'You must be signed in to access this page.' unless signed_in?
   end
 
   def authenticate_admin!

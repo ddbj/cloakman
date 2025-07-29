@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  root to: "top#index"
+  root to: 'top#index'
 
-  get "auth/:provider/callback", to: "sessions#create", as: :auth_callback
-  get "auth/failure",            to: "sessions#failure"
+  get 'auth/:provider/callback', to: 'sessions#create', as: :auth_callback
+  get 'auth/failure',            to: 'sessions#failure'
 
   resource :session,   only: %i[destroy]
   resource :account,   only: %i[new create]
@@ -23,5 +23,5 @@ Rails.application.routes.draw do
     resources :users, only: :create
   end
 
-  get "up" => "rails/health#show", as: :rails_health_check
+  get 'up' => 'rails/health#show', as: :rails_health_check
 end

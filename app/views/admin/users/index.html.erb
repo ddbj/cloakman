@@ -1,15 +1,15 @@
 <h1 class="mb-3">Users</h1>
 
 <div class="mb-3">
-  <%= link_to "New User", new_admin_user_path, class: "btn btn-primary" %>
+  <%= link_to 'New User', new_admin_user_path, class: 'btn btn-primary' %>
 </div>
 
-<%= bootstrap_form_with model: @form, url: admin_users_path, scope: :form, method: :get, class: "bg-light border rounded p-3 mb-3" do |f| %>
+<%= bootstrap_form_with model: @form, url: admin_users_path, scope: :form, method: :get, class: 'bg-light border rounded p-3 mb-3' do |f| %>
   <dl class="horizontal align-items-center mb-0">
     <dt>Query</dt>
 
     <dd>
-      <%= f.search_field :query, placeholder: "Search by username, email, or name", wrapper: false %>
+      <%= f.search_field :query, placeholder: 'Search by username, email, or name', wrapper: false %>
     </dd>
 
     <dt>Status</dt>
@@ -30,7 +30,7 @@
       <%= f.collection_check_boxes :sign_in_histories, Admin::UsersController::Form.sign_in_history.options, :last, :first, wrapper: false, inline: true %>
     </dd>
 
-    <dd><%= f.primary "Search" %></dd>
+    <dd><%= f.primary 'Search' %></dd>
   </dl>
 <% end %>
 
@@ -56,7 +56,7 @@
         <td class="text-break"><%= user.full_name %></td>
         <td class="text-break"><%= user.inet_user_status_text %></td>
         <td class="text-break"><%= user.account_type_number_text %></td>
-        <td class="text-break"><%= user.last_sign_in_at.then { _1 ? l(_1) : "-" } %></td>
+        <td class="text-break"><%= user.last_sign_in_at.then { _1 ? l(_1) : '-' } %></td>
       </tr>
     <% end %>
   </tbody>

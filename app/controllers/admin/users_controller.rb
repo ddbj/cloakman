@@ -13,41 +13,41 @@ class Admin::UsersController < ApplicationController
     enumerize :sign_in_history, in: %i[has_signed_in never_signed_in]
 
     def build_filter
-      filter = Net::LDAP::Filter.eq("objectClass", "ddbjUser")
+      filter = Net::LDAP::Filter.eq('objectClass', 'ddbjUser')
 
       if query.present?
-        filter = filter & %w[uid mail commonName].map { |attr|
+        filter = filter & %w[uid mail commonName].map {|attr|
           Net::LDAP::Filter.contains(attr, query)
         }.inject(:|)
       end
 
       if statuses = inet_user_statuses.compact_blank.presence
-        filter = filter & statuses.map { |status|
+        filter = filter & statuses.map {|status|
           value = User.inet_user_status.find_value(status).value
 
-          Net::LDAP::Filter.eq("inetUserStatus", value)
+          Net::LDAP::Filter.eq('inetUserStatus', value)
         }.inject(:|)
       else
-        filter = filter & Net::LDAP::Filter.ne("inetUserStatus", "*")
+        filter = filter & Net::LDAP::Filter.ne('inetUserStatus', '*')
       end
 
       if types = account_type_numbers.compact_blank.presence
-        filter = filter & types.map { |type|
+        filter = filter & types.map {|type|
           value = User.account_type_number.find_value(type).value
 
-          Net::LDAP::Filter.eq("accountTypeNumber", value)
+          Net::LDAP::Filter.eq('accountTypeNumber', value)
         }.inject(:|)
       else
-        filter = filter & Net::LDAP::Filter.ne("accountTypeNumber", "*")
+        filter = filter & Net::LDAP::Filter.ne('accountTypeNumber', '*')
       end
 
       if histories = sign_in_histories.compact_blank.presence
-        filter = filter & histories.map { |history|
+        filter = filter & histories.map {|history|
           case history
-          when "has_signed_in"
-            Net::LDAP::Filter.present("pwdLastSuccess")
-          when "never_signed_in"
-            Net::LDAP::Filter.ne("pwdLastSuccess", "*")
+          when 'has_signed_in'
+            Net::LDAP::Filter.present('pwdLastSuccess')
+          when 'never_signed_in'
+            Net::LDAP::Filter.ne('pwdLastSuccess', '*')
           end
         }.inject(:|)
       end
@@ -56,7 +56,7 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  layout "main"
+  layout 'main'
 
   before_action :authenticate_admin!
 
@@ -78,9 +78,9 @@ class Admin::UsersController < ApplicationController
     end
 
     if @user.save(context: :sign_up)
-      redirect_to admin_users_path, status: :see_other, notice: "User has been successfully creted."
+      redirect_to admin_users_path, status: :see_other, notice: 'User has been successfully creted.'
     else
-      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @user.errors.full_messages_for(:base).join(' ')
 
       render :new, status: :unprocessable_content
     end
@@ -94,9 +94,9 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params.expect(:id))
 
     if @user.update(user_update_params)
-      redirect_to admin_users_path, status: :see_other, notice: "User has been successfully updated."
+      redirect_to admin_users_path, status: :see_other, notice: 'User has been successfully updated.'
     else
-      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @user.errors.full_messages_for(:base).join(' ')
 
       render :edit, status: :unprocessable_content
     end

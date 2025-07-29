@@ -1,3 +1,3 @@
-<%= render "admin/users/tab", user: @form.user %>
+<%= render 'admin/users/tab', user: @form.user %>
 
-<%= render "ssh_keys/new", form: @form.user, path_prefix: [ :admin, @form.user ] %>
+<%= render 'ssh_keys/new', form: @form.user, path_prefix: [:admin, @form.user] %>

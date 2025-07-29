@@ -15,11 +15,11 @@ using Module.new {
 }
 
 def parse_ldif(path)
-  File.read(path).split("\n\n").map { |entry|
+  File.read(path).split("\n\n").map {|entry|
     entry.lines(chomp: true).map {
       k, v = it.split(': ', 2)
 
-      [ k.to_sym, v ]
+      [k.to_sym, v]
     }.group_by(&:first).transform_values { it.map(&:last) }
   }
 end
@@ -28,7 +28,7 @@ def parse_tsv(path)
   lines   = IO.readlines(path, chomp: true)
   headers = lines.first.split("\t").map(&:to_sym)
 
-  lines.drop(1).map { |line|
+  lines.drop(1).map {|line|
     cols = line.split("\t").map { it.strip.presence }
 
     headers.zip(cols).to_h
@@ -86,7 +86,7 @@ entries.each do |entry|
   entry[:uidNumber] ||= begin
     max_uid_number += 1
 
-    [ max_uid_number.to_s ]
+    [max_uid_number.to_s]
   end
 
   puts JSON.generate(entry_to_json(entry, row))
@@ -98,7 +98,7 @@ row_assoc.each do |uid, row|
   next if uids.include?(uid)
 
   puts JSON.generate(entry_to_json({
-    uid:       [ uid ],
-    uidNumber: [ (max_uid_number += 1).to_s ]
+    uid:       [uid],
+    uidNumber: [(max_uid_number += 1).to_s]
   }, row))
 end

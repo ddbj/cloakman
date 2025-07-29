@@ -1,7 +1,7 @@
 class SSHKeysController < ApplicationController
   include SSHKeysControllable
 
-  layout "main"
+  layout 'main'
 
   def index
     _index current_user
