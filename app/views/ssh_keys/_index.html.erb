@@ -2,7 +2,7 @@
 
 <div class="card">
   <div class="card-header text-end">
-    <%= link_to "New SSH key", [ :new, *path_prefix, :ssh_key ], class: "btn btn-primary btn-sm" %>
+    <%= link_to 'New SSH key', [:new, *path_prefix, :ssh_key], class: 'btn btn-primary btn-sm' %>
   </div>
 
   <ul class="list-group list-group-flush">
@@ -11,12 +11,12 @@
         <li class="list-group-item d-flex align-items-center gap-3">
           <div class="text-break me-auto"><%= key %></div>
 
-          <%= button_to "", [ *path_prefix, :ssh_key, id: i ], **{
+          <%= button_to '', [*path_prefix, :ssh_key, id: i], **{
             method: :delete,
-            class:  "btn-close",
+            class:  'btn-close',
 
             aria: {
-              label: "Delete"
+              label: 'Delete'
             }
           } %>
         </li>

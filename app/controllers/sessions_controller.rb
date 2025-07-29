@@ -2,15 +2,15 @@ class SessionsController < ApplicationController
   skip_before_action :authenticate!, only: %i[create failure]
 
   def create
-    session[:user_id]  = request.env.dig("omniauth.auth", "extra", "raw_info", "preferred_username")
-    session[:id_token] = request.env.dig("omniauth.auth", "credentials", "id_token")
+    session[:user_id]  = request.env.dig('omniauth.auth', 'extra', 'raw_info', 'preferred_username')
+    session[:id_token] = request.env.dig('omniauth.auth', 'credentials', 'id_token')
 
-    redirect_to root_path, status: :see_other, notice: "You have been logged in."
+    redirect_to root_path, status: :see_other, notice: 'You have been logged in.'
   end
 
   def destroy
     keycloak_url = Rails.application.config_for(:keycloak).url!
-    logout_url   = URI.join(keycloak_url, "/realms/master/protocol/openid-connect/logout")
+    logout_url   = URI.join(keycloak_url, '/realms/master/protocol/openid-connect/logout')
 
     logout_url.query = {
       id_token_hint:            session[:id_token],
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
 
     reset_session
 
-    redirect_to logout_url.to_s, status: :see_other, notice: "You have been logged out.", allow_other_host: true
+    redirect_to logout_url.to_s, status: :see_other, notice: 'You have been logged out.', allow_other_host: true
   end
 
   def failure

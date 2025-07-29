@@ -1,5 +1,5 @@
 <div class="mb-3">
-  <%= link_to "« Back", admin_users_path %>
+  <%= link_to '« Back', admin_users_path %>
 </div>
 
 <h1 class="mb-3">New User</h1>
@@ -9,11 +9,11 @@
   url:   admin_users_path,
 
   data: {
-    controller:                 "reform",
-    reform_visit_options_value: { frame: "alert" }.to_json
+    controller:                 'reform',
+    reform_visit_options_value: {frame: 'alert'}.to_json
   }
 ) do |form| %>
-  <%= render "form", form:, check_ext_ldap_username: true %>
+  <%= render 'form', form:, check_ext_ldap_username: true %>
 
-  <%= form.primary "Create User" %>
+  <%= form.primary 'Create User' %>
 <% end %>

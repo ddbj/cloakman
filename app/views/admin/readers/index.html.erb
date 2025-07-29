@@ -1,7 +1,7 @@
 <h1 class="mb-3">Readers</h1>
 
 <div class="mb-3">
-  <%= link_to "New Reader", new_admin_reader_path, class: "btn btn-primary" %>
+  <%= link_to 'New Reader', new_admin_reader_path, class: 'btn btn-primary' %>
 </div>
 
 <table class="table border">
@@ -16,7 +16,7 @@
     <% @readers.each do |reader| %>
       <tr>
         <td><%= link_to reader.id, admin_reader_path(reader) %></td>
-        <td><%= reader.last_used_at.then { _1 ? l(_1) : "-" } %></td>
+        <td><%= reader.last_used_at.then { _1 ? l(_1) : '-' } %></td>
       </tr>
     <% end %>
   </tbody>

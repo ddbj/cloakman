@@ -33,7 +33,7 @@ class LDAPEntry
         scope:                         Net::LDAP::SearchScope_SingleLevel,
         attributes:                    ldap_to_model_map.keys,
         return_operational_attributes: true,
-        filter:                        object_classes.map { Net::LDAP::Filter.eq("objectClass", it) }.inject(:&)
+        filter:                        object_classes.map { Net::LDAP::Filter.eq('objectClass', it) }.inject(:&)
       }).map { from_entry(it) }
     end
 
@@ -60,10 +60,10 @@ class LDAPEntry
       new(
         persisted?: true,
 
-        **ldap_to_model_map.map { |ldap_key, model_key|
+        **ldap_to_model_map.map {|ldap_key, model_key|
           is_array = type_for_attribute(model_key).instance_of?(ActiveModel::Type::Value)
 
-          [ model_key, is_array ? entry[ldap_key] : entry.first(ldap_key) ]
+          [model_key, is_array ? entry[ldap_key] : entry.first(ldap_key)]
         }.to_h
       ).tap(&:changes_applied)
     end
@@ -107,8 +107,8 @@ class LDAPEntry
 
             public_send "clear_#{model_key}_change"
           rescue LDAPError::ConstraintViolation => e
-            if e.message.start_with?("non-unique attributes found with ")
-              errors.add model_key, "has already been taken"
+            if e.message.start_with?('non-unique attributes found with ')
+              errors.add model_key, 'has already been taken'
             else
               errors.add model_key, e.message
             end
@@ -152,11 +152,11 @@ class LDAPEntry
         attributes: {
           objectClass: object_classes,
 
-          **model_to_ldap_map.map { |model_key, ldap_key|
+          **model_to_ldap_map.map {|model_key, ldap_key|
             val = public_send(model_key).presence
             val = val.value if val.is_a?(Enumerize::Value)
 
-            [ ldap_key, Array(val).map(&:to_s) ]
+            [ldap_key, Array(val).map(&:to_s)]
           }.to_h.compact_blank
         }
       }
@@ -165,12 +165,12 @@ class LDAPEntry
 
       changes_applied
     rescue LDAPError::EntryAlreadyExists
-      errors.add :id, "has already been taken"
+      errors.add :id, 'has already been taken'
 
       return false
     rescue LDAPError::ConstraintViolation => e
-      if e.message.start_with?("non-unique attributes found with (|(mail=")
-        errors.add :email, "has already been taken"
+      if e.message.start_with?('non-unique attributes found with (|(mail=')
+        errors.add :email, 'has already been taken'
       else
         errors.add :base, e.message
       end

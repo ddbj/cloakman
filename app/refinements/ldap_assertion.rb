@@ -7,7 +7,7 @@ module LDAPAssertion
       when false, nil
         raise LDAPError.from_result(get_operation_result)
       else
-        raise "must not happen"
+        raise 'must not happen'
       end
     end
   end

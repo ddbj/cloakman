@@ -1,7 +1,7 @@
 using LDAPAssertion
 
 class PasswordsController < ApplicationController
-  layout "main"
+  layout 'main'
 
   class Form
     include ActiveModel::Model
@@ -11,7 +11,7 @@ class PasswordsController < ApplicationController
     attribute :new_password,     :string
 
     validates :current_password,          presence: true
-    validates :new_password,              presence: true, length: { minimum: 8, allow_blank: true }, confirmation: true
+    validates :new_password,              presence: true, length: {minimum: 8, allow_blank: true}, confirmation: true
     validates :new_password_confirmation, presence: true
 
     def persisted? = true
@@ -31,12 +31,12 @@ class PasswordsController < ApplicationController
         old_password: @form.current_password
       }
 
-      redirect_to edit_password_path, status: :see_other, notice: "Password updated successfully."
+      redirect_to edit_password_path, status: :see_other, notice: 'Password updated successfully.'
     else
       render :edit, status: :unprocessable_content
     end
   rescue LDAPError::UnwillingToPerform
-    @form.errors.add :current_password, "is incorrect"
+    @form.errors.add :current_password, 'is incorrect'
 
     render :edit, status: :unprocessable_content
   end

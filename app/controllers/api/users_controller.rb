@@ -5,7 +5,7 @@ class API::UsersController < API::BaseController
     if user.save
       head :created
     else
-      render json: { errors: user.errors }, status: :unprocessable_entity
+      render json: {errors: user.errors}, status: :unprocessable_entity
     end
   end
 

@@ -16,9 +16,9 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.acronym "API"
-  inflect.acronym "JGA"
-  inflect.acronym "LDAP"
-  inflect.acronym "SSH"
-  inflect.acronym "SSHA"
+  inflect.acronym 'API'
+  inflect.acronym 'JGA'
+  inflect.acronym 'LDAP'
+  inflect.acronym 'SSH'
+  inflect.acronym 'SSHA'
 end

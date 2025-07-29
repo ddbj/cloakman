@@ -1,5 +1,5 @@
 <div class="mb-3">
-  <%= link_to "« Back", admin_api_keys_path %>
+  <%= link_to '« Back', admin_api_keys_path %>
 </div>
 
 <h1 class="mb-3"><%= @key.name %></h1>
@@ -9,7 +9,7 @@
   <dd><code><%= @key.token %></code></dd>
 
   <dt>Last used at</dt>
-  <dd><%= @key.last_used_at.then { _1 ? l(_1) : "-" } %></dd>
+  <dd><%= @key.last_used_at.then { _1 ? l(_1) : '-' } %></dd>
 </dl>
 
 <h2>Example</h2>
@@ -33,8 +33,8 @@
 }
 EOF</code></pre>
 
-<p>A list of available attributes can be found in <%= link_to "this file", "https://github.com/ddbj/cloakman/tree/main/app/controllers/api/users_controller.rb" %>.</p>
+<p>A list of available attributes can be found in <%= link_to 'this file', 'https://github.com/ddbj/cloakman/tree/main/app/controllers/api/users_controller.rb' %>.</p>
 
 <hr>
 
-<%= button_to "Delete API Key", admin_api_key_path(@key), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<%= button_to 'Delete API Key', admin_api_key_path(@key), method: :delete, data: {turbo_confirm: 'Are you sure?'}, class: 'btn btn-danger' %>

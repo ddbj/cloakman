@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
-  layout "main"
+  layout 'main'
 
   def edit
     @user = current_user
@@ -9,9 +9,9 @@ class ProfilesController < ApplicationController
     @user = current_user
 
     if @user.update(user_params)
-      redirect_to edit_profile_path, status: :see_other, notice: "Profile updated successfully."
+      redirect_to edit_profile_path, status: :see_other, notice: 'Profile updated successfully.'
     else
-      flash.now[:alert] = @user.errors.full_messages_for(:base).join(" ")
+      flash.now[:alert] = @user.errors.full_messages_for(:base).join(' ')
 
       render :edit, status: :unprocessable_content
     end

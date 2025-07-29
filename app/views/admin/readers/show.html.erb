@@ -1,5 +1,5 @@
 <div class="mb-3">
-  <%= link_to "« Back", admin_readers_path %>
+  <%= link_to '« Back', admin_readers_path %>
 </div>
 
 <% if flash[:password] %>
@@ -21,12 +21,12 @@
   <dd><code><%= @reader.dn %></code></dd>
 
   <dt>Password</dt>
-  <dd><code><%= flash[:password] || "********" %></code></dd>
+  <dd><code><%= flash[:password] || '********' %></code></dd>
 
   <dt>Last used at</dt>
-  <dd><%= @reader.last_used_at.then { _1 ? l(_1) : "-" } %></dd>
+  <dd><%= @reader.last_used_at.then { _1 ? l(_1) : '-' } %></dd>
 </dl>
 
 <hr>
 
-<%= button_to "Delete Reader", admin_reader_path(@reader), method: :delete, data: { turbo_confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<%= button_to 'Delete Reader', admin_reader_path(@reader), method: :delete, data: {turbo_confirm: 'Are you sure?'}, class: 'btn btn-danger' %>

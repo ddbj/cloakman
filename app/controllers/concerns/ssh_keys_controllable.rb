@@ -12,13 +12,13 @@ module SSHKeysControllable
       key = SSHData::PublicKey.parse_openssh(ssh_key)
 
       case key.algo
-      when "ssh-dss"
-        errors.add :ssh_key, "DSA keys are not permitted. Please use RSA, ECDSA, or ED25519 keys instead."
-      when "ssh-rsa"
-        errors.add :ssh_key, "RSA keys must be at least 2048 bits long." if key.n.num_bits < 2048
+      when 'ssh-dss'
+        errors.add :ssh_key, 'DSA keys are not permitted. Please use RSA, ECDSA, or ED25519 keys instead.'
+      when 'ssh-rsa'
+        errors.add :ssh_key, 'RSA keys must be at least 2048 bits long.' if key.n.num_bits < 2048
       end
     rescue SSHData::Error
-      errors.add :ssh_key, "Key is invalid. You must supply a key in OpenSSH public key format."
+      errors.add :ssh_key, 'Key is invalid. You must supply a key in OpenSSH public key format.'
     end
 
     def save
@@ -45,7 +45,7 @@ module SSHKeysControllable
     @form = Form.new(user:, **form_params)
 
     if @form.save
-      redirect_to index_path, status: :see_other, notice: "SSH key added successfully."
+      redirect_to index_path, status: :see_other, notice: 'SSH key added successfully.'
     else
       @form.user.errors[:ssh_keys].each do |error|
         @form.errors.add :ssh_key, error
@@ -61,10 +61,10 @@ module SSHKeysControllable
 
     user.save!
 
-    redirect_to index_path, status: :see_other, notice: "SSH key deleted successfully."
+    redirect_to index_path, status: :see_other, notice: 'SSH key deleted successfully.'
   end
 
   def form_params
-    params.expect(form: [ :ssh_key ])
+    params.expect(form: [:ssh_key])
   end
 end

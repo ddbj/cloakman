@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <title><%= content_for(:title) || "DDBJ Account" %></title>
+    <title><%= content_for(:title) || 'DDBJ Account' %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": 'reload' %>
     <%= javascript_importmap_tags %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
   </head>
@@ -27,18 +27,18 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <%= link_to "DDBJ Account", root_path, class: "navbar-brand" %>
+        <%= link_to 'DDBJ Account', root_path, class: 'navbar-brand' %>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <span class="navbar-text ms-auto">
-            Help (<%= link_to "Japanese", "https://www.ddbj.nig.ac.jp/ddbj-account", target: "_blank" %> / <%= link_to "English", "https://www.ddbj.nig.ac.jp/ddbj-account-e", target: "_blank" %>)
+            Help (<%= link_to 'Japanese', 'https://www.ddbj.nig.ac.jp/ddbj-account', target: '_blank' %> / <%= link_to 'English', 'https://www.ddbj.nig.ac.jp/ddbj-account-e', target: '_blank' %>)
           </span>
         </div>
       </div>
     </nav>
 
     <div class="container py-3">
-      <% { notice: "success", alert: "danger" }.each do |key, style| %>
+      <% {notice: 'success', alert: 'danger'}.each do |key, style| %>
         <% if message = flash[key].presence %>
           <div class="alert alert-<%= style %> alert-dismissible fade show">
             <%= message %>

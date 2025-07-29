@@ -1,7 +1,7 @@
-<%= render "tab", user: @user %>
+<%= render 'tab', user: @user %>
 
 <%= bootstrap_form_with model: @user, url: admin_user_path(@user) do |form| %>
-  <%= render "form", form: %>
+  <%= render 'form', form: %>
 
-  <%= form.primary "Update User" %>
+  <%= form.primary 'Update User' %>
 <% end %>
