@@ -44,7 +44,7 @@ class Admin::APIKeysControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_response :unprocessable_entity
+    assert_response :unprocessable_content
   end
 
   test 'destroy' do

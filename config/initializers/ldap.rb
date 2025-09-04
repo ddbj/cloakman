@@ -18,6 +18,9 @@ if Rails.env.local?
       }
     rescue LDAPError::EntryAlreadyExists
       # do nothing
+    rescue Errno::ECONNREFUSED
+      sleep 1
+      retry
     end
   end
 end
