@@ -168,4 +168,6 @@ class User < LDAPEntry
       entry.dn.include?('ou=cloakman-users,')
     }.first
   end
+
+  def admin? = account_type_number.ddbj? || account_type_number.nbdc?
 end
