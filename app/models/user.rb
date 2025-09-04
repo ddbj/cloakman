@@ -166,4 +166,6 @@ class User < LDAPEntry
       filter: Net::LDAP::Filter.eq('objectClass', 'posixAccount') & Net::LDAP::Filter.eq('uid', id)
     }).first
   end
+
+  def admin? = account_type_number.ddbj? || account_type_number.nbdc?
 end
