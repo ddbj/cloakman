@@ -26,6 +26,8 @@ module User::ExtLDAPSync
   private
 
   def add_ext_ldap_entry
+    return if ext_ldap_entry
+
     ExtLDAPSink.connection.assert_call :add, **{
       dn: "uid=#{id},#{ExtLDAPSink.base_dn}",
 
@@ -43,6 +45,8 @@ module User::ExtLDAPSync
   end
 
   def modify_ext_ldap_entry
+    return if ext_ldap_entry
+
     ExtLDAPSink.connection.assert_call :modify, **{
       dn: "uid=#{id},#{ExtLDAPSink.base_dn}",
 

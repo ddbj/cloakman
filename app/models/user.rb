@@ -164,6 +164,8 @@ class User < LDAPEntry
     ExtLDAP.connection.assert_call(:search, **{
       base:   ExtLDAP.base_dn,
       filter: Net::LDAP::Filter.eq('objectClass', 'posixAccount') & Net::LDAP::Filter.eq('uid', id)
-    }).first
+    }).reject {|entry|
+      entry.dn.include?('ou=cloakman-users,')
+    }.first
   end
 end
