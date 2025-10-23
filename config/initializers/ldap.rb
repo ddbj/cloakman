@@ -16,11 +16,8 @@ if Rails.env.local?
           ou:          dn.split(',').first.delete_prefix('ou=')
         }
       }
-    rescue LDAPError::EntryAlreadyExists
+    rescue LDAPError::EntryAlreadyExists, Errno::ECONNREFUSED
       # do nothing
-    rescue Errno::ECONNREFUSED
-      sleep 1
-      retry
     end
   end
 end
