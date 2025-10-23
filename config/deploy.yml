@@ -81,7 +81,7 @@ accessories:
         POSTGRES_DB: keycloak
 
   openldap:
-    image: bitnami/openldap:2.6.9
+    image: bitnamilegacy/openldap:2.6.10
     port: 636:1636
 
     env:
