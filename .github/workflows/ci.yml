@@ -58,7 +58,7 @@ jobs:
 
     services:
       openldap:
-        image: bitnami/openldap:2.6.9
+        image: bitnamilegacy/openldap:2.6.10
         ports:
           - 1389:1389
         env:
@@ -68,7 +68,7 @@ jobs:
           LDAP_SKIP_DEFAULT_TREE: "yes"
 
       ext-openldap:
-        image: bitnami/openldap:2.6.9
+        image: bitnamilegacy/openldap:2.6.10
         ports:
           - 2389:1389
         env:
