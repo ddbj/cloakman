@@ -40,6 +40,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'minitest', '< 6', require: false # https://github.com/rails/rails/issues/56406
+  gem 'minitest', '< 7', require: false # https://github.com/rails/rails/issues/56406
   gem 'selenium-webdriver'
 end
