@@ -56,6 +56,7 @@ accessories:
 
       clear:
         KC_DB: postgres
+        KC_DB_POOL_INITIAL_SIZE: 1
         KC_DB_URL: jdbc:postgresql://cloakman-keycloak-postgres:5432/keycloak
         TZ: Asia/Tokyo
 
