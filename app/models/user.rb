@@ -37,6 +37,7 @@ class User < LDAPEntry
     phone:                 'telephoneNumber',
     ssh_keys:              'sshPublicKey',
     jga_datasets:          'jgaDataset',
+    agd_datasets:          'agdDataset',
     account_type_number:   'accountTypeNumber',
     inet_user_status:      'inetUserStatus',
     uid_number:            'uidNumber',
@@ -72,6 +73,7 @@ class User < LDAPEntry
   attribute :street,                :string
   attribute :phone,                 :string
   attribute :jga_datasets,          default: -> { [] }
+  attribute :agd_datasets,          default: -> { [] }
   attribute :ssh_keys,              default: -> { [] }
   attribute :inet_user_status,      :string,  default: -> { 'active' }
   attribute :account_type_number,   :integer, default: 1

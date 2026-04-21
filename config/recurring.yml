@@ -1,6 +1,6 @@
 production: &production
-  import_jga_datasets:
-    class: ImportJGADatasetsJob
+  import_datasets:
+    class: ImportDatasetsJob
     schedule: 30 22 * * *
 
 staging:

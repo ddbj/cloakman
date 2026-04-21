@@ -16,6 +16,7 @@
 # end
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym 'AGD'
   inflect.acronym 'API'
   inflect.acronym 'JGA'
   inflect.acronym 'LDAP'
