@@ -10,12 +10,8 @@ class API::UsersController < API::BaseController
     end
 
     if params.key?(:uids)
-      uids = Array(params[:uids]).select(&:present?)
-
-      if uids.empty?
-        render json: []
-        return
-      end
+      uids = Array.wrap(params[:uids]).compact_blank
+      return render(json: []) if uids.empty?
 
       filter &= uids.map {|uid| Net::LDAP::Filter.eq('uid', uid) }.inject(:|)
       size    = uids.size
