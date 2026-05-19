@@ -1,4 +1,27 @@
 class API::UsersController < API::BaseController
+  def index
+    filter = Net::LDAP::Filter.eq('objectClass', 'ddbjUser') &
+      Net::LDAP::Filter.eq('inetUserStatus', 'active')
+
+    if query = params[:query].presence
+      filter = filter & %w[uid mail commonName].map {|attr|
+        Net::LDAP::Filter.contains(attr, query)
+      }.inject(:|)
+    end
+
+    users = User.search(filter).sort_by(&:id).map {|user|
+      {
+        uid:                 user.id,
+        full_name:           user.full_name,
+        email:               user.email,
+        organization:        user.organization,
+        account_type_number: user.account_type_number.to_s
+      }
+    }
+
+    render json: users
+  end
+
   def create
     user = User.new(user_params)
 
