@@ -35,6 +35,32 @@ class API::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal %w[alice], res.pluck(:uid)
   end
 
+  test 'filters users by uids' do
+    FactoryBot.create :user, id: 'alice',   first_name: 'Alice',   last_name: 'Liddell'
+    FactoryBot.create :user, id: 'bob',     first_name: 'Bob',     last_name: 'Builder'
+    FactoryBot.create :user, id: 'charlie', first_name: 'Charlie', last_name: 'Chaplin'
+
+    get api_users_path, params: {uids: %w[alice charlie zzz]}, headers: {Authorization: 'Bearer TOKEN_ONE'}
+
+    assert_response :ok
+
+    res = JSON.parse(response.body, symbolize_names: true)
+
+    assert_equal %w[alice charlie], res.pluck(:uid)
+  end
+
+  test 'returns empty array when uids is empty' do
+    FactoryBot.create :user, id: 'alice', first_name: 'Alice', last_name: 'Liddell'
+
+    get api_users_path, params: {uids: []}, headers: {Authorization: 'Bearer TOKEN_ONE'}
+
+    assert_response :ok
+
+    res = JSON.parse(response.body, symbolize_names: true)
+
+    assert_empty res
+  end
+
   test 'rejects unauthenticated requests to index' do
     get api_users_path
 
