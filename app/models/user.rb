@@ -147,7 +147,7 @@ class User < LDAPEntry
     self.home_directory ||= "/submission/#{id}"
   end
 
-  def self.search(filter)
+  def self.search(filter, size: 100)
     filter = Net::LDAP::Filter.eq('objectClass', 'ddbjUser') & filter
 
     LDAP.connection.assert_call(:search, **{
@@ -156,7 +156,7 @@ class User < LDAPEntry
       attributes:                    ldap_to_model_map.keys,
       return_operational_attributes: true,
       filter:,
-      size:                          100
+      size:
     }).map { from_entry(it) }
   end
 
