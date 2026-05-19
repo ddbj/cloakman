@@ -1,6 +1,6 @@
 class API::UsersController < API::BaseController
   def index
-    filter = Net::LDAP::Filter.eq('inetUserStatus', 'active')
+    filter = active_filter
 
     if query = params[:query].presence
       filter &= %w[uid mail commonName].map {|attr|
@@ -15,8 +15,7 @@ class API::UsersController < API::BaseController
     uids = Array.wrap(params[:uids]).compact_blank
     return render(json: []) if uids.empty?
 
-    filter = Net::LDAP::Filter.eq('inetUserStatus', 'active') &
-      uids.map {|uid| Net::LDAP::Filter.eq('uid', uid) }.inject(:|)
+    filter = active_filter & uids.map {|uid| Net::LDAP::Filter.eq('uid', uid) }.inject(:|)
 
     render json: serialize(User.search(filter, size: uids.size))
   end
@@ -32,6 +31,8 @@ class API::UsersController < API::BaseController
   end
 
   private
+
+  def active_filter = Net::LDAP::Filter.eq('inetUserStatus', 'active')
 
   def serialize(users)
     users.sort_by(&:id).map {|user|
