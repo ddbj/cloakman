@@ -35,12 +35,18 @@ class API::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal %w[alice], res.pluck(:uid)
   end
 
-  test 'filters users by uids' do
+  test 'rejects unauthenticated requests to index' do
+    get api_users_path
+
+    assert_response :unauthorized
+  end
+
+  test 'lookup returns users matching the given uids' do
     FactoryBot.create :user, id: 'alice',   first_name: 'Alice',   last_name: 'Liddell'
     FactoryBot.create :user, id: 'bob',     first_name: 'Bob',     last_name: 'Builder'
     FactoryBot.create :user, id: 'charlie', first_name: 'Charlie', last_name: 'Chaplin'
 
-    get api_users_path, params: {uids: %w[alice charlie zzz]}, headers: {Authorization: 'Bearer TOKEN_ONE'}
+    get lookup_api_users_path, params: {uids: %w[alice charlie zzz]}, headers: {Authorization: 'Bearer TOKEN_ONE'}
 
     assert_response :ok
 
@@ -49,10 +55,10 @@ class API::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal %w[alice charlie], res.pluck(:uid)
   end
 
-  test 'returns empty array when uids is empty' do
+  test 'lookup returns an empty array when uids is empty' do
     FactoryBot.create :user, id: 'alice', first_name: 'Alice', last_name: 'Liddell'
 
-    get api_users_path, params: {uids: []}, headers: {Authorization: 'Bearer TOKEN_ONE'}
+    get lookup_api_users_path, params: {uids: []}, headers: {Authorization: 'Bearer TOKEN_ONE'}
 
     assert_response :ok
 
@@ -61,8 +67,8 @@ class API::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_empty res
   end
 
-  test 'rejects unauthenticated requests to index' do
-    get api_users_path
+  test 'rejects unauthenticated requests to lookup' do
+    get lookup_api_users_path
 
     assert_response :unauthorized
   end

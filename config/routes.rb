@@ -20,7 +20,11 @@ Rails.application.routes.draw do
   end
 
   namespace :api do
-    resources :users, only: %i[index create]
+    resources :users, only: %i[index create] do
+      collection do
+        get :lookup
+      end
+    end
   end
 
   get 'up' => 'rails/health#show', as: :rails_health_check
