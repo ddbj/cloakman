@@ -1,0 +1,50 @@
+services:
+  keycloak:
+    image: keycloak/keycloak:26.3.1
+    command: start-dev
+    ports:
+      - '8080:8080'
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: keycloak
+      KC_BOOTSTRAP_ADMIN_PASSWORD: keycloak
+      KC_DB_USERNAME: sa
+    volumes:
+      - keycloak:/opt/keycloak/data
+      - ./keycloak/providers:/opt/keycloak/providers
+      - ./keycloak/themes/ddbj:/opt/keycloak/themes/ddbj
+
+  openldap:
+    image: bitnamilegacy/openldap:2.6.10
+    ports:
+      - '1389:1389'
+    environment:
+      LDAP_ROOT: dc=ddbj,dc=nig,dc=ac,dc=jp
+      LDAP_SKIP_DEFAULT_TREE: 'yes'
+      LDAP_ALLOW_ANON_BINDING: 'no'
+      LDAP_CONFIG_ADMIN_ENABLED: 'yes'
+      BITNAMI_DEBUG: 'true'
+    volumes:
+      - openldap:/bitnami/openldap
+      - ./openldap/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./openldap/schemas:/schemas
+      - ./openldap/ldifs:/ldifs
+
+  ext-openldap:
+    image: bitnamilegacy/openldap:2.6.10
+    ports:
+      - '2389:1389'
+    environment:
+      LDAP_SKIP_DEFAULT_TREE: 'yes'
+      LDAP_ALLOW_ANON_BINDING: 'no'
+    volumes:
+      - ./openldap/ext_ldifs:/ldifs
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
+volumes:
+  keycloak:
+  openldap:
