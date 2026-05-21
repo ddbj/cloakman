@@ -1,5 +1,5 @@
 development:
-  app_url:                http://cloakman.localhost:3000
+  app_url:                <%= ENV.fetch('APP_URL', 'http://localhost:3000') %>
   ldap_internal_endpoint: ldap://localhost:1389
   redis_url:              redis://localhost:6379
   submitter_gid_number:   1234
