@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class API::UsersControllerTest < ActionDispatch::IntegrationTest
+class API::UsersTest < ActionDispatch::IntegrationTest
   test 'should list active users' do
     FactoryBot.create :user, id: 'alice',   first_name: 'Alice',   last_name: 'Liddell',  organization: 'Wonderland'
     FactoryBot.create :user, id: 'bob',     first_name: 'Bob',     last_name: 'Builder',  organization: 'Construction Co'

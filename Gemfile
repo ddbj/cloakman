@@ -40,6 +40,7 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'capybara-simulated'
   gem 'minitest-mock'
-  gem 'selenium-webdriver'
+  gem 'rusty_racer'
 end

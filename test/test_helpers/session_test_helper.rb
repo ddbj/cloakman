@@ -13,7 +13,11 @@ module SessionTestHelper
     }
 
     begin
-      get auth_callback_path('keycloak')
+      if respond_to?(:visit)
+        visit auth_callback_path('keycloak')
+      else
+        get auth_callback_path('keycloak')
+      end
     ensure
       OmniAuth.config.mock_auth[:keycloak] = nil
     end
