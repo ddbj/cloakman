@@ -13,11 +13,11 @@ DDBJ account management system built with Rails 8.1 and Ruby 4.0. Manages user a
 ## Development
 
 ```sh
-bin/setup     # Install deps, prepare DB, create Docker network, start dev server
+bin/setup     # Install deps, prepare DB, start dev server
 bin/dev       # Start all services (Rails, dartsass, Keycloak, OpenLDAP, ext-OpenLDAP, Mailpit)
 ```
 
-Services run via `Procfile.dev` using Docker containers on the `cloakman` network. Requires Docker.
+`bin/dev` runs `Procfile.dev`, which starts the supporting services with `docker compose -f compose.dev.yaml up`. Requires Docker.
 
 Environment variables for development are managed in `.mise.toml`.
 
