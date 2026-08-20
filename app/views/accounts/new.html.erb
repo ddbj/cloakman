@@ -1,12 +1,15 @@
 <h1 class="mb-3">New Account</h1>
 
-<%= bootstrap_form_with model: @user, url: account_path do |form| %>
+<%# The return address rides in the form's own URL rather than in a
+    hidden field, so it survives the re-render after a validation error
+    without anything remembering to carry it. %>
+<%= bootstrap_form_with model: @user, url: account_path(return_to:) do |form| %>
   <%= render 'profiles/form', form: %>
 
   <hr>
 
   <%= form.check_box :accept_terms, required: true do %>
-    I have read and agree to the <%= link_to 'Terms of Use', 'https://www.ddbj.nig.ac.jp/policies-e.html', target: '_blank' %>.
+    I have read and agree to the <%= link_to 'Terms of Use', 'https://www.ddbj.nig.ac.jp/policies-e.html', target: '_blank', rel: 'noopener noreferrer' %>.
   <% end %>
 
   <%= form.primary 'Create Account' %>
