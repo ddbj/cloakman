@@ -7,7 +7,7 @@ DDBJ account management system built with Rails 8.1 and Ruby 4.0. Manages user a
 - **No ActiveRecord models for users** — `User` and `Reader` inherit from `LDAPEntry`, a custom ActiveModel-based class that reads/writes directly to OpenLDAP via `net-ldap`.
 - **Keycloak** for authentication (via OmniAuth OpenID Connect). Cloakman is a Keycloak client (`cloakman`).
 - **Two LDAP directories**: an internal OpenLDAP (`LDAP`) for account data, and an external NIG LDAP (`ExtLDAP`) for cross-referencing and syncing (`User::ExtLDAPSync`).
-- **SQLite** for the Rails app database (Solid Cache, Solid Queue). User data lives in LDAP, not SQLite.
+- **PostgreSQL** for the Rails app database (API keys, Solid Cache, Solid Queue). User data lives in LDAP, not PostgreSQL.
 - **Redis** for UID number sequence generation.
 
 ## Development
@@ -17,7 +17,7 @@ bin/setup     # Install deps, prepare DB, start dev server
 bin/dev       # Start all services (Rails, dartsass, Keycloak, OpenLDAP, ext-OpenLDAP, Mailpit)
 ```
 
-`bin/dev` runs `Procfile.dev`, which starts the supporting services with `docker compose -f compose.dev.yaml up`. Requires Docker.
+`bin/dev` runs `Procfile.dev`, which starts the supporting services with `docker compose -f compose.dev.yaml up`. Requires Docker, plus PostgreSQL and Redis running locally.
 
 Environment variables for development are managed in `.mise.toml`.
 
@@ -29,7 +29,7 @@ bin/rails test:system   # System tests (Chrome)
 bin/ci                  # Full CI: rubocop, brakeman, importmap audit, tests, seed check
 ```
 
-CI requires OpenLDAP, ext-OpenLDAP, and Redis services (see `.github/workflows/ci.yml`).
+CI requires OpenLDAP, ext-OpenLDAP, PostgreSQL, and Redis services (see `.github/workflows/ci.yml`).
 
 ## Linting
 
@@ -53,7 +53,9 @@ bin/kamal deploy -d production
 
 - Deploy config: `config/deploy.yml` (common), `config/deploy.staging.yml`, `config/deploy.production.yml`
 - Secrets: `.kamal/secrets-common` — all secrets are read via `bin/rails credentials:fetch` with `$KAMAL_DESTINATION`
-- Accessories: Keycloak, Keycloak-Postgres, OpenLDAP, Redis
+- Accessories: Keycloak, Keycloak-Postgres, OpenLDAP, Postgres, Redis
+- Persistent data lives on Lustre (`./volumes/...`), because local disks are tied to the physical host and the VM can move between hosts
+- `BackupDatabaseJob` dumps the primary database to `storage/backups` every night and keeps 30 days. To restore, run this on the host: `docker exec -i cloakman-postgres pg_restore -U postgres -d cloakman --clean --if-exists < <dump>`
 
 ### Credentials
 
@@ -70,7 +72,7 @@ bin/rails credentials:fetch <dotted.path> -e <environment>
 - `LDAPEntry` — Base class implementing ActiveModel-compatible CRUD over LDAP
 - `User` — LDAP user entry (`ddbjUser` objectClass). Maps ~30 LDAP attributes. Status managed via `inetUserStatus` (active/inactive/deleted)
 - `Reader` — LDAP reader entry for service accounts
-- `ApiKey` — ActiveRecord model for API authentication
+- `APIKey` — ActiveRecord model for API authentication
 
 ## Routes
 

@@ -35,6 +35,13 @@ accessories:
       - ./volumes/cloakman-staging/openldap:/bitnami/openldap
       - ./volumes/cloakman-staging/openldap-certs:/certs
 
+  postgres:
+    host: cloakman-staging
+
+    options:
+      mount:
+        - type=bind,source=/home/w3const/volumes/cloakman-staging/postgres,target=/var/lib/postgresql
+
   redis:
     host: cloakman-staging
 

@@ -1,4 +1,8 @@
 production: &production
+  backup_database:
+    class: BackupDatabaseJob
+    schedule: 0 3 * * *
+
   import_datasets:
     class: ImportDatasetsJob
     schedule: 30 22 * * *
