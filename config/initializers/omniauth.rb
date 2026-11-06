@@ -24,13 +24,25 @@ end
 OmniAuth.config.on_failure = ->(env) {
   error = env['omniauth.error']
 
-  # Only report failures on our side. Anyone can make the others happen by requesting the callback URL.
-  case error
-  when OpenIDConnect::Exception, JSON::JWT::Exception, Faraday::Error, Timeout::Error, Errno::ETIMEDOUT, SocketError
-    Sentry.capture_exception error
-  when Rack::OAuth2::Client::Error
-    Sentry.capture_exception error unless error.response[:error] == 'invalid_grant'
-  end
+  # OmniAuth rescues every StandardError, so nothing else would report these. Skip only what anyone can
+  # cause without going through the sign-in flow, and going back to a used code.
+  caused_by_request =
+    case error
+    when nil,
+         ActionController::BadRequest,
+         ActionController::InvalidAuthenticityToken,
+         ActionDispatch::Http::Parameters::ParseError,
+         OmniAuth::Strategies::OpenIDConnect::CallbackError,
+         Rack::BadRequest
+      true
+    when Rack::OAuth2::Client::Error
+      error.response[:error] == 'invalid_grant'
+    else
+      # The strategy calls `to_sym` on the `error` parameter, which can be missing, an array or invalid UTF-8.
+      error.cause.is_a?(OmniAuth::Strategies::OpenIDConnect::CallbackError)
+    end
+
+  Sentry.capture_exception error unless caused_by_request
 
   # OmniAuth puts this in the redirect URL. Strategies can set it to an exception message or a request
   # parameter, and a long one makes the headers too large for the front Nginx, which answers 502.
