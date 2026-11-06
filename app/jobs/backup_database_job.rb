@@ -19,7 +19,7 @@ class BackupDatabaseJob < ApplicationJob
   def dump(path)
     tmp = path.sub_ext('.tmp')
 
-    # Dumps contain API tokens. Create the file first so pg_dump never writes them with a wider mode.
+    # Dumps hold sensitive data. Create the file first so pg_dump never writes them with a wider mode.
     tmp.open File::WRONLY | File::CREAT | File::EXCL, 0o600, &:close
 
     system env, 'pg_dump', '--format=custom', "--file=#{tmp}", database, exception: true

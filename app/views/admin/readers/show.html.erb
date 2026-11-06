@@ -3,6 +3,8 @@
 </div>
 
 <% if flash[:password] %>
+  <% turbo_exempts_page_from_cache %>
+
   <div class="alert alert-danger">
     <b>Important:</b> For security reasons, your password will not be displayed again after the reader is created. Please record it securely now, as it cannot be recovered later.
   </div>

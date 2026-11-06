@@ -2,11 +2,19 @@
   <%= link_to '« Back', admin_api_keys_path %>
 </div>
 
+<% if flash[:token] %>
+  <% turbo_exempts_page_from_cache %>
+
+  <div class="alert alert-danger">
+    <b>Important:</b> For security reasons, your token will not be displayed again after the API key is created. Please record it securely now, as it cannot be recovered later.
+  </div>
+<% end %>
+
 <h1 class="mb-3"><%= @key.name %></h1>
 
 <dl>
   <dt>Token</dt>
-  <dd><code><%= @key.token %></code></dd>
+  <dd><code><%= flash[:token] || '********' %></code></dd>
 
   <dt>Last used at</dt>
   <dd><%= @key.last_used_at.then { _1 ? l(_1) : '-' } %></dd>
@@ -16,7 +24,7 @@
 
 <pre class="border rounded bg-light p-3"><code>curl <%= api_users_url %> \
   -X POST \
-  -H 'Authorization: Bearer <%= @key.token %>' \
+  -H 'Authorization: Bearer <%= flash[:token] || 'YOUR_TOKEN' %>' \
   -H 'Content-Type: application/json' \
   -d @- &lt;&lt;EOF
 {

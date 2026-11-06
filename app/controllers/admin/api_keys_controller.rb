@@ -8,6 +8,8 @@ class Admin::APIKeysController < ApplicationController
   end
 
   def show
+    no_store
+
     @key = APIKey.find(params.expect(:id))
   end
 
@@ -19,6 +21,8 @@ class Admin::APIKeysController < ApplicationController
     @key = APIKey.new(key_params)
 
     if @key.save
+      flash[:token] = @key.token
+
       redirect_to admin_api_key_path(@key), status: :see_other, notice: 'API key was successfully created.'
     else
       render :new, status: :unprocessable_content

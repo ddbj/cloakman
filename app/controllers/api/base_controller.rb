@@ -7,7 +7,7 @@ class API::BaseController < ActionController::Base
 
   def authenticate_with_token!
     authenticate_or_request_with_http_token do |token|
-      if key = APIKey.find_by(token:)
+      if key = APIKey.authenticate(token)
         key.tap { it.touch :last_used_at }
       else
         nil
