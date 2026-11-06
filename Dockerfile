@@ -15,8 +15,11 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 WORKDIR /rails
 
 # Install base packages
+# pg_dump refuses to dump a newer server, so keep postgresql-client at the major version of the postgres accessory.
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y ca-certificates curl libjemalloc2 libvips postgresql-common && \
+    /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y && \
+    apt-get install --no-install-recommends -y postgresql-client-18 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment

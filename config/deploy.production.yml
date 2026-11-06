@@ -31,6 +31,15 @@ accessories:
       - ./volumes/cloakman-production/openldap:/bitnami/openldap
       - ./volumes/cloakman-production/openldap-certs:/certs
 
+  postgres:
+    host: cloakman-production
+
+    options:
+      # Unlike `volumes`, this fails when the source is missing. If Lustre isn't mounted, postgres stays
+      # down rather than starting with an empty database.
+      mount:
+        - type=bind,source=/home/w3const/volumes/cloakman-production/postgres,target=/var/lib/postgresql
+
   redis:
     host: cloakman-production
 

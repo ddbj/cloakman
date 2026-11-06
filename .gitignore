@@ -21,7 +21,7 @@
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Ignore storage (uploaded files in development and any SQLite databases).
+# Ignore storage (imported datasets and database backups).
 /storage/*
 !/storage/.keep
 /tmp/storage/*
