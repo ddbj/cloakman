@@ -65,7 +65,7 @@ ssh w3const@<host> mkdir -p volumes/cloakman-<env>/postgres
 bin/kamal accessory boot postgres -d <env>
 ```
 
-The data directory is mounted so that postgres won't start if it's missing. If postgres stays down after a host reboot, check that Lustre is mounted, then run `bin/kamal accessory reboot postgres -d <env>`.
+The data directory is mounted so that postgres won't start if it's missing.
 
 `BackupDatabaseJob` dumps the primary database to `~/volumes/cloakman-<env>/storage/backups` every night and keeps 30 days. To restore, stop the app and run this on the host:
 
@@ -74,6 +74,26 @@ docker exec -i cloakman-postgres pg_restore -U postgres -d cloakman --clean --if
 ```
 
 `--clean` leaves tables created after the dump. If the dump predates a migration, recreate the database first.
+
+### After a host reboot
+
+Lustre isn't mounted automatically, so Docker can start containers before it's available. They can then run on empty local directories and look healthy: Keycloak without its clients, OpenLDAP without its users, Redis with a reset UID counter. Anything written in that state becomes invisible once Lustre is mounted, so avoid creating users until this is done. `/up` doesn't detect any of this.
+
+Once Lustre is mounted, run this on the host:
+
+```sh
+mountpoint /lustre9/open
+docker restart cloakman-keycloak-postgres cloakman-postgres cloakman-openldap cloakman-redis
+docker restart cloakman-keycloak kamal-proxy
+docker restart $(docker ps --all --quiet --latest --filter label=service=cloakman --filter label=role=web)
+```
+
+Then check that the data is back and that sign-in works:
+
+```sh
+docker exec cloakman-keycloak-postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "select count(*) from client"'
+docker exec cloakman-postgres psql -U postgres -d cloakman -c 'select count(*) from api_keys'
+```
 
 ### Credentials
 
