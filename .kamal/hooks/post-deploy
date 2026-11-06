@@ -2,6 +2,8 @@
 
 set -e
 
+bin/check-sign-in "https://$(ruby -ryaml -e 'puts YAML.load_file(ARGV[0]).dig("proxy", "host")' "config/deploy.$KAMAL_DESTINATION.yml")"
+
 export SENTRY_ORG=national-institute-of-genetics
 export SENTRY_PROJECT=cloakman
 

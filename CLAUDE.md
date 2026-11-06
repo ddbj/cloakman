@@ -51,6 +51,8 @@ bin/kamal deploy -d staging
 bin/kamal deploy -d production
 ```
 
+The `post-deploy` hook runs `bin/check-sign-in`, which walks the sign-in path up to Keycloak's login page. If it fails, the new version is already live: fix forward or `bin/kamal rollback`.
+
 - Deploy config: `config/deploy.yml` (common), `config/deploy.staging.yml`, `config/deploy.production.yml`
 - Secrets: `.kamal/secrets-common` — all secrets are read via `bin/rails credentials:fetch` with `$KAMAL_DESTINATION`
 - Accessories: Keycloak, Keycloak-Postgres, OpenLDAP, Postgres, Redis
