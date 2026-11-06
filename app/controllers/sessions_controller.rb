@@ -23,6 +23,6 @@ class SessionsController < ApplicationController
   end
 
   def failure
-    redirect_to root_path, status: :see_other, alert: params[:message]
+    redirect_to root_path, status: :see_other, alert: 'Sign in failed. Please try again.'
   end
 end
