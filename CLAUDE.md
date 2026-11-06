@@ -54,8 +54,26 @@ bin/kamal deploy -d production
 - Deploy config: `config/deploy.yml` (common), `config/deploy.staging.yml`, `config/deploy.production.yml`
 - Secrets: `.kamal/secrets-common` — all secrets are read via `bin/rails credentials:fetch` with `$KAMAL_DESTINATION`
 - Accessories: Keycloak, Keycloak-Postgres, OpenLDAP, Postgres, Redis
-- Persistent data lives on Lustre (`./volumes/...`), because local disks are tied to the physical host and the VM can move between hosts
-- `BackupDatabaseJob` dumps the primary database to `storage/backups` every night and keeps 30 days. To restore, run this on the host: `docker exec -i cloakman-postgres pg_restore -U postgres -d cloakman --clean --if-exists < <dump>`
+- Persistent data lives on Lustre (under `~/volumes/`), because local disks are tied to the physical host and the VM can move between hosts
+
+### Postgres
+
+The `postgres` accessory needs its data directory before the first boot. `kamal deploy` doesn't boot accessories:
+
+```sh
+ssh w3const@<host> mkdir -p volumes/cloakman-<env>/postgres
+bin/kamal accessory boot postgres -d <env>
+```
+
+The data directory is mounted so that postgres won't start if it's missing. If postgres stays down after a host reboot, check that Lustre is mounted, then run `bin/kamal accessory reboot postgres -d <env>`.
+
+`BackupDatabaseJob` dumps the primary database to `~/volumes/cloakman-<env>/storage/backups` every night and keeps 30 days. To restore, stop the app and run this on the host:
+
+```sh
+docker exec -i cloakman-postgres pg_restore -U postgres -d cloakman --clean --if-exists --single-transaction --exit-on-error < <dump>
+```
+
+`--clean` leaves tables created after the dump. If the dump predates a migration, recreate the database first.
 
 ### Credentials
 

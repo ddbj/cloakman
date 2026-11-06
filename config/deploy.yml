@@ -116,6 +116,7 @@ accessories:
       - openldap/schemas/openssh-lpk.ldif:/schemas/openssh-lpk.ldif
 
   postgres:
+    # Keep the major version in step with postgresql-client in the Dockerfile, or BackupDatabaseJob fails.
     image: postgres:18.6
 
     options:
