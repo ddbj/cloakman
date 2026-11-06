@@ -110,7 +110,7 @@ bin/rails credentials:fetch <dotted.path> -e <environment>
 - `LDAPEntry` — Base class implementing ActiveModel-compatible CRUD over LDAP
 - `User` — LDAP user entry (`ddbjUser` objectClass). Maps ~30 LDAP attributes. Status managed via `inetUserStatus` (active/inactive/deleted)
 - `Reader` — LDAP reader entry for service accounts
-- `APIKey` — ActiveRecord model for API authentication
+- `APIKey` — ActiveRecord model for API authentication. Stores only a SHA-256 digest of the token, which is shown once when the key is created
 
 ## Routes
 

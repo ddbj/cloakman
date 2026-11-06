@@ -15,6 +15,8 @@ class Admin::APIKeysTest < ApplicationSystemTestCase
     visit admin_api_key_path(api_keys(:one))
 
     assert_selector 'h1', text: 'Key 1'
+    assert_selector 'dd code', text: '********'
+    assert_no_selector '.alert-danger'
   end
 
   test 'new' do
@@ -29,7 +31,22 @@ class Admin::APIKeysTest < ApplicationSystemTestCase
     fill_in 'Name', with: 'Key 2'
     click_on 'Create API Key'
 
-    assert_current_path admin_api_key_path(APIKey.last)
+    key = APIKey.find_by!(name: 'Key 2')
+
+    assert_current_path admin_api_key_path(key)
+    assert_selector '.alert-danger', text: 'will not be displayed again'
+    assert_selector 'meta[name="turbo-cache-control"][content="no-cache"]', visible: :all
+    assert_includes page.response_headers['Cache-Control'], 'no-store'
+
+    token = find('dd code', text: /\A\w{24,}\z/).text
+
+    assert_equal key, APIKey.authenticate(token)
+    assert_text "Bearer #{token}"
+
+    visit admin_api_key_path(key)
+
+    assert_no_text token
+    assert_selector 'dd code', text: '********'
   end
 
   test 'create with invalid data' do

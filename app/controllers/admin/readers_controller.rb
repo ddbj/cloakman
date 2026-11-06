@@ -8,6 +8,8 @@ class Admin::ReadersController < ApplicationController
   end
 
   def show
+    no_store
+
     @reader = Reader.find(params.expect(:id))
   end
 

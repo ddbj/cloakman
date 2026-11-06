@@ -35,6 +35,8 @@ class Admin::ReadersTest < ApplicationSystemTestCase
     assert_current_path admin_reader_path('example')
 
     assert_selector '.alert', text: 'Reader created successfully.'
+    assert_selector 'meta[name="turbo-cache-control"][content="no-cache"]', visible: :all
+    assert_includes page.response_headers['Cache-Control'], 'no-store'
     assert_selector 'dd', text: 'uid=example,ou=test,ou=readers,dc=ddbj,dc=nig,dc=ac,dc=jp'
     assert_selector 'dd', text: 'notasecret'
   end
