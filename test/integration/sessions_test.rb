@@ -31,6 +31,7 @@ class SessionsTest < ActionDispatch::IntegrationTest
       {error: 'access_denied'},
       {error_reason: 'reason'},
       {error: ['array']},
+      {error: {key: 'value'}},
       {state: 'invalid', code: 'code'}
     ].each do |params|
       reported = capture_reports {
@@ -42,7 +43,22 @@ class SessionsTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'reports failures on our side' do
+  test 'reports nothing for a callback URL that cannot be parsed' do
+    [
+      'state=%E0%A4%A',
+      'state=1&state[a]=2',
+      'error=%FF'
+    ].each do |query|
+      reported = capture_reports {
+        without_omniauth_test_mode { get "/auth/keycloak/callback?#{query}" }
+      }
+
+      assert_empty reported, query
+      assert_redirected_to FAILURE_PATH
+    end
+  end
+
+  test 'reports failures on our side, including unexpected ones' do
     [
       OpenIDConnect::HttpError.new(500, 'Internal Server Error'),
       OpenIDConnect::ResponseObject::IdToken::InvalidAudience.new('Invalid audience'),
@@ -52,9 +68,28 @@ class SessionsTest < ActionDispatch::IntegrationTest
       Timeout::Error.new,
       Errno::ETIMEDOUT.new,
       SocketError.new,
-      Rack::OAuth2::Client::Error.new(401, {error: 'invalid_client'})
+      Rack::OAuth2::Client::Error.new(401, {error: 'invalid_client'}),
+      ArgumentError.new('wrong number of arguments'),
+      NoMethodError.new('undefined method')
     ].each do |error|
       assert_equal [error], capture_reports { fail_with error }
+    end
+  end
+
+  test 'reports nothing for a sign-in request that fails CSRF protection or cannot be parsed' do
+    [
+      {},
+      {params: 'a=%', headers: {'CONTENT_TYPE' => 'application/x-www-form-urlencoded'}},
+      {params: '{', headers: {'CONTENT_TYPE' => 'application/json'}}
+    ].each do |request|
+      reported = capture_reports {
+        without_omniauth_test_mode do
+          with_forgery_protection { post '/auth/keycloak', **request }
+        end
+      }
+
+      assert_empty reported, request.to_s
+      assert_redirected_to FAILURE_PATH
     end
   end
 
@@ -88,6 +123,14 @@ class SessionsTest < ActionDispatch::IntegrationTest
     Sentry.stub(:capture_exception, ->(error) { reported << error }) { yield }
 
     reported
+  end
+
+  def with_forgery_protection
+    ActionController::Base.allow_forgery_protection = true
+
+    yield
+  ensure
+    ActionController::Base.allow_forgery_protection = false
   end
 
   def without_omniauth_test_mode
