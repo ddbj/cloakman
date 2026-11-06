@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# Walks the sign-in path up to Keycloak's login page, as a browser does.
+# Tests mock OmniAuth and `/up` doesn't reach Keycloak, so neither notices when this breaks.
+
+set -eu
+
+url=$1
+
+fail() {
+  echo "SIGN-IN IS BROKEN on $url: $1" >&2
+  exit 1
+}
+
+cookies=$(mktemp)
+trap 'rm -f "$cookies"' EXIT
+
+token=$(
+  curl --silent --show-error --fail --max-time 30 --cookie-jar "$cookies" "$url/" |
+    sed -n 's/.*name="authenticity_token" value="\([^"]*\)".*/\1/p' |
+    head -n 1
+)
+
+[ -n "$token" ] || fail "no sign-in form on the landing page"
+
+response=$(
+  curl --silent --show-error --max-time 30 --cookie "$cookies" --output /dev/null \
+    --write-out '%{http_code} %{redirect_url}' \
+    --data-urlencode "authenticity_token=$token" \
+    "$url/auth/keycloak"
+) || fail "POST /auth/keycloak didn't complete"
+
+status=${response%% *}
+location=${response#* }
+
+case $location in
+  '')       fail "POST /auth/keycloak returned $status without a redirect" ;;
+  "$url"/*) fail "POST /auth/keycloak redirected to ${location%%\?*}" ;;
+esac
+
+curl --silent --show-error --fail --max-time 30 "$location" | grep -q 'id="kc-form-login"' ||
+  fail "no login form at ${location%%\?*}"
+
+echo "Sign-in reaches the login page at ${location%%\?*}"
